@@ -12,34 +12,34 @@
   module const_var
    use precision_EC
    implicit none
-   integer,parameter::  GBC_Wall=2, GBC_Symmetry=3, GBC_Farfield=4,GBC_Inflow=5, GBC_Outflow=6   ! ÓëGridgen¼æÈİµÄ¶¨Òå
-   integer,parameter::  GBC_Extrapolate=401, GBC_Periodic=501     ! À©Õ¹µÄ¶¨Òå£¬Gridgen Generic²¢Î´¶¨Òå
+   integer,parameter::  GBC_Wall=2, GBC_Symmetry=3, GBC_Farfield=4,GBC_Inflow=5, GBC_Outflow=6   ! ä¸Gridgenå…¼å®¹çš„å®šä¹‰
+   integer,parameter::  GBC_Extrapolate=401, GBC_Periodic=501     ! æ‰©å±•çš„å®šä¹‰ï¼ŒGridgen Genericå¹¶æœªå®šä¹‰
    integer,parameter::  fno_log=103
   end module const_var
 
-! ¶¨ÒåÀà (±ß½çÁ¬½Ó£¬ Íø¸ñ¿é£¬ "Íø¸ñ")
+! å®šä¹‰ç±» (è¾¹ç•Œè¿æ¥ï¼Œ ç½‘æ ¼å—ï¼Œ "ç½‘æ ¼")
     module Mod_Type_Def
     use precision_EC
     implicit none
-    TYPE BC_MSG_TYPE              ! ±ß½çÁ´½ÓĞÅÏ¢
+    TYPE BC_MSG_TYPE              ! è¾¹ç•Œé“¾æ¥ä¿¡æ¯
  !   integer::  f_no, face, ist, iend, jst, jend, kst, kend, neighb, subface, orient   ! BXCFD .in format
-     integer:: ib,ie,jb,je,kb,ke,bc                      ! ±ß½çÇøÓò£¨×ÓÃæ£©µÄ¶¨Òå£¬ .inp format
-     integer:: ib1,ie1,jb1,je1,kb1,ke1,nb1               ! Á¬½ÓÇøÓò
+     integer:: ib,ie,jb,je,kb,ke,bc                      ! è¾¹ç•ŒåŒºåŸŸï¼ˆå­é¢ï¼‰çš„å®šä¹‰ï¼Œ .inp format
+     integer:: ib1,ie1,jb1,je1,kb1,ke1,nb1               ! è¿æ¥åŒºåŸŸ
     END TYPE BC_MSG_TYPE
    
-    TYPE Block_TYPE                                 ! Êı¾İ½á¹¹£ºÍø¸ñ¿é £»°üº¬¼¸ºÎ±äÁ¿¼°ÎïÀí±äÁ¿µÄĞÅÏ¢ 
-     integer::  Block_no           ! ¿éºÅ
-	 integer::  nx,ny,nz           ! Íø¸ñÊınx,ny,nz
-	 integer::  subface            ! ×ÓÃæÊı
+    TYPE Block_TYPE                                 ! æ•°æ®ç»“æ„ï¼šç½‘æ ¼å— ï¼›åŒ…å«å‡ ä½•å˜é‡åŠç‰©ç†å˜é‡çš„ä¿¡æ¯ 
+     integer::  Block_no           ! å—å·
+	 integer::  nx,ny,nz           ! ç½‘æ ¼æ•°nx,ny,nz
+	 integer::  subface            ! å­é¢æ•°
      character(len=50):: blockname
-	 real(PRE_EC),pointer,dimension(:,:,:):: x,y,z     ! coordinates of vortex, Íø¸ñ½Úµã×ø±ê
-	 TYPE(BC_MSG_TYPE),pointer,dimension(:)::bc_msg     ! ±ß½çÁ´½ÓĞÅÏ¢ 
+	 real(PRE_EC),pointer,dimension(:,:,:):: x,y,z     ! coordinates of vortex, ç½‘æ ¼èŠ‚ç‚¹åæ ‡
+	 TYPE(BC_MSG_TYPE),pointer,dimension(:)::bc_msg     ! è¾¹ç•Œé“¾æ¥ä¿¡æ¯ 
      End TYPE Block_TYPE  
     end module  Mod_Type_Def
 
   module Global_Var    
-   use const_var        ! ³£Á¿
-   use mod_type_def     ! ±ß½çÁ¬½Ó
+   use const_var        ! å¸¸é‡
+   use mod_type_def     ! è¾¹ç•Œè¿æ¥
    implicit none
    TYPE(Block_TYPE),pointer,dimension(:):: Block
    integer::  Num_Block                      
@@ -60,8 +60,8 @@
    call open_check_cgns("grid.cgns",fn,nzones,fno_log)
    Num_Block=nzones
    allocate(Block(Num_Block))
-   call  read_mesh(fn)    ! ¶ÁÈ¡×ø±ê
-   call read_bc(fn)       ! ¶ÁÈ¡±ß½çĞÅÏ¢
+   call  read_mesh(fn)    ! è¯»å–åæ ‡
+   call read_bc(fn)       ! è¯»å–è¾¹ç•Œä¿¡æ¯
    call cg_close_f(fn,ier)  
    call clear_mem
    close(fno_log)
@@ -82,7 +82,7 @@
    TYPE(BC_MSG_TYPE),pointer:: BC
 
    write(fno_log,*) "write bc3d.inp  ......"
-                                                                                     ! ¶ÁÈë±ß½çĞÅÏ¢     
+                                                                                     ! è¯»å…¥è¾¹ç•Œä¿¡æ¯     
    do m=1,Num_Block
     write(fno_log,*) "---zone: ", m
     B=> Block(m)
@@ -162,19 +162,19 @@
 
 !------------------------------------------------  
   call cg_open_f(filename,CG_MODE_READ,fn,ier)
-  if (ier .ne. CG_OK) call cg_error_exit_f           ! ÎÄ¼ş´ò¿ª²»³É¹¦
+  if (ier .ne. CG_OK) call cg_error_exit_f           ! æ–‡ä»¶æ‰“å¼€ä¸æˆåŠŸ
 ! ----check cgns file message----------  
-  call cg_version_f(fn,version,ier)                  ! Íø¸ñÎÄ¼şµÄCGNS°æ±¾
+  call cg_version_f(fn,version,ier)                  ! ç½‘æ ¼æ–‡ä»¶çš„CGNSç‰ˆæœ¬
      write(fno_log,*)  "CGNS file Version is", version
-  call cg_precision_f(fn,precision,ier)              ! Êı¾İ¾«¶È£¨32Î» or 64Î»£©
+  call cg_precision_f(fn,precision,ier)              ! æ•°æ®ç²¾åº¦ï¼ˆ32ä½ or 64ä½ï¼‰
      write(fno_log,*) "Date precision (32/64 bit): ", precision
-  call cg_nbases_f(fn,nbase,ier)                      ! Base µÄÊıÄ¿ £¨½öĞèÒª1¸ö£©
+  call cg_nbases_f(fn,nbase,ier)                      ! Base çš„æ•°ç›® ï¼ˆä»…éœ€è¦1ä¸ªï¼‰
      write(fno_log,*) "Total base number is:", nbase
   call cg_base_read_f(fn, 1, basename, cell_dim, phys_dim, ier)
-     write(fno_log,*) "Basename: ", basename                  ! Base Ãû
-	 write(fno_log,*) "Cell_dim: " , Cell_dim, "  Phys_dim: ",Phys_dim   ! ¼ÆËã¿Õ¼ä¼°ÎïÀí¿Õ¼äµÄÎ¬Êı
+     write(fno_log,*) "Basename: ", basename                  ! Base å
+	 write(fno_log,*) "Cell_dim: " , Cell_dim, "  Phys_dim: ",Phys_dim   ! è®¡ç®—ç©ºé—´åŠç‰©ç†ç©ºé—´çš„ç»´æ•°
 !-----------read zone (block) number
-  call cg_nzones_f(fn, 1, nzones, ier)                          ! ·ÖÇøµÄÊıÄ¿
+  call cg_nzones_f(fn, 1, nzones, ier)                          ! åˆ†åŒºçš„æ•°ç›®
     write(fno_log,*) "Total Block number is :", nzones
     write(fno_log,*) "---------------------------------------------------------------"
 
@@ -200,13 +200,13 @@
 
   do m=1,Num_Block
     B=> Block(m)
-    call cg_zone_type_f(fn, 1, m, zonetype, ier)                    ! ·ÖÇøµÄÀàĞÍ
-	if(zonetype .ne. Structured ) then                              ! ±¾Èí¼şÔİ²»Ö§³Ö·Ç½á¹¹Íø¸ñ !
+    call cg_zone_type_f(fn, 1, m, zonetype, ier)                    ! åˆ†åŒºçš„ç±»å‹
+	if(zonetype .ne. Structured ) then                              ! æœ¬è½¯ä»¶æš‚ä¸æ”¯æŒéç»“æ„ç½‘æ ¼ !
 	  print*, "Error !!! the zoen is not a STRUCTURED zone !!!"
       stop
 	 endif
 
-	call cg_zone_read_f(fn, 1, m, zonename, isize, ier)            ! ¶ÁÈë zone ĞÅÏ¢
+	call cg_zone_read_f(fn, 1, m, zonename, isize, ier)            ! è¯»å…¥ zone ä¿¡æ¯
     write(fno_log,*) " Zone ", m, zonename
     write(fno_log,*) "nx,ny,nz=",isize(:,1)
 	 B%Block_no=m
@@ -220,13 +220,13 @@
 
      allocate(B%x(nx,ny,nz),B%y(nx,ny,nz),B%z(nx,ny,nz))
 	    
-	 call cg_coord_read_f(fn,1,m,"CoordinateX",realtype,imin,imax,B%x,ier)           ! ¶ÁÈë×ø±ê
+	 call cg_coord_read_f(fn,1,m,"CoordinateX",realtype,imin,imax,B%x,ier)           ! è¯»å…¥åæ ‡
 	 call cg_coord_read_f(fn,1,m,"CoordinateY",realtype,imin,imax,B%y,ier)
 	 call cg_coord_read_f(fn,1,m,"CoordinateZ",realtype,imin,imax,B%z,ier)
   enddo
 
 
-  open(99,file="Mesh3d.dat",form="unformatted")                                     ! °´ÕÕPLOT3D¸ñÊ½Ğ´ÈëMesh3d.dat
+  open(99,file="Mesh3d.dat",form="unformatted")                                     ! æŒ‰ç…§PLOT3Dæ ¼å¼å†™å…¥Mesh3d.dat
   write(99) Num_Block
   write(99) ((Block(m)%nx,Block(m)%ny,Block(m)%nz),m=1,Num_Block)
   do m=1,Num_Block
@@ -263,19 +263,19 @@
     case (BCExtrapolate )
       GBCtype= GBC_Extrapolate
     case (BCDegenerateLine) 
-	  GBCtype= GBC_Extrapolate                            ! ÍË»¯Ïß¾ù°´ÕÕÍâ²å±ß½ç´¦Àí
+	  GBCtype= GBC_Extrapolate                            ! é€€åŒ–çº¿å‡æŒ‰ç…§å¤–æ’è¾¹ç•Œå¤„ç†
       write(fno_log,*) " Warning! Find DegenerateLine boundary, treated as Extrapolate boundary ! Block, subface=",mb,mk
     case default 
-      print*, "----------------------------"               ! ·¢ÏÖÁËOpenCFD-EC²»Ö§³ÖµÄ±ß½çÌõ¼ş
+      print*, "----------------------------"               ! å‘ç°äº†OpenCFD-ECä¸æ”¯æŒçš„è¾¹ç•Œæ¡ä»¶
 	  print*, "Warning !  Find a NEW Boundary condition,  not supported by OpenCFD-EC "
 	  print*,  BCTypeName(bocotype), " in Block, subface=",mb,mk
       print*, "you should check it carefully"
-      GBCtype=1000+bocotype                                 ! ĞÂ¶¨ÒåµÄ±ß½çÌõ¼şÀàĞÍ
+      GBCtype=1000+bocotype                                 ! æ–°å®šä¹‰çš„è¾¹ç•Œæ¡ä»¶ç±»å‹
   End Select
   End subroutine
    
    
-!        °´ÕÕGridgen µÄGeneric±ß½ç¸ñÊ½(.inp)Ğ´Èë bc3d.inp
+!        æŒ‰ç…§Gridgen çš„Genericè¾¹ç•Œæ ¼å¼(.inp)å†™å…¥ bc3d.inp
    subroutine write_inp
     use Global_Var
     implicit none
@@ -303,42 +303,42 @@
     end
 
 
-! ÉèÖÃÁ¬½ÓÇøÓò¶ÔÓ¦¹ØÏµ £¨CGNS ×ª»»Îª Gridgen ¸ñÊ½£©
+! è®¾ç½®è¿æ¥åŒºåŸŸå¯¹åº”å…³ç³» ï¼ˆCGNS è½¬æ¢ä¸º Gridgen æ ¼å¼ï¼‰
     subroutine set_link_range(srange,donor_range,transform,ib,ie,jb,je,kb,ke,ib1,ie1,jb1,je1,kb1,ke1)
     implicit none
 	integer:: ksa, srange(3,2),donor_range(3,2),Grange(3,2),transform(3)
 	integer:: ib,ie,jb,je,kb,ke,ib1,ie1,jb1,je1,kb1,ke1
 	integer:: k,k1
-!                                      source range Ô´ÇøÓò
+!                                      source range æºåŒºåŸŸ
        ib=srange(1,1) ; ie=srange(1,2)
        jb=srange(2,1) ; je=srange(2,2)
        kb=srange(3,1) ; ke=srange(3,2)
 	   if(kb .ne. ke) then
-	     kb=-kb; ke=-ke               !  Gridgen .inp¸ñÊ½;  Á¬½ÓÃæµÄµÚ2Î¬ ÓÃ¸ººÅ±íÊ¾£¬ ÒÔ±ãÓÚÊ¶±ğ£»
-	     ksa=3                        ! Á¬½ÓÃæµÄ µÚ2Î¬ ÊÇÈıÎ¬¿Õ¼äµÄµÚ3Î¬  
+	     kb=-kb; ke=-ke               !  Gridgen .inpæ ¼å¼;  è¿æ¥é¢çš„ç¬¬2ç»´ ç”¨è´Ÿå·è¡¨ç¤ºï¼Œ ä»¥ä¾¿äºè¯†åˆ«ï¼›
+	     ksa=3                        ! è¿æ¥é¢çš„ ç¬¬2ç»´ æ˜¯ä¸‰ç»´ç©ºé—´çš„ç¬¬3ç»´  
 	   else
 	     jb=-jb; je=-je
 	     ksa=2
 	   endif
-!                                       ÏàÁÚÇøÓò  donor range
+!                                       ç›¸é‚»åŒºåŸŸ  donor range
      do k=1,3  
-       k1=abs(transform(k))                   ! µ÷ÕûÁ¬½ÓµÄÕı¸º·½Ïò
-!        ver 1.1, donro_range()±¾ÉíÒÑ°²ÅÅºÃÕı¡¢¸ºÁ¬½Ó´ÎĞò£¬ÎŞĞètransform()µÄ·ûºÅ        
+       k1=abs(transform(k))                   ! è°ƒæ•´è¿æ¥çš„æ­£è´Ÿæ–¹å‘
+!        ver 1.1, donro_range()æœ¬èº«å·²å®‰æ’å¥½æ­£ã€è´Ÿè¿æ¥æ¬¡åºï¼Œæ— éœ€transform()çš„ç¬¦å·        
 		 Grange(k1,1)=donor_range(k1,1)       
          Grange(k1,2)=donor_range(k1,2)
 
 !       if(transform(k) .gt. 0) then
-!         Grange(k1,1)=donor_range(k1,1)       ! ÕıÏòÁ¬½Ó
+!         Grange(k1,1)=donor_range(k1,1)       ! æ­£å‘è¿æ¥
 !         Grange(k1,2)=donor_range(k1,2)
 !	   else
-!         Grange(k1,1)=donor_range(k1,2)       ! ÄæÏòÁ¬½Ó
+!         Grange(k1,1)=donor_range(k1,2)       ! é€†å‘è¿æ¥
 !         Grange(k1,2)=donor_range(k1,1)
 !	   endif
 
 	 enddo
 	 
 	   k1=abs(transform(ksa)) 
-	   Grange(k1,1)=- Grange(k1,1)          ! Á¬½ÓÃæµÄµÚ2Î¬ ÓÃ¸ººÅ±íÊ¾
+	   Grange(k1,1)=- Grange(k1,1)          ! è¿æ¥é¢çš„ç¬¬2ç»´ ç”¨è´Ÿå·è¡¨ç¤º
 	   Grange(k1,2)=- Grange(k1,2)
      
 
@@ -347,7 +347,7 @@
   	  kb1=Grange(3,1) ; 	ke1=Grange(3,2) 
     end
 
-  subroutine clear_mem       ! ÊÍ·ÅÄÚ´æ
+  subroutine clear_mem       ! é‡Šæ”¾å†…å­˜
   use Global_Var
   implicit none
   integer:: m

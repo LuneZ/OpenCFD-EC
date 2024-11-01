@@ -1,23 +1,23 @@
 !----Boundary message (bc3d.inp, Gridgen general format)----------------------------------------------------------
-! ¶ÁÈ¡±ß½ç¸ñÊ½ÎÄ¼ş(bc3d.inp)£¬²¢×ª»¯ÎªOpenCFD-ECµÄÄÚ½¨.inc¸ñÊ½ (¼û¡¶OpenCFD-ECÀíÂÛÊÖ²á¡· 2.4.3½Ú)
-! OpenCFD-ECÄÚ½¨µÄ´æ´¢¸ñÊ½±Èbc3d.inp¶àÁËÒ»Ğ©ÈßÓàĞÅÏ¢ £¨ÓĞĞ©ÀàËÆBXCFDµÄ.in¸ñÊ½£©£¬ÀıÈç¶àÁË×ÓÃæºÅf_no,
-! ÃæÀàĞÍface ÒÔ¼°Á¬½ÓµÄ×ÓÃæºÅf_no1,Á¬½ÓµÄÃæÀàĞÍface1
-! ÒÔ¼°Á¬½Ó´ÎĞòL1, L2, L3  (ÀıÈçL1=1±íÊ¾¸ÃÎ¬ÓëÁ¬½Ó¿éµÄµÚ1Î¬ÕıÁ¬½Ó£¬ L1=-1±íÊ¾ÓëÁ¬½Ó¿éµÄµÚ1Îª·´ÏòÁ¬½Ó).
-! ÕâĞ©ÈßÓàĞÅÏ¢Îª¿é-¿éÖ®¼äµÄÍ¨ĞÅ£¨ÓÈÆäÊÇMPI²¢ĞĞÍ¨ĞÅ£©Ìá¹©ÁË±ãÀû£¬ÓĞÀûÓÚ¼ò»¯´úÂë
+! è¯»å–è¾¹ç•Œæ ¼å¼æ–‡ä»¶(bc3d.inp)ï¼Œå¹¶è½¬åŒ–ä¸ºOpenCFD-ECçš„å†…å»º.incæ ¼å¼ (è§ã€ŠOpenCFD-ECç†è®ºæ‰‹å†Œã€‹ 2.4.3èŠ‚)
+! OpenCFD-ECå†…å»ºçš„å­˜å‚¨æ ¼å¼æ¯”bc3d.inpå¤šäº†ä¸€äº›å†—ä½™ä¿¡æ¯ ï¼ˆæœ‰äº›ç±»ä¼¼BXCFDçš„.inæ ¼å¼ï¼‰ï¼Œä¾‹å¦‚å¤šäº†å­é¢å·f_no,
+! é¢ç±»å‹face ä»¥åŠè¿æ¥çš„å­é¢å·f_no1,è¿æ¥çš„é¢ç±»å‹face1
+! ä»¥åŠè¿æ¥æ¬¡åºL1, L2, L3  (ä¾‹å¦‚L1=1è¡¨ç¤ºè¯¥ç»´ä¸è¿æ¥å—çš„ç¬¬1ç»´æ­£è¿æ¥ï¼Œ L1=-1è¡¨ç¤ºä¸è¿æ¥å—çš„ç¬¬1ä¸ºåå‘è¿æ¥).
+! è¿™äº›å†—ä½™ä¿¡æ¯ä¸ºå—-å—ä¹‹é—´çš„é€šä¿¡ï¼ˆå°¤å…¶æ˜¯MPIå¹¶è¡Œé€šä¿¡ï¼‰æä¾›äº†ä¾¿åˆ©ï¼Œæœ‰åˆ©äºç®€åŒ–ä»£ç 
  
  module  Type_def1
-    TYPE BC_MSG_TYPE              ! ±ß½çÁ´½ÓĞÅÏ¢
+    TYPE BC_MSG_TYPE              ! è¾¹ç•Œé“¾æ¥ä¿¡æ¯
  !   integer::  f_no, face, ist, iend, jst, jend, kst, kend, neighb, subface, orient   ! BXCFD .in format
-     integer:: ib,ie,jb,je,kb,ke,bc,face,f_no                      ! ±ß½çÇøÓò£¨×ÓÃæ£©µÄ¶¨Òå£¬ .inp format
-     integer:: ib1,ie1,jb1,je1,kb1,ke1,nb1,face1,f_no1             ! Á¬½ÓÇøÓò
-	 integer:: L1,L2,L3                     ! ×ÓÃæºÅ£¬Á¬½ÓË³ĞòÃèÊö·û
+     integer:: ib,ie,jb,je,kb,ke,bc,face,f_no                      ! è¾¹ç•ŒåŒºåŸŸï¼ˆå­é¢ï¼‰çš„å®šä¹‰ï¼Œ .inp format
+     integer:: ib1,ie1,jb1,je1,kb1,ke1,nb1,face1,f_no1             ! è¿æ¥åŒºåŸŸ
+	 integer:: L1,L2,L3                     ! å­é¢å·ï¼Œè¿æ¥é¡ºåºæè¿°ç¬¦
    END TYPE BC_MSG_TYPE
 
 
-    TYPE Block_TYPE1                          ! Êı¾İ½á¹¹£º½ö°üº¬Bc_msg 
-	 integer::  nx,ny,nz                      ! Íø¸ñÊınx,ny,nz
-	 integer::  subface                       ! ×ÓÃæÊı
- 	 TYPE(BC_MSG_TYPE),pointer,dimension(:)::bc_msg     ! ±ß½çÁ´½ÓĞÅÏ¢ 
+    TYPE Block_TYPE1                          ! æ•°æ®ç»“æ„ï¼šä»…åŒ…å«Bc_msg 
+	 integer::  nx,ny,nz                      ! ç½‘æ ¼æ•°nx,ny,nz
+	 integer::  subface                       ! å­é¢æ•°
+ 	 TYPE(BC_MSG_TYPE),pointer,dimension(:)::bc_msg     ! è¾¹ç•Œé“¾æ¥ä¿¡æ¯ 
     END TYPE Block_TYPE1   
  End module  Type_def1
 
@@ -53,18 +53,18 @@
 	read(88,*)
     read(88,*) B%subface   !number of the subface in the Block m
      
-	allocate(B%bc_msg(B%subface))   ! ±ß½çÃèÊö
+	allocate(B%bc_msg(B%subface))   ! è¾¹ç•Œæè¿°
 
     do ksub=1, B%subface
       Bc => B%bc_msg(ksub)
-      Bc%f_no=ksub                        ! ×ÓÃæºÅ
+      Bc%f_no=ksub                        ! å­é¢å·
 	  read(88,*)  kb(1),ke(1),kb(2),ke(2),kb(3),ke(3),Bc%bc
 	 
 	  if(Bc%bc .lt. 0) then
- !  --------ÓĞÁ¬½ÓµÄÇé¿ö (ÄÚ±ß½ç)--------------------------------------------------------	    
+ !  --------æœ‰è¿æ¥çš„æƒ…å†µ (å†…è¾¹ç•Œ)--------------------------------------------------------	    
 	   read(88,*) kb1(1),ke1(1),kb1(2),ke1(2),kb1(3),ke1(3),Bc%nb1
       else
- !---------ÎŞÁ¬½ÓÇé¿ö (ÎïÀí±ß½ç)----------------------------------------
+ !---------æ— è¿æ¥æƒ…å†µ (ç‰©ç†è¾¹ç•Œ)----------------------------------------
             kb1(:)=0; ke1(:)=0; Bc%nb1=0
 	  endif
 	 call Convert_bc(Bc,kb,ke,kb1,ke1)
@@ -73,14 +73,14 @@
    
    close(88)
 
-!  ËÑË÷Á¬½Ó¿éµÄ¿éºÅ f_no1  (±ãÓÚMPI²¢ĞĞÍ¨ĞÅÊÇÊ¹ÓÃ)
+!  æœç´¢è¿æ¥å—çš„å—å· f_no1  (ä¾¿äºMPIå¹¶è¡Œé€šä¿¡æ˜¯ä½¿ç”¨)
    do m=1,NB
      B => Block(m)
      do ksub=1, B%subface
        Bc => B%bc_msg(ksub)
        if(Bc%bc .lt. 0) then
          Bc%f_no1=0
-		 B1=>Block(Bc%nb1)         ! Ö¸ÏòÁ¬½Ó¿é
+		 B1=>Block(Bc%nb1)         ! æŒ‡å‘è¿æ¥å—
          
 		 do ksub1=1,B1%subface
 		 Bc1=>B1%bc_msg(ksub1)
@@ -126,8 +126,8 @@
 
 
 
-!   ½«Gridgen¸ñÊ½ ×ª»»Îª OpenCFD-EC µÄ±ß½çÁ¬½Ó¸ñÊ½
-!     ¼ÆËãÃæºÅ¡¢ Á¬½Ó´ÎĞò (L1,L2,L3)µÈ
+!   å°†Gridgenæ ¼å¼ è½¬æ¢ä¸º OpenCFD-EC çš„è¾¹ç•Œè¿æ¥æ ¼å¼
+!     è®¡ç®—é¢å·ã€ è¿æ¥æ¬¡åº (L1,L2,L3)ç­‰
       subroutine Convert_bc(Bc,kb,ke,kb1,ke1)
        use Type_Def1
        implicit none
@@ -141,24 +141,24 @@
        endif
      
 
-!   ÅĞ¶Ï¸ÃÃæµÄÀàĞÍ (i-, i+, j-,j+, k-,k+)     
+!   åˆ¤æ–­è¯¥é¢çš„ç±»å‹ (i-, i+, j-,j+, k-,k+)     
        do k=1,3
   	     if(kb(k) .eq. ke(k) ) then 
-	       s(k)=0                           ! Á¬½ÓÎ¬
+	       s(k)=0                           ! è¿æ¥ç»´
 	     else if (kb(k) .gt. 0) then 
-	       s(k)=1                           ! Õı
+	       s(k)=1                           ! æ­£
 	     else
-	       s(k)=-1                          ! ¸º
+	       s(k)=-1                          ! è´Ÿ
 	     endif
        enddo
 
-!    ±ß½ç×ÓÃæµÄ´óĞ¡     
+!    è¾¹ç•Œå­é¢çš„å¤§å°     
 	 Bc%ib=min(abs(kb(1)),abs(ke(1))) ;  Bc%ie=max(abs(kb(1)),abs(ke(1)))
      Bc%jb=min(abs(kb(2)),abs(ke(2))) ;  Bc%je=max(abs(kb(2)),abs(ke(2)))
      Bc%kb=min(abs(kb(3)),abs(ke(3))) ;  Bc%ke=max(abs(kb(3)),abs(ke(3))) 
 
 
-!   ÅĞ¶Ï¸ÃÃæµÄÀàĞÍ (i-, i+, j-,j+, k-,k+)     
+!   åˆ¤æ–­è¯¥é¢çš„ç±»å‹ (i-, i+, j-,j+, k-,k+)     
       if(s(1) .eq. 0) then
 	     if (Bc%ib .eq. 1) then
 	      Bc%face=1               ! i-
@@ -180,28 +180,28 @@
      endif 
 
 !---------------------------------------------------------------------------
-!------ÄÚ±ß½çµÄÇé¿ö£¬½¨Á¢Á¬½ÓÃèÊö
-  if( Bc%bc .lt. 0) then            ! ÄÚ±ß½ç
-!      ¼ÆËãÁ¬½ÓË³ĞòÃèÊö·ûL1,L2,L3
-!      ¼ÆËã¸÷Î¬Ö®¼äµÄÁ¬½Ó¹ØÏµ      
+!------å†…è¾¹ç•Œçš„æƒ…å†µï¼Œå»ºç«‹è¿æ¥æè¿°
+  if( Bc%bc .lt. 0) then            ! å†…è¾¹ç•Œ
+!      è®¡ç®—è¿æ¥é¡ºåºæè¿°ç¬¦L1,L2,L3
+!      è®¡ç®—å„ç»´ä¹‹é—´çš„è¿æ¥å…³ç³»      
      do k=1,3  
 	   if(kb1(k) .eq. ke1(k) ) then 
 	       p(k)=0                      ! 
        else if (kb1(k) .gt. 0) then
-	       p(k)=1                      ! .inp ÎÄ¼şµÄ ÕıÊı
+	       p(k)=1                      ! .inp æ–‡ä»¶çš„ æ­£æ•°
        else
 	       p(k)=-1
        endif
      enddo
  	   
 
-!    ¶ÔÓ¦Á¬½Ó×ÓÃæµÄ´óĞ¡     
+!    å¯¹åº”è¿æ¥å­é¢çš„å¤§å°     
 	 Bc%ib1=min(abs(kb1(1)),abs(ke1(1))) ;  Bc%ie1=max(abs(kb1(1)),abs(ke1(1)))
      Bc%jb1=min(abs(kb1(2)),abs(ke1(2))) ;  Bc%je1=max(abs(kb1(2)),abs(ke1(2)))
      Bc%kb1=min(abs(kb1(3)),abs(ke1(3))) ;  Bc%ke1=max(abs(kb1(3)),abs(ke1(3))) 
     
  	  
-!   ÅĞ¶Ï¸ÃÃæÁ¬½ÓÃæµÄÀàĞÍ (i-, i+, j-,j+, k-,k+)     
+!   åˆ¤æ–­è¯¥é¢è¿æ¥é¢çš„ç±»å‹ (i-, i+, j-,j+, k-,k+)     
       if(p(1) .eq. 0) then
 	     if (Bc%ib1 .eq. 1) then
 	      Bc%face1=1               ! i-
@@ -222,27 +222,27 @@
 	   endif
      endif  
 
-!  ¼ÆËã¡°Á¬½Ó¶Ô¡± ÃèÊö·û  bc%L1, bc%L2, bc%L3 
+!  è®¡ç®—â€œè¿æ¥å¯¹â€ æè¿°ç¬¦  bc%L1, bc%L2, bc%L3 
  	   do k=1,3
 	     do j=1,3
-	       if(s(k) .eq. p(j)) Lp(k)=j          ! .inpÎÄ¼şµÄÁ¬½Ó¸ñÊ½£º Õı¶ÔÕı¡¢ ¸º¶Ô¸º¡¢ 0¶Ô0£» 
+	       if(s(k) .eq. p(j)) Lp(k)=j          ! .inpæ–‡ä»¶çš„è¿æ¥æ ¼å¼ï¼š æ­£å¯¹æ­£ã€ è´Ÿå¯¹è´Ÿã€ 0å¯¹0ï¼› 
 	     enddo
 	   enddo    
 	   
-!    ¼ÆËãÁ¬½Ó´ÎĞò £¨ÕıÎªË³Ğò£»¸ºÎªÄâĞò£©	  
+!    è®¡ç®—è¿æ¥æ¬¡åº ï¼ˆæ­£ä¸ºé¡ºåºï¼›è´Ÿä¸ºæ‹Ÿåºï¼‰	  
 	  do k=1,3
 	   if(s(k) .ne. 0) then
 	     k1=Lp(k)
-	     if( (ke(k)-kb(k))*(ke1(k1)-kb1(k1)) .lt. 0) Lp(k)=-Lp(k)      ! ÄæĞòÁ¬½Ó
+	     if( (ke(k)-kb(k))*(ke1(k1)-kb1(k1)) .lt. 0) Lp(k)=-Lp(k)      ! é€†åºè¿æ¥
 	   else
          k1=Lp(k)
-!		 if( (mod(Bc%face,2)-mod(Bc%face1,2))==0) Lp(k)=-Lp(k)         ! ÄæĞòÁ¬½Ó £¨µ¥Ãæ£© ! Bug 2012-7-13
-! Õı-ÕıÁ¬½Ó LpÎª¸º (Àı£¬ i+ ÃæÁ¬½Óµ½ j+Ãæ£¬ ÔòÎªÄæĞòÁ¬½Ó)
-		 if( (Bc%face-1)/3 .eq. (Bc%face1-1)/3 ) Lp(k)=-Lp(k)        ! (Bc%face=1,2,3Îª +Ãæ£¬4,5,6Îª-Ãæ)  ! ÄæĞòÁ¬½Ó £¨µ¥Ãæ£©
+!		 if( (mod(Bc%face,2)-mod(Bc%face1,2))==0) Lp(k)=-Lp(k)         ! é€†åºè¿æ¥ ï¼ˆå•é¢ï¼‰ ! Bug 2012-7-13
+! æ­£-æ­£è¿æ¥ Lpä¸ºè´Ÿ (ä¾‹ï¼Œ i+ é¢è¿æ¥åˆ° j+é¢ï¼Œ åˆ™ä¸ºé€†åºè¿æ¥)
+		 if( (Bc%face-1)/3 .eq. (Bc%face1-1)/3 ) Lp(k)=-Lp(k)        ! (Bc%face=1,2,3ä¸º +é¢ï¼Œ4,5,6ä¸º-é¢)  ! é€†åºè¿æ¥ ï¼ˆå•é¢ï¼‰
 
 	   endif
 	 enddo 
      
-	 Bc%L1=Lp(1); Bc%L2=Lp(2); Bc%L3=Lp(3)   ! Á¬½Ó´ÎĞòÃèÊö·û £¨Ïê¼û¡¶ÀíÂÛÊÖ²á¡·£©
+	 Bc%L1=Lp(1); Bc%L2=Lp(2); Bc%L3=Lp(3)   ! è¿æ¥æ¬¡åºæè¿°ç¬¦ ï¼ˆè¯¦è§ã€Šç†è®ºæ‰‹å†Œã€‹ï¼‰
    endif
   end

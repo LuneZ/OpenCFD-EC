@@ -155,7 +155,7 @@
    do j=1,ny-1
    do i=1,nx-1
 !----- get S (normal of vorticity)  S=sqrt(0.5*Omiga_ij*Omiga_ij) at the cell's center ------
-!  计算涡量；计算湍流粘性系数的梯度
+!  璁＄畻娑￠噺锛涜绠楁箥娴佺矘鎬х郴鏁扮殑姊害
 	 xi=B%xc(i+1,j,k)-B%xc(i-1,j,k) 
      yi=B%yc(i+1,j,k)-B%yc(i-1,j,k)
      zi=B%zc(i+1,j,k)-B%zc(i-1,j,k)

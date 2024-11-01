@@ -80,9 +80,9 @@
 
 !------------------------------------------------------------------------------     
 ! Read the message of the mesh and the initial flow;
-! ¶ÁÈ¡Íø¸ñ£¬³õÊ¼Á÷³¡ĞÅÏ¢; 
-! ·ÖÅäÄÚ´æ±äÁ¿£»
-! ¼ÆËã¼¸ºÎÁ¿£»
+! è¯»å–ç½‘æ ¼ï¼Œåˆå§‹æµåœºä¿¡æ¯; 
+! åˆ†é…å†…å­˜å˜é‡ï¼›
+! è®¡ç®—å‡ ä½•é‡ï¼›
 !------------------------------------------------------------------------------
    subroutine init
    use  Global_Variables
@@ -100,25 +100,25 @@
 
    p00=1.d0/(gamma*Ma*Ma)
 ! ---------node Coordinates----------------------------------------  
-!  Íø¸ñÎÄ¼ş£ºPLOT3D¸ñÊ½£»   
+!  ç½‘æ ¼æ–‡ä»¶ï¼šPLOT3Dæ ¼å¼ï¼›   
    print*, "read Mesh3d.dat... (PLOT3D Format)"
    open(99,file="Mesh3d.dat")
-   read(99,*) Num_Block         ! ×Ü¿éÊı
+   read(99,*) Num_Block         ! æ€»å—æ•°
    allocate(Block(Num_Block))             
-   allocate(NI(Num_Block),NJ(Num_Block),NK(Num_Block) )   ! Ã¿¿éµÄ´óĞ¡
+   allocate(NI(Num_Block),NJ(Num_Block),NK(Num_Block) )   ! æ¯å—çš„å¤§å°
    read(99,*) (NI(k), NJ(k), NK(k), k=1,Num_Block)
-! ¶ÁÈ¡Ã¿¿éĞÅÏ¢----------------------------------------   
+! è¯»å–æ¯å—ä¿¡æ¯----------------------------------------   
     do m=1,Num_Block
      B => Block(m)
-     B%nx=NI(m); B%ny=NJ(m) ; B%nz=NK(m)   ! nx,ny,nz Ã¿¿éµÄ´óĞ¡
+     B%nx=NI(m); B%ny=NJ(m) ; B%nz=NK(m)   ! nx,ny,nz æ¯å—çš„å¤§å°
      nx1=B%nx ; ny1= B%ny ; nz1=B%nz
-! ----------  ¼¸ºÎÁ¿ -----------------------------------------------
+! ----------  å‡ ä½•é‡ -----------------------------------------------
     allocate(B%xc(0:nx1,0:ny1,0:nz1), B%yc(0:nx1,0:ny1,0:nz1), B%zc(0:nx1,0:ny1,0:nz1)) 
     allocate(B%d(0:nx1,0:ny1,0:nz1),B%u(0:nx1,0:ny1,0:nz1),B%v(0:nx1,0:ny1,0:nz1), &
        B%w(0:nx1,0:ny1,0:nz1),B%T(0:nx1,0:ny1,0:nz1),B%p(0:nx1,0:ny1,0:nz1))
     enddo
 
-!---------------´Óflow3d.datÖĞ¶ÁÈ¡³¡×÷Îª³õÖµ----------------------
+!---------------ä»flow3d.datä¸­è¯»å–åœºä½œä¸ºåˆå€¼----------------------
         open(99,file="flow3d.dat")
          print*, "Init from 'flow3d.dat' "
          read(99,*)

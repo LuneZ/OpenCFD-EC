@@ -1,7 +1,7 @@
 !-----------------------------------------------------
-!   ¼ÆËã¼¸ºÎÁ¿£º¿ØÖÆÌåÌå»ıºÍÖĞĞÄµã×ø±ê£¬JocabianÏµÊı  
-!   2013-4-26:  ¿É´¦ÀíÍË»¯Ïß £¨Ãæ»ıÎª0µÄÃæ£© 
-!   2013-5-3: ĞŞ¸ÄÕ³ĞÔÏîJocabianÏµÊı¼ÆËã·½·¨£¬ÓëÎïÀíÁ¿µ¼Êı·½·¨Ò»ÖÂ 
+!   è®¡ç®—å‡ ä½•é‡ï¼šæ§åˆ¶ä½“ä½“ç§¯å’Œä¸­å¿ƒç‚¹åæ ‡ï¼ŒJocabianç³»æ•°  
+!   2013-4-26:  å¯å¤„ç†é€€åŒ–çº¿ ï¼ˆé¢ç§¯ä¸º0çš„é¢ï¼‰ 
+!   2013-5-3: ä¿®æ”¹ç²˜æ€§é¡¹Jocabianç³»æ•°è®¡ç®—æ–¹æ³•ï¼Œä¸ç‰©ç†é‡å¯¼æ•°æ–¹æ³•ä¸€è‡´ 
 
   subroutine Comput_Goemetric_var(nMesh)
    use   Global_Var
@@ -13,8 +13,8 @@
    real(PRE_EC),allocatable,dimension(:,:,:)::Vi,Vj,Vk
    Type (Mesh_TYPE),pointer:: MP
    Type (Block_TYPE),pointer:: B
-!  ¼ÆËã¿ØÖÆÌåµÄÌå»ı
-!  ¼ÆËã¿ØÖÆÌå¸÷±íÃæµÄÃæ»ı £¨ÎªÁË±ÜÃâÄÚ´æÕ¼ÓÃ¹ı¶à£¬±íÃæµÄ·¨·½Ïò¡¢ÇĞ·½ÏòÔÚ¼ÆËãÖĞÇó³ö£¬²»½øĞĞ´æ´¢£©
+!  è®¡ç®—æ§åˆ¶ä½“çš„ä½“ç§¯
+!  è®¡ç®—æ§åˆ¶ä½“å„è¡¨é¢çš„é¢ç§¯ ï¼ˆä¸ºäº†é¿å…å†…å­˜å ç”¨è¿‡å¤šï¼Œè¡¨é¢çš„æ³•æ–¹å‘ã€åˆ‡æ–¹å‘åœ¨è®¡ç®—ä¸­æ±‚å‡ºï¼Œä¸è¿›è¡Œå­˜å‚¨ï¼‰
    MP=>Mesh(nMesh)
    do m=1,MP%Num_Block   
      B => MP%Block(m)
@@ -24,16 +24,16 @@
        do j=1,B%ny
          do i=1,B%nx
 !-------------------------------------------
-           t1x=B%x(i,j+1,k)-B%x(i,j,k+1); t1y=B%y(i,j+1,k)-B%y(i,j,k+1); t1z=B%z(i,j+1,k)-B%z(i,j,k+1)   ! ¶Ô½ÇÏß1
-           t2x=B%x(i,j+1,k+1)-B%x(i,j,k); t2y=B%y(i,j+1,k+1)-B%y(i,j,k) ; t2z=B%z(i,j+1,k+1)-B%z(i,j,k)  ! ¶Ô½ÇÏß2
-           s1x=t1y*t2z-t1z*t2y ; s1y=t1z*t2x-t1x*t2z ; s1z=t1x*t2y-t1y*t2x   ! ·¨ÏòÁ¿ £¨¶Ô½ÇÏßÏòÁ¿²æ³ËµÃµ½£©
-           ss=sqrt(s1x*s1x+s1y*s1y+s1z*s1z)  ! ³¤¶È
+           t1x=B%x(i,j+1,k)-B%x(i,j,k+1); t1y=B%y(i,j+1,k)-B%y(i,j,k+1); t1z=B%z(i,j+1,k)-B%z(i,j,k+1)   ! å¯¹è§’çº¿1
+           t2x=B%x(i,j+1,k+1)-B%x(i,j,k); t2y=B%y(i,j+1,k+1)-B%y(i,j,k) ; t2z=B%z(i,j+1,k+1)-B%z(i,j,k)  ! å¯¹è§’çº¿2
+           s1x=t1y*t2z-t1z*t2y ; s1y=t1z*t2x-t1x*t2z ; s1z=t1x*t2y-t1y*t2x   ! æ³•å‘é‡ ï¼ˆå¯¹è§’çº¿å‘é‡å‰ä¹˜å¾—åˆ°ï¼‰
+           ss=sqrt(s1x*s1x+s1y*s1y+s1z*s1z)  ! é•¿åº¦
            B%Si(i,j,k)=ss*0.5d0
            
 		   if(ss .ge. Lim_Zero) then
 		     B%ni1(i,j,k)=s1x/ss; B%ni2(i,j,k)=s1y/ss ; B%ni3(i,j,k)=s1z/ss
            else
-		     B%ni1(i,j,k)=1.d0; B%ni2(i,j,k)=0.d0 ; B%ni3(i,j,k)=0.d0          ! ÍË»¯Ïß£»ÈÎÒâÈ·¶¨·¨·½Ïò
+		     B%ni1(i,j,k)=1.d0; B%ni2(i,j,k)=0.d0 ; B%ni3(i,j,k)=0.d0          ! é€€åŒ–çº¿ï¼›ä»»æ„ç¡®å®šæ³•æ–¹å‘
 		   endif
 		     
 
@@ -42,9 +42,9 @@
            za=(B%z(i,j,k)+B%z(i,j+1,k)+B%z(i,j,k+1)+B%z(i,j+1,k+1))*0.25d0
            Vi(i,j,k)=(s1x*xa+s1y*ya+s1z*za)*0.5d0
 !----------------------------------------------------------------------------------
-           t1x=B%x(i+1,j,k+1)-B%x(i,j,k); t1y=B%y(i+1,j,k+1)-B%y(i,j,k) ; t1z=B%z(i+1,j,k+1)-B%z(i,j,k)  ! ¶Ô½ÇÏß1
-           t2x=B%x(i+1,j,k)-B%x(i,j,k+1); t2y=B%y(i+1,j,k)-B%y(i,j,k+1);  t2z=B%z(i+1,j,k)-B%z(i,j,k+1)   ! ¶Ô½ÇÏß2
-           s1x=t1y*t2z-t1z*t2y ; s1y=t1z*t2x-t1x*t2z ; s1z=t1x*t2y-t1y*t2x   ! ·¨ÏòÁ¿ £¨¶Ô½ÇÏßÏòÁ¿²æ³ËµÃµ½£©
+           t1x=B%x(i+1,j,k+1)-B%x(i,j,k); t1y=B%y(i+1,j,k+1)-B%y(i,j,k) ; t1z=B%z(i+1,j,k+1)-B%z(i,j,k)  ! å¯¹è§’çº¿1
+           t2x=B%x(i+1,j,k)-B%x(i,j,k+1); t2y=B%y(i+1,j,k)-B%y(i,j,k+1);  t2z=B%z(i+1,j,k)-B%z(i,j,k+1)   ! å¯¹è§’çº¿2
+           s1x=t1y*t2z-t1z*t2y ; s1y=t1z*t2x-t1x*t2z ; s1z=t1x*t2y-t1y*t2x   ! æ³•å‘é‡ ï¼ˆå¯¹è§’çº¿å‘é‡å‰ä¹˜å¾—åˆ°ï¼‰
            ss=sqrt(s1x*s1x+s1y*s1y+s1z*s1z)
            B%Sj(i,j,k)=ss*0.5d0
     
@@ -60,9 +60,9 @@
            za=(B%z(i,j,k)+B%z(i+1,j,k)+B%z(i,j,k+1)+B%z(i+1,j,k+1))*0.25d0
            Vj(i,j,k)=(s1x*xa+s1y*ya+s1z*za)*0.5d0
 !----------------------=----------------------------------------------------
-           t1x=B%x(i+1,j+1,k)-B%x(i,j,k); t1y=B%y(i+1,j+1,k)-B%y(i,j,k) ; t1z=B%z(i+1,j+1,k)-B%z(i,j,k)  ! ¶Ô½ÇÏß1
-           t2x=B%x(i,j+1,k)-B%x(i+1,j,k); t2y=B%y(i,j+1,k)-B%y(i+1,j,k) ; t2z=B%z(i,j+1,k)-B%z(i+1,j,k)   ! ¶Ô½ÇÏß2
-           s1x=t1y*t2z-t1z*t2y ; s1y=t1z*t2x-t1x*t2z ; s1z=t1x*t2y-t1y*t2x   ! ·¨ÏòÁ¿ £¨¶Ô½ÇÏßÏòÁ¿²æ³ËµÃµ½£©
+           t1x=B%x(i+1,j+1,k)-B%x(i,j,k); t1y=B%y(i+1,j+1,k)-B%y(i,j,k) ; t1z=B%z(i+1,j+1,k)-B%z(i,j,k)  ! å¯¹è§’çº¿1
+           t2x=B%x(i,j+1,k)-B%x(i+1,j,k); t2y=B%y(i,j+1,k)-B%y(i+1,j,k) ; t2z=B%z(i,j+1,k)-B%z(i+1,j,k)   ! å¯¹è§’çº¿2
+           s1x=t1y*t2z-t1z*t2y ; s1y=t1z*t2x-t1x*t2z ; s1z=t1x*t2y-t1y*t2x   ! æ³•å‘é‡ ï¼ˆå¯¹è§’çº¿å‘é‡å‰ä¹˜å¾—åˆ°ï¼‰
            ss=sqrt(s1x*s1x+s1y*s1y+s1z*s1z)
            B%Sk(i,j,k)=ss*0.5d0  
            if(ss .ge. Lim_Zero) then
@@ -80,7 +80,7 @@
        enddo
      enddo
 
-! ¿ØÖÆÌå Ìå»ı    
+! æ§åˆ¶ä½“ ä½“ç§¯    
      do k=1,B%nz-1
        do j=1,B%ny-1
          do i=1,B%nx-1
@@ -89,7 +89,7 @@
        enddo
      enddo
 
-!  Íø¸ñÖĞĞÄµã×ø±ê
+!  ç½‘æ ¼ä¸­å¿ƒç‚¹åæ ‡
      do k=0,B%nz
        do j=0,B%ny
          do i=0,B%nx
@@ -103,10 +103,10 @@
        enddo
      enddo              
      deallocate(Vi,Vj,Vk)
- ! -----------¼ÆËã JocabianÏµÊı £¨Õ³ĞÔÏî¼ÆËãµ¼ÊıÊ±Ê¹ÓÃ£©------------------------
- !  (I+1/2,J,K)µã
- ! revised, 2013-5-3:  JocabianÏµÊıÓë ÎïÀíÁ¿µ¼Êı ¼ÆËã·½·¨Ò»ÖÂ£¬±ÜÃâ¶îÍâÎó²î£»
- ! revised, 2013-5-4:  ±ÜÃâÊ¹ÓÃ½Çµã×ø±ê£¨¼ÆËãÓòÁ¢·½ÌåµÄÀâ£©£¬ÒÔÃâ³öÏÖ²»ÎÈ¶¨ĞÔ
+ ! -----------è®¡ç®— Jocabianç³»æ•° ï¼ˆç²˜æ€§é¡¹è®¡ç®—å¯¼æ•°æ—¶ä½¿ç”¨ï¼‰------------------------
+ !  (I+1/2,J,K)ç‚¹
+ ! revised, 2013-5-3:  Jocabianç³»æ•°ä¸ ç‰©ç†é‡å¯¼æ•° è®¡ç®—æ–¹æ³•ä¸€è‡´ï¼Œé¿å…é¢å¤–è¯¯å·®ï¼›
+ ! revised, 2013-5-4:  é¿å…ä½¿ç”¨è§’ç‚¹åæ ‡ï¼ˆè®¡ç®—åŸŸç«‹æ–¹ä½“çš„æ£±ï¼‰ï¼Œä»¥å…å‡ºç°ä¸ç¨³å®šæ€§
        do k=1,B%nz-1 
        do j=1,B%ny-1
        do i=1,B%nx
@@ -160,7 +160,7 @@
 		   Jac=1.d0/Jac1
 
 !   Jac=B%Jaci(i,j,k)
-!   9¸öJocabian±ä»»ÏµÊı    
+!   9ä¸ªJocabianå˜æ¢ç³»æ•°    
           B%ix1(i,j,k)=Jac*(yj*zk-zj*yk)
           B%iy1(i,j,k)=Jac*(zj*xk-xj*zk)
           B%iz1(i,j,k)=Jac*(xj*yk-yj*xk)
@@ -174,9 +174,9 @@
 	  enddo
 	  enddo
  
- ! (I,J-1/2,K) µãµÄÖµ£¬ ¼´ (i+1/2,j,k+1/2)µãµÄÖµ
+ ! (I,J-1/2,K) ç‚¹çš„å€¼ï¼Œ å³ (i+1/2,j,k+1/2)ç‚¹çš„å€¼
  
-! Revised, 2013-5-3, ×ø±êµÄµ¼ÊıÓëÎïÀíÁ¿µÄµ¼Êı ¼ÆËã·½·¨ÏàÍ¬
+! Revised, 2013-5-3, åæ ‡çš„å¯¼æ•°ä¸ç‰©ç†é‡çš„å¯¼æ•° è®¡ç®—æ–¹æ³•ç›¸åŒ
       do k=1,B%nz-1 
       do j=1,B%ny
       do i=1,B%nx-1
@@ -184,7 +184,7 @@
        yj=B%yc(i,j,k)-B%yc(i,j-1,k)
        zj=B%zc(i,j,k)-B%zc(i,j-1,k)
       
-! Revised, 2013-5-4, ±ÜÃâÊ¹ÓÃ½Çµã£¨Àâ£©×ø±ê
+! Revised, 2013-5-4, é¿å…ä½¿ç”¨è§’ç‚¹ï¼ˆæ£±ï¼‰åæ ‡
 	   if( (j==1 .or. j==B%ny) .and. (i==1 .or. i==B%nx-1) ) then
 		xi1=B%xc(i-1,j,k)
 		yi1=B%yc(i-1,j,k)
@@ -241,7 +241,7 @@
 	 enddo
 	 enddo
 	
-! (I,J,K-1/2) µãµÄÖµ£¬ ¼´ (i+1/2,j+1/2,k)µãµÄÖµ
+! (I,J,K-1/2) ç‚¹çš„å€¼ï¼Œ å³ (i+1/2,j+1/2,k)ç‚¹çš„å€¼
 ! Revised, 2013-5-3 
  
      do k=1,B%nz 
@@ -308,7 +308,7 @@
      enddo
 	 enddo
 	 enddo
-!  (I,J,K)µãµÄÖµ, ±êÁ¿·½³ÌµÄÔ´ÏîĞèÒª (½ö×îÃÜµÄÍø¸ñÊ¹ÓÃ)
+!  (I,J,K)ç‚¹çš„å€¼, æ ‡é‡æ–¹ç¨‹çš„æºé¡¹éœ€è¦ (ä»…æœ€å¯†çš„ç½‘æ ¼ä½¿ç”¨)
     if(nMesh .eq. 1) then
     do k=1,B%nz-1
     do j=1,B%ny-1
@@ -356,8 +356,8 @@
    end
 
 
-! ¼ì²éÍø¸ñÖÊÁ¿
-! ¼ì²é·½·¨£º Íø¸ñµÄÁ¬ĞøĞÔ £¨Ìå»ıµÄÁ¬ĞøĞÔ¡¢·¨·½ÏòµÄÁ¬ĞøĞÔ£©
+! æ£€æŸ¥ç½‘æ ¼è´¨é‡
+! æ£€æŸ¥æ–¹æ³•ï¼š ç½‘æ ¼çš„è¿ç»­æ€§ ï¼ˆä½“ç§¯çš„è¿ç»­æ€§ã€æ³•æ–¹å‘çš„è¿ç»­æ€§ï¼‰
   subroutine check_mesh_quality_onemesh(nMesh)
    use   Global_Var
    implicit none
@@ -376,7 +376,7 @@
      B => MP%Block(m)
      nx=B%nx; ny=B%ny ; nz=B%nz
  
- ! ----Í³¼Æ×î´ó¡¢×îĞ¡Íø¸ñ ----------------------
+ ! ----ç»Ÿè®¡æœ€å¤§ã€æœ€å°ç½‘æ ¼ ----------------------
       Vmax=B%vol(1,1,1)
 	  Vmin=B%vol(1,1,1)
 	  im=1; jm=1; km=1
@@ -399,12 +399,12 @@
 
 
 
- !-----¼ÆËãÍø¸ñ³¤¶È±È¡¢Íø¸ñÏßµÄ×ª½Ç ------------
+ !-----è®¡ç®—ç½‘æ ¼é•¿åº¦æ¯”ã€ç½‘æ ¼çº¿çš„è½¬è§’ ------------
  
  	 flmax=1.d0
 	 ftmax=0.d0
 
-!  ³¤¶È±È
+!  é•¿åº¦æ¯”
 
 
      do k=1,nz-1
@@ -437,7 +437,7 @@
 		z1=B%zc(i,j,k)-B%zc(i,j,k-1) ; z2= B%zc(i,j,k+1)-B%zc(i,j,k)
         ft3=(x1*x2+y1*y2+z1*z2)/sqrt((x1*x1+y1*y1+z1*z1)*(x2*x2+y2*y2+z2*z2))
         ft=min(1.d0,1.d0*min(ft1,ft2,ft3))
-        ft=acos(ft)           ! Íø¸ñÏßÕÛ½Ç (ÈİÒ×³öÏÖNaN)
+        ft=acos(ft)           ! ç½‘æ ¼çº¿æŠ˜è§’ (å®¹æ˜“å‡ºç°NaN)
         
         Af=0.9d0*exp(-4.d0*(fl-1.d0)**2)+0.1d0
         Aa=0.9d0*exp(-(4.d0/3.1415926535d0*ft)**2)+0.1d0
@@ -450,7 +450,7 @@
 		 write(*,"(7E30.20)") fl,ft,ft1,ft2,ft3,min(ft1,ft2,ft3),acos(min(ft1,ft2,ft3))
 		endif
 
-!---------ÕÒ³öÖÊÁ¿×î²îµÄÍø¸ñ£¬Êä³ö-------------------	   
+!---------æ‰¾å‡ºè´¨é‡æœ€å·®çš„ç½‘æ ¼ï¼Œè¾“å‡º-------------------	   
        if(fl .gt. flmax) then
 	    flmax=fl
 	    i1=i
@@ -516,28 +516,28 @@
 
 
 !------------------------------------------------------------------    
-!  Éè¶¨¸÷ÖØÍø¸ñÉÏµÄ¿ØÖÆĞÅÏ¢
+!  è®¾å®šå„é‡ç½‘æ ¼ä¸Šçš„æ§åˆ¶ä¿¡æ¯
   subroutine set_control_para
    use Global_var
    implicit none
    integer nMesh
    TYPE (Mesh_TYPE),pointer:: MP
-   MP=>Mesh(1)            ! ×îÏ¸µÄÍø¸ñ
-!  ×îÏ¸Íø¸ñÉÏµÄ¿ØÖÆ²ÎÊıÓëÖ÷¿ØÖÆ²ÎÊıÏàÍ¬
+   MP=>Mesh(1)            ! æœ€ç»†çš„ç½‘æ ¼
+!  æœ€ç»†ç½‘æ ¼ä¸Šçš„æ§åˆ¶å‚æ•°ä¸ä¸»æ§åˆ¶å‚æ•°ç›¸åŒ
    MP%Iflag_turbulence_model=Iflag_turbulence_model
    MP%Iflag_Scheme=Iflag_Scheme
    MP%IFlag_flux=IFlag_flux
    MP%IFlag_Reconstruction=IFlag_Reconstruction
-   MP%Bound_Scheme=Bound_scheme   !  ±ß½ç¸ñÊ½
+   MP%Bound_Scheme=Bound_scheme   !  è¾¹ç•Œæ ¼å¼
 
-!  Éè¶¨´ÖÍø¸ñÉÏµÄ¿ØÖÆ²ÎÊı
+!  è®¾å®šç²—ç½‘æ ¼ä¸Šçš„æ§åˆ¶å‚æ•°
    do nMesh=2,Num_Mesh
      MP=>Mesh(nMesh)
-     MP%Iflag_turbulence_model=Turbulence_NONE    ! ´ÖÍø¸ñ²»Ê¹ÓÃÍÄÁ÷Ä£ĞÍ
-     MP%Iflag_Scheme=Scheme_UD1                   ! ´ÖÍø¸ñÊ¹ÓÃ1½×Ó­·ç¸ñÊ½
-     MP%IFlag_flux=IFlag_flux                     ! ´ÖÍø¸ñµÄÍ¨Á¿·ÖÁÑ¼¼Êõ¡¢Ê±¼äÍÆ½ø½üËÆ¼°ÖØ¹¹¼¼ÊõÓëÏ¸Íø¸ñÏàÍ¬
+     MP%Iflag_turbulence_model=Turbulence_NONE    ! ç²—ç½‘æ ¼ä¸ä½¿ç”¨æ¹æµæ¨¡å‹
+     MP%Iflag_Scheme=Scheme_UD1                   ! ç²—ç½‘æ ¼ä½¿ç”¨1é˜¶è¿é£æ ¼å¼
+     MP%IFlag_flux=IFlag_flux                     ! ç²—ç½‘æ ¼çš„é€šé‡åˆ†è£‚æŠ€æœ¯ã€æ—¶é—´æ¨è¿›è¿‘ä¼¼åŠé‡æ„æŠ€æœ¯ä¸ç»†ç½‘æ ¼ç›¸åŒ
      MP%IFlag_Reconstruction=IFlag_Reconstruction
-     MP%Bound_Scheme=Scheme_UD1                   ! ´ÖÍø¸ñ±ß½çµãÊ¹ÓÃ1½×¸ñÊ½
+     MP%Bound_Scheme=Scheme_UD1                   ! ç²—ç½‘æ ¼è¾¹ç•Œç‚¹ä½¿ç”¨1é˜¶æ ¼å¼
    enddo
   
   end subroutine set_control_para
@@ -553,7 +553,7 @@
    integer:: ib,ie,jb,je,kb,ke,bc,ist,iend,jst,jend,kst,kend
    print*, "Check if Multi-Grid can be used ..."
 
-   if( Mesh_File_Format .eq. 1) then   ! ¸ñÊ½ÎÄ¼ş
+   if( Mesh_File_Format .eq. 1) then   ! æ ¼å¼æ–‡ä»¶
      open(99,file="Mesh3d.dat")
      read(99,*) NB
      allocate(NI(NB),NJ(NB),NK(NB))
@@ -569,17 +569,17 @@
 
 
    N_Cell=0
-   Km_grid=NI(1)  ! ³õÊ¼Öµ    
+   Km_grid=NI(1)  ! åˆå§‹å€¼    
    do m=1,NB 
-	 N_Cell=N_Cell+(NI(m)-1)*(NJ(m)-1)*(NK(m)-1)  ! Í³¼Æ×ÜÍø¸ñµ¥ÔªÊı 
-!  ÅĞ¶Ï¿ÉÊ¹ÓÃµÄÍø¸ñÖØÊı      
+	 N_Cell=N_Cell+(NI(m)-1)*(NJ(m)-1)*(NK(m)-1)  ! ç»Ÿè®¡æ€»ç½‘æ ¼å•å…ƒæ•° 
+!  åˆ¤æ–­å¯ä½¿ç”¨çš„ç½‘æ ¼é‡æ•°      
  	 Km=1
 	 NN=2
-!  ÅĞ¶Ï×¼Ôò£º Íø¸ñÊı-1 ÄÜ±»2**km Õû³ı£¬ ÇÒ×îÏ¡µÄÍø¸ñµ¥ÔªÊı²»Ğ¡ÓÚ2
+!  åˆ¤æ–­å‡†åˆ™ï¼š ç½‘æ ¼æ•°-1 èƒ½è¢«2**km æ•´é™¤ï¼Œ ä¸”æœ€ç¨€çš„ç½‘æ ¼å•å…ƒæ•°ä¸å°äº2
      do while( mod((NI(m)-1),NN) .eq. 0 .and. (NI(m)-1)/NN .ge. 2     &
 		     .and. mod((NJ(m)-1),NN) .eq. 0 .and. (NJ(m)-1)/NN .ge. 2    &
 		     .and. mod((NK(m)-1),NN) .eq. 0 .and. (NK(m)-1)/NN .ge. 2) 
-       Km=Km+1              ! ËùÔÊĞíµÄÍø¸ñÖØÊı
+       Km=Km+1              ! æ‰€å…è®¸çš„ç½‘æ ¼é‡æ•°
 	   NN=NN*2
      enddo
      Km_grid=min(Km_grid,Km)

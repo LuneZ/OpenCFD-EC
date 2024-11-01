@@ -1,8 +1,8 @@
-M6 Wing ËãÀı£¬ ²Î¿¼ÎÄÏ×£º http://www.grc.nasa.gov/WWW/wind/valid/m6wing/m6wing.html
-Ê¹ÓÃ·½·¨£º
-  1. ½«¿ÉÖ´ĞĞÎÄ¼ş opencfd-ec-1.04.out ¿½±´Èë¸ÃÎÄ¼ş¼Ğ£»
-  2. ÔËĞĞ mpirun -np 2 ./opencfd-ec-1.04.out
-  3. ¼à¿Ø²Ğ²î (ÆÁÄ»¼°Residual.datÖĞÊä³ö£©£¬ µ±²Ğ²îÏÂ½µµ½Ò»¶¨³Ì¶ÈÊ±£¬ÖÕÖ¹¼ÆËã£»
-  4. ÀûÓÃºó´¦Àí³ÌĞòreadflow3d-ver1.8a.f90 »ò readflow3d-wing.f90 (³ÌĞò/utilÄ¿Â¼ÏÂ)£¬½øĞĞºó´¦Àí £¨¶ÁÈ¡flow3d.dat)¡£
+M6 Wing ç®—ä¾‹ï¼Œ å‚è€ƒæ–‡çŒ®ï¼š http://www.grc.nasa.gov/WWW/wind/valid/m6wing/m6wing.html
+ä½¿ç”¨æ–¹æ³•ï¼š
+  1. å°†å¯æ‰§è¡Œæ–‡ä»¶ opencfd-ec-1.04.out æ‹·è´å…¥è¯¥æ–‡ä»¶å¤¹ï¼›
+  2. è¿è¡Œ mpirun -np 2 ./opencfd-ec-1.04.out
+  3. ç›‘æ§æ®‹å·® (å±å¹•åŠResidual.datä¸­è¾“å‡ºï¼‰ï¼Œ å½“æ®‹å·®ä¸‹é™åˆ°ä¸€å®šç¨‹åº¦æ—¶ï¼Œç»ˆæ­¢è®¡ç®—ï¼›
+  4. åˆ©ç”¨åå¤„ç†ç¨‹åºreadflow3d-ver1.8a.f90 æˆ– readflow3d-wing.f90 (ç¨‹åº/utilç›®å½•ä¸‹)ï¼Œè¿›è¡Œåå¤„ç† ï¼ˆè¯»å–flow3d.dat)ã€‚
 
  

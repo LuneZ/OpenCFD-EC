@@ -1,27 +1,27 @@
-!  ºó´¦ÀíÄ£¿é,  ¼ÆËãÁ¦ºÍÁ¦¾Ø
+!  åå¤„ç†æ¨¡å—,  è®¡ç®—åŠ›å’ŒåŠ›çŸ©
 !  A bug removed, 2017-3-13 
 !--------------------------------------------------------
   subroutine comput_force      
    use Global_Var
    implicit none
    integer:: i,j,k,m,mB,nf,nx,ny,nz,NM,ierr
-   real(PRE_EC):: Fx,Fy,Fz,Mx,My,Mz   ! 6·ÖÁ¿
-   real(PRE_EC):: Px,Py,Pz,Cfx,Cfy,Cfz   ! Ñ¹Á¦ºÍÄ¦²ÁÁ¦
+   real(PRE_EC):: Fx,Fy,Fz,Mx,My,Mz   ! 6åˆ†é‡
+   real(PRE_EC):: Px,Py,Pz,Cfx,Cfy,Cfz   ! å‹åŠ›å’Œæ‘©æ“¦åŠ›
    real(PRE_EC):: fx0,fy0,fz0,xc,yc,zc,p1,p2
    real(PRE_EC):: P_inf,Pw  
-   real(PRE_EC):: CL,CD,CS      ! ÉıÁ¦ÏµÊı¡¢×èÁ¦ÏµÊı¡¢²àÏòÁ¦ÏµÊı
-   real(PRE_EC),dimension(:),allocatable:: Mx1,My1,Mz1,Px1,Py1,Pz1,Cfx1,Cfy1,Cfz1    ! ¸÷¿éµÄÆø¶¯Á¦¡¢Á¦¾Ø
-   real(PRE_EC),dimension(9):: Ft,Ft0  ! mpi reduce »ã×Ü
+   real(PRE_EC):: CL,CD,CS      ! å‡åŠ›ç³»æ•°ã€é˜»åŠ›ç³»æ•°ã€ä¾§å‘åŠ›ç³»æ•°
+   real(PRE_EC),dimension(:),allocatable:: Mx1,My1,Mz1,Px1,Py1,Pz1,Cfx1,Cfy1,Cfz1    ! å„å—çš„æ°”åŠ¨åŠ›ã€åŠ›çŸ©
+   real(PRE_EC),dimension(9):: Ft,Ft0  ! mpi reduce æ±‡æ€»
    
    integer:: nMesh
    Type (Block_TYPE),pointer:: B
    Type (BC_MSG_TYPE),pointer:: Bc
    character(len=50):: filename
 
-!   print*, "comput force ..."    ! ÈçÃ»ÓĞ¸ÃÓï¾äÔÚSWÉÏÔËĞĞ³ö´í ???
+!   print*, "comput force ..."    ! å¦‚æ²¡æœ‰è¯¥è¯­å¥åœ¨SWä¸Šè¿è¡Œå‡ºé”™ ???
 
    p_inf=1.d0/(gamma*Ma*Ma)
-! ËÑË÷Ï¸Íø¸ñËùÓĞ¿éµÄËùÓĞ×ÓÃæ£¬Èç¹û·¢ÏÖ¹Ì±Ú±ß½çÌõ¼ş£¬ÔòÍ³¼ÆÆø¶¯Á¦¼°Á¦¾Ø
+! æœç´¢ç»†ç½‘æ ¼æ‰€æœ‰å—çš„æ‰€æœ‰å­é¢ï¼Œå¦‚æœå‘ç°å›ºå£è¾¹ç•Œæ¡ä»¶ï¼Œåˆ™ç»Ÿè®¡æ°”åŠ¨åŠ›åŠåŠ›çŸ©
    NM=Mesh(1)%Num_Block
    allocate(Mx1(NM),My1(NM),Mz1(NM),Px1(NM),Py1(NM),Pz1(NM),Cfx1(NM),Cfy1(NM),Cfz1(NM))
    
@@ -35,19 +35,19 @@
        Bc=> B%bc_msg(nf)
 
        if(Bc%bc .eq. BC_WALL) then
-         if(Bc%face .eq. 1 ) then              ! i- Ãæ
+         if(Bc%face .eq. 1 ) then              ! i- é¢
            do k=Bc%kb,Bc%ke-1
              do j=Bc%jb,Bc%je-1
-!-------------------------------±íÃæÑ¹Á¦----------------------------------------------------  
+!-------------------------------è¡¨é¢å‹åŠ›----------------------------------------------------  
                p1=(gamma-1.d0)*(B%U(5,1,j,k)-(B%U(2,1,j,k)**2+B%U(3,1,j,k)**2+B%U(4,1,j,k)**2)/B%U(1,1,j,k))
                p2=(gamma-1.d0)*(B%U(5,0,j,k)-(B%U(2,0,j,k)**2+B%U(3,0,j,k)**2+B%U(4,0,j,k)**2)/B%U(1,0,j,k))
-               Pw=-(0.5d0*(p1+p2)-p_inf )*B%si(1,j,k)    ! Íâ·¨Ïò
-! -------------------------»ı·Ö±íÃæÑ¹Á¦¼°±íÃæÄ¦²Á×èÁ¦ -----------------------------------          
+               Pw=-(0.5d0*(p1+p2)-p_inf )*B%si(1,j,k)    ! å¤–æ³•å‘
+! -------------------------ç§¯åˆ†è¡¨é¢å‹åŠ›åŠè¡¨é¢æ‘©æ“¦é˜»åŠ› -----------------------------------          
                Px1(mB)=Px1(mB)+Pw*B%ni1(1,j,k) ;   Py1(mB)=Py1(mB)+Pw*B%ni2(1,j,k) ;  Pz1(mB)=Pz1(mB)+Pw*B%ni3(1,j,k)   
-!              Õ³ĞÔÁ¦ £¨i-, j-, k- ÎªÕı£» i+ , j+, k+ Îª¸º£©
+!              ç²˜æ€§åŠ› ï¼ˆi-, j-, k- ä¸ºæ­£ï¼› i+ , j+, k+ ä¸ºè´Ÿï¼‰
                Cfx1(mB)=Cfx1(mB)+B%Surf1(j,k,1) ;  Cfy1(mB)=Cfy1(mB)+B%Surf1(j,k,2) ;  Cfz1(mB)=Cfz1(mB)+B%Surf1(j,k,3)     
 
-! --------------------------¼ÆËãÁ¦¾Ø (¾ØĞÄ×ø±ê centroid(1:3) )------------------------            
+! --------------------------è®¡ç®—åŠ›çŸ© (çŸ©å¿ƒåæ ‡ centroid(1:3) )------------------------            
                fx0=Pw*B%ni1(1,j,k)+B%Surf1(j,k,1)             
                fy0=Pw*B%ni2(1,j,k)+B%Surf1(j,k,2)
                fz0=Pw*B%ni3(1,j,k)+B%Surf1(j,k,3)
@@ -61,7 +61,7 @@
            enddo
 
 
-         else if(Bc%face .eq. 2 ) then       ! j- Ãæ
+         else if(Bc%face .eq. 2 ) then       ! j- é¢
            do k=Bc%kb,Bc%ke-1
              do i=Bc%ib,Bc%ie-1
                p1=(gamma-1.d0)*(B%U(5,i,1,k)-(B%U(2,i,1,k)**2+B%U(3,i,1,k)**2+B%U(4,i,1,k)**2)/B%U(1,i,1,k))
@@ -70,7 +70,7 @@
                Px1(mB)=Px1(mB)+Pw*B%nj1(i,1,k);   Py1(mB)=Py1(mB)+Pw*B%nj2(i,1,k) ;   Pz1(mB)=Pz1(mB)+Pw*B%nj3(i,1,k)   
                Cfx1(mB)=Cfx1(mB)+B%Surf2(i,k,1); Cfy1(mB)=Cfy1(mB)+B%Surf2(i,k,2);  Cfz1(mB)=Cfz1(mB)+B%Surf2(i,k,3)
 
- ! --------------------------¼ÆËãÁ¦¾Ø (ÒÔ×ø±êÔ­µãÎªÖĞĞÄ) ---------------------------           
+ ! --------------------------è®¡ç®—åŠ›çŸ© (ä»¥åæ ‡åŸç‚¹ä¸ºä¸­å¿ƒ) ---------------------------           
                fx0=Pw*B%nj1(i,1,k)+B%Surf2(i,k,1)                
                fy0=Pw*B%nj2(i,1,k)+B%Surf2(i,k,2)
                fz0=Pw*B%nj3(i,1,k)+B%Surf2(i,k,3)
@@ -84,7 +84,7 @@
            enddo        
 
 
-         else if(Bc%face .eq. 3 ) then       ! k- Ãæ
+         else if(Bc%face .eq. 3 ) then       ! k- é¢
            do j=Bc%jb,Bc%je-1
              do i=Bc%ib,Bc%ie-1   
                p1=(gamma-1.d0)*(B%U(5,i,j,1)-(B%U(2,i,j,1)**2+B%U(3,i,j,1)**2+B%U(4,i,j,1)**2)/B%U(1,i,j,1))
@@ -106,20 +106,20 @@
              enddo
            enddo 
 
-         else if(Bc%face .eq. 4 ) then              ! i+ Ãæ
+         else if(Bc%face .eq. 4 ) then              ! i+ é¢
            do k=Bc%kb,Bc%ke-1
              do j=Bc%jb,Bc%je-1
- !-----------------------------------------±íÃæÑ¹Á¦ ---------------------------------------------------               
+ !-----------------------------------------è¡¨é¢å‹åŠ› ---------------------------------------------------               
                p1=(gamma-1.d0)*(B%U(5,nx-1,j,k)-(B%U(2,nx-1,j,k)**2+B%U(3,nx-1,j,k)**2+B%U(4,nx-1,j,k)**2)/B%U(1,nx-1,j,k))
                p2=(gamma-1.d0)*(B%U(5,nx,j,k)-(B%U(2,nx,j,k)**2+B%U(3,nx,j,k)**2+B%U(4,nx,j,k)**2)/B%U(1,nx,j,k))
-               Pw= (0.5d0*(p1+p2)-p_inf )*B%si(nx,j,k)  ! Íâ·¨Ïò
-! ------------------------------»ı·Ö±íÃæÑ¹Á¦¼°±íÃæÄ¦²Á×èÁ¦------------------------------------------           
+               Pw= (0.5d0*(p1+p2)-p_inf )*B%si(nx,j,k)  ! å¤–æ³•å‘
+! ------------------------------ç§¯åˆ†è¡¨é¢å‹åŠ›åŠè¡¨é¢æ‘©æ“¦é˜»åŠ›------------------------------------------           
                Px1(mB)=Px1(mB)+Pw*B%ni1(nx,j,k) ;   Py1(mB)=Py1(mB)+Pw*B%ni2(nx,j,k) ;  Pz1(mB)=Pz1(mB)+Pw*B%ni3(nx,j,k)   
-!            Õ³ĞÔÁ¦ £¨i+, j+, k+ ÃæÎª¸º£¬ ±ÚÃæËùÊÜÁ¦£©
+!            ç²˜æ€§åŠ› ï¼ˆi+, j+, k+ é¢ä¸ºè´Ÿï¼Œ å£é¢æ‰€å—åŠ›ï¼‰
 !               Cfx1(mB)=Cfx1(mB)+B%Surf4(j,k,1) ;  Cfy1(mB)=Cfy1(mB)+B%Surf4(j,k,2) ;  Cfz1(mB)=Cfz1(mB)+B%Surf4(j,k,3)         ! Bug removed
                Cfx1(mB)=Cfx1(mB)-B%Surf4(j,k,1) ;  Cfy1(mB)=Cfy1(mB)-B%Surf4(j,k,2) ;  Cfz1(mB)=Cfz1(mB)-B%Surf4(j,k,3)
 
-! -------------------------------¼ÆËãÁ¦¾Ø (ÒÔ×ø±êÔ­µãÎªÖĞĞÄ) --------------------------------------           
+! -------------------------------è®¡ç®—åŠ›çŸ© (ä»¥åæ ‡åŸç‚¹ä¸ºä¸­å¿ƒ) --------------------------------------           
                fx0=Pw*B%ni1(nx,j,k)-B%Surf4(j,k,1)              ! Bug removed 
                fy0=Pw*B%ni2(nx,j,k)-B%Surf4(j,k,2)
                fz0=Pw*B%ni3(nx,j,k)-B%Surf4(j,k,3)
@@ -133,7 +133,7 @@
            enddo
 
 
-         else if(Bc%face .eq. 5 ) then       ! j+ Ãæ
+         else if(Bc%face .eq. 5 ) then       ! j+ é¢
            do k=Bc%kb,Bc%ke-1
              do i=Bc%ib,Bc%ie-1
                p1=(gamma-1.d0)*(B%U(5,i,ny-1,k)-(B%U(2,i,ny-1,k)**2+B%U(3,i,ny-1,k)**2+B%U(4,i,ny-1,k)**2)/B%U(1,i,ny-1,k))
@@ -143,7 +143,7 @@
 !              Cfx1(mB)=Cfx1(mB)+B%Surf5(i,k,1); Cfy1(mB)=Cfy1(mB)+B%Surf5(i,k,2);  Cfz1(mB)=Cfz1(mB)+B%Surf5(i,k,3)
                Cfx1(mB)=Cfx1(mB)-B%Surf5(i,k,1); Cfy1(mB)=Cfy1(mB)-B%Surf5(i,k,2);  Cfz1(mB)=Cfz1(mB)-B%Surf5(i,k,3)
 
-! --------------------------------¼ÆËãÁ¦¾Ø (ÒÔ×ø±êÔ­µãÎªÖĞĞÄ)  ---------------------------------------          
+! --------------------------------è®¡ç®—åŠ›çŸ© (ä»¥åæ ‡åŸç‚¹ä¸ºä¸­å¿ƒ)  ---------------------------------------          
                fx0=Pw*B%nj1(i,ny,k)-B%Surf5(i,k,1)                 ! Bug removed
                fy0=Pw*B%nj2(i,ny,k)-B%Surf5(i,k,2)
                fz0=Pw*B%nj3(i,ny,k)-B%Surf5(i,k,3)
@@ -157,7 +157,7 @@
            enddo        
 
 
-         else if(Bc%face .eq. 6 ) then       ! k+ Ãæ
+         else if(Bc%face .eq. 6 ) then       ! k+ é¢
            do j=Bc%jb,Bc%je-1
              do i=Bc%ib,Bc%ie-1
                p1=(gamma-1.d0)*(B%U(5,i,j,nz-1)-(B%U(2,i,j,nz-1)**2+B%U(3,i,j,nz-1)**2+B%U(4,i,j,nz-1)**2)/B%U(1,i,j,nz-1))
@@ -187,7 +187,7 @@
    Fx=0.d0; Fy=0.d0; Fz=0.d0; Mx=0.d0; My=0.d0; Mz=0.d0
    Px=0.d0; Py=0.d0; Pz=0.d0; Cfx=0.d0; Cfy=0.d0; Cfz=0.d0
  
- !  °Ñ¸÷¿éµÄÆø¶¯Á¦¡¢Á¦¾Ø¼ÓÆğÀ´
+ !  æŠŠå„å—çš„æ°”åŠ¨åŠ›ã€åŠ›çŸ©åŠ èµ·æ¥
    do mB=1,NM
    Px=Px+Px1(mB); Py=Py+Py1(mB); Pz=Pz+Pz1(mB)
    Cfx=Cfx+Cfx1(mB); Cfy=Cfy+Cfy1(mB); Cfz=Cfz+Cfz1(mB)
@@ -198,24 +198,24 @@
    Ft(4)=Cfx; Ft(5)=Cfy; Ft(6)=Cfz
    Ft(7)=Mx;  Ft(8)=My; Ft(9)=Mz
 
-!  ¸÷½ø³Ì¹éÔ¼ÇóºÍ
+!  å„è¿›ç¨‹å½’çº¦æ±‚å’Œ
    call MPI_ALLREDUCE(Ft,Ft0,9,OCFD_DATA_TYPE,MPI_SUM,MPI_COMM_WORLD,ierr)
 
 !   Fx=Px+Cfx; Fy=Py+Cfy; Fz=Pz+Cfz
     Ft0(1:6)=2.d0*Ft0(1:6)/Ref_S
 	Ft0(7:9)=2.d0*Ft0(7:9)/(Ref_S*Ref_L)
 
-	Fx=Ft0(1)+Ft0(4)              ! Æø¶¯Á¦ÏµÊı
+	Fx=Ft0(1)+Ft0(4)              ! æ°”åŠ¨åŠ›ç³»æ•°
 	Fy=Ft0(2)+Ft0(5)
 	Fz=Ft0(3)+Ft0(6)
 
 
 !------   
- if(Cood_Y_UP ==1) then   ! Y Öá´¹Ö±ÏòÉÏ 
+ if(Cood_Y_UP ==1) then   ! Y è½´å‚ç›´å‘ä¸Š 
 	CL=Fy*cos(AoA)-Fx*sin(AoA)
 	CD=Fx*cos(AoA)+Fy*sin(AoA)
     Cs=Fz
- else                      ! ZÖá´¹Ö±ÏòÉÏ 
+ else                      ! Zè½´å‚ç›´å‘ä¸Š 
 	CL=Fz*cos(AoA)-Fx*sin(AoA)
 	CD=Fx*cos(AoA)+Fz*sin(AoA)
     Cs=Fy
@@ -265,10 +265,10 @@
   end  subroutine comput_force   
         
 !-----------------------------------------------------------------------------------
-!  ¹âË³£¨ÂË²¨£© ²Ù×÷£¬ ºÄÉ¢ºÜ´óµÄÂË²¨²Ù×÷¡£ ÓÃÓÚ¶Ô³õÖµµÄ¹âË³£¬»òÕß¼ÆËãÒì³££¨Èç¸ºÎÂ¶È£©Ê±µÄ¹âË³
-!  ÂË²¨ÔËËã¿ÉÒÔÏû³ı¸ßÆµÕñµ´£¬Ìá¸ß¼ÆËãµÄÎÈ¶¨ĞÔ£»µ«Ò²»áÔö¼ÓºÄÉ¢£¬½µµÍ¾«¶È
-!  2½×¾«¶ÈÂË²¨ºÄÉ¢·Ç³£´ó£¬Ö»ÄÜÔÚ´¦Àí³õÖµ»òÒì³£ÊÇÊ¹ÓÃ£¬²»¿ÉÔÚ³£¹æµÄ¼ÆËãÖĞÊ¹ÓÃ¡£
-!  4½×¾«¶ÈÂË²¨Ò²ÓĞÒ»¶¨ºÄÉ¢£¬¼ÆËã¹ı³ÌÖĞĞè½÷É÷Ê¹ÓÃ 
+!  å…‰é¡ºï¼ˆæ»¤æ³¢ï¼‰ æ“ä½œï¼Œ è€—æ•£å¾ˆå¤§çš„æ»¤æ³¢æ“ä½œã€‚ ç”¨äºå¯¹åˆå€¼çš„å…‰é¡ºï¼Œæˆ–è€…è®¡ç®—å¼‚å¸¸ï¼ˆå¦‚è´Ÿæ¸©åº¦ï¼‰æ—¶çš„å…‰é¡º
+!  æ»¤æ³¢è¿ç®—å¯ä»¥æ¶ˆé™¤é«˜é¢‘æŒ¯è¡ï¼Œæé«˜è®¡ç®—çš„ç¨³å®šæ€§ï¼›ä½†ä¹Ÿä¼šå¢åŠ è€—æ•£ï¼Œé™ä½ç²¾åº¦
+!  2é˜¶ç²¾åº¦æ»¤æ³¢è€—æ•£éå¸¸å¤§ï¼Œåªèƒ½åœ¨å¤„ç†åˆå€¼æˆ–å¼‚å¸¸æ˜¯ä½¿ç”¨ï¼Œä¸å¯åœ¨å¸¸è§„çš„è®¡ç®—ä¸­ä½¿ç”¨ã€‚
+!  4é˜¶ç²¾åº¦æ»¤æ³¢ä¹Ÿæœ‰ä¸€å®šè€—æ•£ï¼Œè®¡ç®—è¿‡ç¨‹ä¸­éœ€è°¨æ…ä½¿ç”¨ 
   subroutine smoothing_oneMesh(nMesh,Smooth_method)     
    use Global_Var
    implicit none
@@ -281,12 +281,12 @@
     call   smoothing_oneBlock_4th(nMesh,mBlock)     
    endif
    enddo
-   call Boundary_condition_onemesh(nMesh)             ! ±ß½çÌõ¼ş £¨Éè¶¨Ghost CellµÄÖµ£©
-   call update_buffer_onemesh(nMesh)                  ! Í¬²½¸÷¿éµÄ½»½çÇø
+   call Boundary_condition_onemesh(nMesh)             ! è¾¹ç•Œæ¡ä»¶ ï¼ˆè®¾å®šGhost Cellçš„å€¼ï¼‰
+   call update_buffer_onemesh(nMesh)                  ! åŒæ­¥å„å—çš„äº¤ç•ŒåŒº
    end subroutine smoothing_oneMesh
 
 !----------------------------------------------------------
-! µÍ¾«¶ÈÂË²¨£¨2½×¾«¶È£©
+! ä½ç²¾åº¦æ»¤æ³¢ï¼ˆ2é˜¶ç²¾åº¦ï¼‰
   subroutine smoothing_oneBlock_2nd(nMesh,mBlock)     
    use Global_Var
    implicit none
@@ -298,7 +298,7 @@
    B=>Mesh(nMesh)%block(mBlock)
    nx=B%nx; ny=B%ny; nz=B%nz
 !----------------------------------------------------------------------------
-! Warning, allocatable²»ÄÜ×÷ÎªË½ÓĞ±äÁ¿ !!!   
+! Warning, allocatableä¸èƒ½ä½œä¸ºç§æœ‰å˜é‡ !!!   
 !$OMP PARALLEL DEFAULT(PRIVATE) SHARED(nx,ny,nz,NVAR1,B)
 
 !$OMP DO   
@@ -351,7 +351,7 @@
    
    
 !------------------------------------------------------------------------------------------------
-! ¸ß¾«¶ÈÂË²¨£¨4½×¾«¶È£©
+! é«˜ç²¾åº¦æ»¤æ³¢ï¼ˆ4é˜¶ç²¾åº¦ï¼‰
   subroutine smoothing_oneBlock_4th(nMesh,mBlock)     
    use Global_Var
    implicit none

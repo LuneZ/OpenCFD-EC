@@ -5,7 +5,7 @@
   module Const_Variables
   implicit none
   integer,parameter:: PRE_EC=8
-  integer,parameter:: BC_Wall=2, BC_Symmetry=3, BC_Farfield=4,BC_Outflow=6, BC_Periodic=501     ! ÓëGriggen .inpÎÄ¼şµÄ¶¨Òå¿ÉÄÜÓĞËùÇø±ğ£¬Çë×¢Òâ
+  integer,parameter:: BC_Wall=2, BC_Symmetry=3, BC_Farfield=4,BC_Outflow=6, BC_Periodic=501     ! ä¸Griggen .inpæ–‡ä»¶çš„å®šä¹‰å¯èƒ½æœ‰æ‰€åŒºåˆ«ï¼Œè¯·æ³¨æ„
  end module Const_Variables
 
  
@@ -109,7 +109,7 @@
 	 Nbt=0
 	 boundtype(:)=0
 
-!  Í³¼Æ±ß½çÌõ¼şµÄÊıÄ¿
+!  ç»Ÿè®¡è¾¹ç•Œæ¡ä»¶çš„æ•°ç›®
 	do m=1,Num_Block
      B => Block(m)
      do ksub=1, B%subface
@@ -119,7 +119,7 @@
 	   do k=1,Nbt
 	    if(Bc%bc .eq. boundtype(k)  ) goto 100
 	   enddo
-       Nbt=Nbt+1           ! ĞÂµÄ±ß½çÌõ¼ş
+       Nbt=Nbt+1           ! æ–°çš„è¾¹ç•Œæ¡ä»¶
        boundtype(Nbt)=Bc%bc
 100   continue
       endif

@@ -1,4 +1,4 @@
-!  ºó´¦ÀíÄ£¿é£º ½øÐÐÊ±¼äÆ½¾ù
+!  åŽå¤„ç†æ¨¡å—ï¼š è¿›è¡Œæ—¶é—´å¹³å‡
 !--------------------------------------------------------
   subroutine Time_average      
    use Global_Var
@@ -9,20 +9,20 @@
 
    Type (Block_TYPE),pointer:: B
 
-!---½ö±»ÔËÐÐ1´Î -----------------
+!---ä»…è¢«è¿è¡Œ1æ¬¡ -----------------
    if(Iflag == 0) then
      Iflag=1             
     do mB=1,Mesh(1)%Num_Block
      B => Mesh(1)%Block(mB)                                        
      nx=B%nx; ny=B%ny; nz=B%nz
- 	 allocate(B%U_average(0:nx,0:ny,0:nz,5))       ! Ê±¾ùÁ¿ d,u,v,w,T
+ 	 allocate(B%U_average(0:nx,0:ny,0:nz,5))       ! æ—¶å‡é‡ d,u,v,w,T
      enddo
 
-    call init_average        ! ³õÊ¼»¯Æ½¾ù³¡
+    call init_average        ! åˆå§‹åŒ–å¹³å‡åœº
 
    endif
 !-------------------------------------
-! Ê±¼äÆ½¾ù  
+! æ—¶é—´å¹³å‡  
    if(my_id .eq. 0) print*, "Time Average ......", Istep_average+1
 
    tmp=1.d0/(Istep_average+1.d0)
@@ -55,7 +55,7 @@
   end
 
 !-----------------------------------------------------
-! ³õÊ¼»¯, Ä¿Ç°°æ±¾Ö»Ö§³ÖÖØÐÂ¿ªÊ¼Æ½¾ù£¬ÔÝ²»Ö§³Ö¶ÁÈ¡flow3d_average.dat
+! åˆå§‹åŒ–, ç›®å‰ç‰ˆæœ¬åªæ”¯æŒé‡æ–°å¼€å§‹å¹³å‡ï¼Œæš‚ä¸æ”¯æŒè¯»å–flow3d_average.dat
    subroutine init_average      
    use Global_Var
    implicit none
@@ -81,7 +81,7 @@
   end
 !----------------------------------------------------      
 
- !  Êä³öÆ½¾ùÁ¿ £¨Plot3d¸ñÊ½£©, ×îÏ¸Íø¸ñflow3d_average.dat  
+ !  è¾“å‡ºå¹³å‡é‡ ï¼ˆPlot3dæ ¼å¼ï¼‰, æœ€ç»†ç½‘æ ¼flow3d_average.dat  
   subroutine output_flow_average
    use Global_Var
    implicit none
@@ -103,13 +103,13 @@
    
    open(99,file="flow3d_average.dat",form="unformatted")                    ! d,u,v,w,T
 
-   do m=1, Total_block   ! È«²¿¿é
+   do m=1, Total_block   ! å…¨éƒ¨å—
      
 	 nx=bNi(m); ny=bNj(m); nz=bNk(m)
 	 allocate(U(0:nx,0:ny,0:nz,5))
 
-	if(B_proc(m) .eq. 0) then             ! ÕâÐ©¿éÊôÓÚ¸ù½ø³Ì
-      mt=B_n(m)                           ! ¸Ã¿éÔÚ½ø³ÌÄÚ²¿µÄ±àºÅ
+	if(B_proc(m) .eq. 0) then             ! è¿™äº›å—å±žäºŽæ ¹è¿›ç¨‹
+      mt=B_n(m)                           ! è¯¥å—åœ¨è¿›ç¨‹å†…éƒ¨çš„ç¼–å·
 	  B=>MP%Block(mt)
 	 
 	   do m1=1,5
@@ -122,10 +122,10 @@
 	    enddo
  	   enddo
 
-    else                        ! ½ÓÊÕ¸Ã¿éÐÅÏ¢
+    else                        ! æŽ¥æ”¶è¯¥å—ä¿¡æ¯
 	   Num_data=5*(nx+1)*(ny+1)*(nz+1)
 	   Recv_from_ID=B_proc(m)
-	   tag=B_n(m)             ! ÔÚ¸Ã¿éÖÐµÄ±àºÅ
+	   tag=B_n(m)             ! åœ¨è¯¥å—ä¸­çš„ç¼–å·
  	  call MPI_Recv(U,Num_data,OCFD_DATA_TYPE, Recv_from_ID, tag, MPI_COMM_WORLD,Status,ierr )
     endif
 ! write Data ....
@@ -139,9 +139,9 @@
    write(99) Istep_average
    close(99)
  
- else     ! ·Ç0½Úµã
+ else     ! éž0èŠ‚ç‚¹
 
-    do m=1,MP%Num_Block     ! ±¾½ø³Ì°üº¬µÄ¿é
+    do m=1,MP%Num_Block     ! æœ¬è¿›ç¨‹åŒ…å«çš„å—
       B=>MP%Block(m)
 	  nx=B%nx; ny=B%ny; nz=B%nz
    	  allocate(U(0:nx,0:ny,0:nz,5))

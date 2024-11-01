@@ -1,6 +1,6 @@
 
-!  ¶ÁÈ¡Íø¸ñÐÅÏ¢
-!  ¸ù½ø³Ì(0ºÅ½ø³Ì)¶ÁÈ¡Êý¾Ý£¬ÆäËû½ø³Ì½ÓÊÕ
+!  è¯»å–ç½‘æ ¼ä¿¡æ¯
+!  æ ¹è¿›ç¨‹(0å·è¿›ç¨‹)è¯»å–æ•°æ®ï¼Œå…¶ä»–è¿›ç¨‹æŽ¥æ”¶
     subroutine read_main_mesh
     use Global_var
     implicit none
@@ -15,14 +15,14 @@
  
   if(my_id .eq. 0) then 
     print*, " read main mesh ..."
-	if( Mesh_File_Format .eq. 1) then   ! ¸ñÊ½ÎÄ¼þ
+	if( Mesh_File_Format .eq. 1) then   ! æ ¼å¼æ–‡ä»¶
      open(99,file="Mesh3d.dat")
      read(99,*) NB   ! Block number
      allocate( NI(NB),NJ(NB),NK(NB) )
      read(99,*) (NI(k), NJ(k), NK(k), k=1,NB)
-	else                                ! ÎÞ¸ñÊ½ÎÄ¼þ
+	else                                ! æ— æ ¼å¼æ–‡ä»¶
      open(99,file="Mesh3d.dat",form="unformatted")
-     read(99) NB                       ! ×Ü¿éÊý
+     read(99) NB                       ! æ€»å—æ•°
      allocate( NI(NB),NJ(NB),NK(NB) )
      read(99) (NI(k), NJ(k), NK(k), k=1,NB)
     endif
@@ -42,8 +42,8 @@
                   (((Ux(i,j,k,2),i=1,nx),j=1,ny),k=1,nz) , &
                   (((Ux(i,j,k,3),i=1,nx),j=1,ny),k=1,nz)
 	 endif
-   if(B_proc(m) .eq. 0) then            ! ÕâÐ©¿éÊôÓÚ¸ù½ø³Ì
-      mt=B_n(m)                          ! ¸Ã¿éÔÚ½ø³ÌÄÚ²¿µÄ±àºÅ
+   if(B_proc(m) .eq. 0) then            ! è¿™äº›å—å±žäºŽæ ¹è¿›ç¨‹
+      mt=B_n(m)                          ! è¯¥å—åœ¨è¿›ç¨‹å†…éƒ¨çš„ç¼–å·
 	  B=>MP%Block(mt)
 	  do k=1,nz
 	  do j=1,ny
@@ -54,7 +54,7 @@
 	  enddo
 	  enddo
  	  enddo
-     else                        ! ½«¸Ã¿éÊý¾Ý·¢ËÍ³ö
+     else                        ! å°†è¯¥å—æ•°æ®å‘é€å‡º
 	   Num_data=nx*ny*nz*3
 	   Send_to_ID=B_proc(m)
 	   tag=B_n(m)
@@ -67,8 +67,8 @@
    deallocate(NI,NJ,NK)
    close(99)
   
-  else     ! ·Ç¸ù½Úµã
-    do m=1,MP%Num_Block     ! ±¾½ø³Ì°üº¬µÄ¿é
+  else     ! éžæ ¹èŠ‚ç‚¹
+    do m=1,MP%Num_Block     ! æœ¬è¿›ç¨‹åŒ…å«çš„å—
      B=>MP%Block(m)
 	 nx=B%nx; ny=B%ny; nz=B%nz
    	 allocate(Ux(nx,ny,nz,3))
@@ -93,8 +93,8 @@
  end subroutine read_main_mesh
 
 !-------------------------------------------------------------------------------------
-!  ¶ÁÈ¡¼¸ºÎÁ¿£º µ½±ÚÃæµÄ¾àÀë
-!  ¸ù½ø³Ì(0ºÅ½ø³Ì)¶ÁÈ¡Êý¾Ý£¬ÆäËû½ø³Ì½ÓÊÕ
+!  è¯»å–å‡ ä½•é‡ï¼š åˆ°å£é¢çš„è·ç¦»
+!  æ ¹è¿›ç¨‹(0å·è¿›ç¨‹)è¯»å–æ•°æ®ï¼Œå…¶ä»–è¿›ç¨‹æŽ¥æ”¶
     subroutine read_dw
     use Global_var
     implicit none
@@ -107,7 +107,7 @@
 
      MP=>Mesh(1)
 
-!------¸ù½ø³Ì¶ÁÈ¡Êý¾Ý----------------------------- 
+!------æ ¹è¿›ç¨‹è¯»å–æ•°æ®----------------------------- 
   if(my_id .eq. 0) then 
     print*, " read distance to the wall:  wall_dist.dat"
   
@@ -118,8 +118,8 @@
 	 allocate(dw(nx-1,ny-1,nz-1))
      read(99) (((dw(i,j,k),i=1,nx-1),j=1,ny-1),k=1,nz-1) 
      
-	 if(B_proc(m) .eq. 0) then            ! ÕâÐ©¿éÊôÓÚ¸ù½ø³Ì
-      mt=B_n(m)                          ! ¸Ã¿éÔÚ½ø³ÌÄÚ²¿µÄ±àºÅ
+	 if(B_proc(m) .eq. 0) then            ! è¿™äº›å—å±žäºŽæ ¹è¿›ç¨‹
+      mt=B_n(m)                          ! è¯¥å—åœ¨è¿›ç¨‹å†…éƒ¨çš„ç¼–å·
 	  B=>MP%Block(mt)
 	  do k=1,nz-1
 	  do j=1,ny-1
@@ -128,7 +128,7 @@
 	  enddo
 	  enddo
  	  enddo
-     else                        ! ½«¸Ã¿éÊý¾Ý·¢ËÍ³ö
+     else                        ! å°†è¯¥å—æ•°æ®å‘é€å‡º
 	   Num_data=(nx-1)*(ny-1)*(nz-1)
 	   Send_to_ID=B_proc(m)
 	   tag=B_n(m)
@@ -138,8 +138,8 @@
    enddo
    close(99)
   
-  else     ! ·Ç¸ù½Úµã
-    do m=1,MP%Num_Block     ! ±¾½ø³Ì°üº¬µÄ¿é
+  else     ! éžæ ¹èŠ‚ç‚¹
+    do m=1,MP%Num_Block     ! æœ¬è¿›ç¨‹åŒ…å«çš„å—
      B=>MP%Block(m)
 	 nx=B%nx; ny=B%ny; nz=B%nz
    	 allocate(dw(nx-1,ny-1,nz-1))
@@ -166,8 +166,8 @@
 
 !----------------------------------------------------------------------------
 !-------------------------------------------------------------------------------------
-!  ¶ÁÈ¡Á÷³¡: d,u,v,w,T;  SA, SST ÖÐµÄ±êÁ¿
-!  ¸ù½ø³Ì(0ºÅ½ø³Ì)¶ÁÈ¡Êý¾Ý£¬ÆäËû½ø³Ì½ÓÊÕ
+!  è¯»å–æµåœº: d,u,v,w,T;  SA, SST ä¸­çš„æ ‡é‡
+!  æ ¹è¿›ç¨‹(0å·è¿›ç¨‹)è¯»å–æ•°æ®ï¼Œå…¶ä»–è¿›ç¨‹æŽ¥æ”¶
     subroutine read_flow_data
     use Global_var
     implicit none
@@ -182,20 +182,20 @@
      MP=>Mesh(1)
      NVAR1=MP%NVAR
 
-!------¸ù½ø³Ì¶ÁÈ¡Êý¾Ý£¬·¢ËÍµ½ÆäËû½ø³Ì----------------------------- 
+!------æ ¹è¿›ç¨‹è¯»å–æ•°æ®ï¼Œå‘é€åˆ°å…¶ä»–è¿›ç¨‹----------------------------- 
   if(my_id .eq. 0) then 
     print*, " read flow data:  flow3d.dat"
  
      open(99,file="flow3d.dat",form="unformatted")
     
- 	 if(NVAR1 .eq. 6) then        ! 6¸ö×Ô±äÁ¿
+ 	 if(NVAR1 .eq. 6) then        ! 6ä¸ªè‡ªå˜é‡
       Inquire(file="SA3d.dat",exist=Ex)
       if(Ex) then
         open(100,file="SA3d.dat",form="unformatted")
       endif
 	 endif
      
-	 if(NVAR1 .eq. 7) then          ! 7¸ö×Ô±äÁ¿
+	 if(NVAR1 .eq. 7) then          ! 7ä¸ªè‡ªå˜é‡
      Inquire(file="SST3d.dat",exist=Ex)
      if(Ex) then
        open(101,file="SST3d.dat",form="unformatted")
@@ -235,10 +235,10 @@
 		   enddo
   	  endif
      endif
-!------------·¢ËÍ--------------------------------
+!------------å‘é€--------------------------------
      
-	 if(B_proc(m) .eq. 0) then            ! ÕâÐ©¿éÊôÓÚ¸ù½ø³Ì
-      mt=B_n(m)                           ! ¸Ã¿éÔÚ½ø³ÌÄÚ²¿µÄ±àºÅ
+	 if(B_proc(m) .eq. 0) then            ! è¿™äº›å—å±žäºŽæ ¹è¿›ç¨‹
+      mt=B_n(m)                           ! è¯¥å—åœ¨è¿›ç¨‹å†…éƒ¨çš„ç¼–å·
 	  B=>MP%Block(mt)
 	  do k=0,nz
 	  do j=0,ny
@@ -249,7 +249,7 @@
 	  enddo
 	  enddo
  	  enddo
-     else                        ! ½«¸Ã¿éÊý¾Ý·¢ËÍ³ö
+     else                        ! å°†è¯¥å—æ•°æ®å‘é€å‡º
 	   Num_data=(nx+1)*(ny+1)*(nz+1)*NVAR1
 	   Send_to_ID=B_proc(m)
 	   tag=B_n(m)
@@ -267,9 +267,9 @@
     endif
    endif
 
-  else     ! ·Ç¸ù½Úµã
+  else     ! éžæ ¹èŠ‚ç‚¹
    
-    do m=1,MP%Num_Block     ! ±¾½ø³Ì°üº¬µÄ¿é
+    do m=1,MP%Num_Block     ! æœ¬è¿›ç¨‹åŒ…å«çš„å—
       B=>MP%Block(m)
 	  nx=B%nx; ny=B%ny; nz=B%nz
    	  allocate(U(0:nx,0:ny,0:nz,NVAR1))
@@ -296,8 +296,8 @@
    if(my_id .eq. 0)  print*, "read flow3d.dat OK"
 
 !----------------------------------Transform data----------------
-! ¶ÁÈëµÄÊý¾ÝÎ»d,u,v,w,T, ×ª»¯ÎªÊØºã±äÁ¿
- do m=1,MP%Num_Block     ! ±¾½ø³Ì°üº¬µÄ¿é
+! è¯»å…¥çš„æ•°æ®ä½d,u,v,w,T, è½¬åŒ–ä¸ºå®ˆæ’å˜é‡
+ do m=1,MP%Num_Block     ! æœ¬è¿›ç¨‹åŒ…å«çš„å—
     B=>MP%Block(m)
     nx=B%nx; ny=B%ny; nz=B%nz
  
@@ -321,7 +321,7 @@
  
  enddo
 
-!---------------¶ÁÈëÊ±¼ä²½-----------------------
+!---------------è¯»å…¥æ—¶é—´æ­¥-----------------------
   if(my_id .eq. 0) then
    Inquire(file="Step_mess.dat",exist=Ex)
     if(Ex) then
@@ -345,7 +345,7 @@
 
 
 !----------------------------------------------------------------------
-!  Êä³ö¼¸ºÎ¼°ÎïÀíÁ¿ £¨Plot3d¸ñÊ½£©, ×îÏ¸Íø¸ñflow3d.dat  
+!  è¾“å‡ºå‡ ä½•åŠç‰©ç†é‡ ï¼ˆPlot3dæ ¼å¼ï¼‰, æœ€ç»†ç½‘æ ¼flow3d.dat  
 
   subroutine output_flow
    use Global_Var
@@ -364,7 +364,7 @@
    NVAR1=MP%NVAR
 
 
-!   Êä³ö¼ÆËã²½Êý¼°Ê±¼äÐÅÏ¢
+!   è¾“å‡ºè®¡ç®—æ­¥æ•°åŠæ—¶é—´ä¿¡æ¯
    if(my_id .eq. 0) then
      open(88,file="Step_mess.dat")
      write(88,*) MP%Kstep, MP%tt
@@ -393,13 +393,13 @@
    if(NVAR1 .eq. 6) open(100,file="SA3d.dat",form="unformatted")    ! U6
    if(NVAR1 .eq. 7) open(101,file="SST3d.dat",form="unformatted")   ! U6,U7
   
-   do m=1, Total_block   ! È«²¿¿é
+   do m=1, Total_block   ! å…¨éƒ¨å—
      
 	 nx=bNi(m); ny=bNj(m); nz=bNk(m)
 	 allocate(U(0:nx,0:ny,0:nz,NVAR1))
 
-	if(B_proc(m) .eq. 0) then            ! ÕâÐ©¿éÊôÓÚ¸ù½ø³Ì
-      mt=B_n(m)                           ! ¸Ã¿éÔÚ½ø³ÌÄÚ²¿µÄ±àºÅ
+	if(B_proc(m) .eq. 0) then            ! è¿™äº›å—å±žäºŽæ ¹è¿›ç¨‹
+      mt=B_n(m)                           ! è¯¥å—åœ¨è¿›ç¨‹å†…éƒ¨çš„ç¼–å·
 	  B=>MP%Block(mt)
 	 
 	  do k=0,nz
@@ -421,10 +421,10 @@
 	  enddo
  	  enddo
 
-    else                        ! ½ÓÊÕ¸Ã¿éÐÅÏ¢
+    else                        ! æŽ¥æ”¶è¯¥å—ä¿¡æ¯
 	   Num_data=NVAR1*(nx+1)*(ny+1)*(nz+1)
 	   Recv_from_ID=B_proc(m)
-	   tag=B_n(m)             ! ÔÚ¸Ã¿éÖÐµÄ±àºÅ
+	   tag=B_n(m)             ! åœ¨è¯¥å—ä¸­çš„ç¼–å·
  	  call MPI_Recv(U,Num_data,OCFD_DATA_TYPE, Recv_from_ID, tag, MPI_COMM_WORLD,Status,ierr )
     endif
 ! write Data ....
@@ -445,9 +445,9 @@
    close(100)
    close(101)
  
- else     ! ·Ç0½Úµã
+ else     ! éž0èŠ‚ç‚¹
 
-    do m=1,MP%Num_Block     ! ±¾½ø³Ì°üº¬µÄ¿é
+    do m=1,MP%Num_Block     ! æœ¬è¿›ç¨‹åŒ…å«çš„å—
       B=>MP%Block(m)
 	  nx=B%nx; ny=B%ny; nz=B%nz
    	  allocate(U(0:nx,0:ny,0:nz,NVAR1))
@@ -487,7 +487,7 @@
 
 
 !----------------------------------------------------------------------
-!  Êä³öÍÄÁ÷Õ³ÐÔÏµÊývt £¨Plot3d¸ñÊ½£©, ×îÏ¸Íø¸ñvt.dat  
+!  è¾“å‡ºæ¹æµç²˜æ€§ç³»æ•°vt ï¼ˆPlot3dæ ¼å¼ï¼‰, æœ€ç»†ç½‘æ ¼vt.dat  
 
   subroutine output_vt
    use Global_Var
@@ -507,12 +507,12 @@
    print*, "write vt.dat ......"
    open(99,file="vt.dat",form="unformatted")                    ! d,u,v,w,T
  
-   do m=1, Total_block   ! È«²¿¿é
+   do m=1, Total_block   ! å…¨éƒ¨å—
 	 nx=bNi(m); ny=bNj(m); nz=bNk(m)
 	 allocate(U(0:nx,0:ny,0:nz))
 
-	if(B_proc(m) .eq. 0) then            ! ÕâÐ©¿éÊôÓÚ¸ù½ø³Ì
-      mt=B_n(m)                           ! ¸Ã¿éÔÚ½ø³ÌÄÚ²¿µÄ±àºÅ
+	if(B_proc(m) .eq. 0) then            ! è¿™äº›å—å±žäºŽæ ¹è¿›ç¨‹
+      mt=B_n(m)                           ! è¯¥å—åœ¨è¿›ç¨‹å†…éƒ¨çš„ç¼–å·
 	  B=>MP%Block(mt)
 	 
 	  do k=0,nz
@@ -522,10 +522,10 @@
 	  enddo
 	  enddo
  	  enddo
-    else                        ! ½ÓÊÕ¸Ã¿éÐÅÏ¢
+    else                        ! æŽ¥æ”¶è¯¥å—ä¿¡æ¯
 	   Num_data=(nx+1)*(ny+1)*(nz+1)
 	   Recv_from_ID=B_proc(m)
-	   tag=B_n(m)             ! ÔÚ¸Ã¿éÖÐµÄ±àºÅ
+	   tag=B_n(m)             ! åœ¨è¯¥å—ä¸­çš„ç¼–å·
  	  call MPI_Recv(U,Num_data,OCFD_DATA_TYPE, Recv_from_ID, tag, MPI_COMM_WORLD,Status,ierr )
     endif
 ! write Data ....
@@ -538,9 +538,9 @@
    close(100)
    close(101)
  
- else     ! ·Ç0½Úµã
+ else     ! éž0èŠ‚ç‚¹
 
-    do m=1,MP%Num_Block     ! ±¾½ø³Ì°üº¬µÄ¿é
+    do m=1,MP%Num_Block     ! æœ¬è¿›ç¨‹åŒ…å«çš„å—
       B=>MP%Block(m)
 	  nx=B%nx; ny=B%ny; nz=B%nz
    	  allocate(U(0:nx,0:ny,0:nz))
@@ -568,7 +568,7 @@
 
 
 !----------------------------------------------------------------------
-!  Êä³öµ½±ÚÃæµÄ¾àÀë  
+!  è¾“å‡ºåˆ°å£é¢çš„è·ç¦»  
 
   subroutine write_dw
    use Global_Var
@@ -589,12 +589,12 @@
    print*, "write wall_dist.dat ......"
    open(99,file="wall_dist.dat",form="unformatted")                    ! dw
   
-   do m=1, Total_block   ! È«²¿¿é
+   do m=1, Total_block   ! å…¨éƒ¨å—
  	 nx=bNi(m); ny=bNj(m); nz=bNk(m)
 	 allocate(U(nx-1,ny-1,nz-1))
 
-	if(B_proc(m) .eq. 0) then            ! ÕâÐ©¿éÊôÓÚ¸ù½ø³Ì
-      mt=B_n(m)                          ! ¸Ã¿éÔÚ½ø³ÌÄÚ²¿µÄ±àºÅ
+	if(B_proc(m) .eq. 0) then            ! è¿™äº›å—å±žäºŽæ ¹è¿›ç¨‹
+      mt=B_n(m)                          ! è¯¥å—åœ¨è¿›ç¨‹å†…éƒ¨çš„ç¼–å·
 	  B=>MP%Block(mt)
 	 
 	  do k=1,nz-1
@@ -604,10 +604,10 @@
 	  enddo
 	  enddo
  	  enddo
-    else                        ! ½ÓÊÕ¸Ã¿éÐÅÏ¢
+    else                        ! æŽ¥æ”¶è¯¥å—ä¿¡æ¯
 	   Num_data=(nx-1)*(ny-1)*(nz-1)
 	   Recv_from_ID=B_proc(m)
-	   tag=B_n(m)             ! ÔÚ¸Ã¿éÖÐµÄ±àºÅ
+	   tag=B_n(m)             ! åœ¨è¯¥å—ä¸­çš„ç¼–å·
  	  call MPI_Recv(U,Num_data,OCFD_DATA_TYPE, Recv_from_ID, tag, MPI_COMM_WORLD,Status,ierr )
     endif
 ! write Data ....
@@ -616,9 +616,9 @@
    enddo
    close(99)
  
- else     ! ·Ç0½Úµã
+ else     ! éž0èŠ‚ç‚¹
 
-    do m=1,MP%Num_Block     ! ±¾½ø³Ì°üº¬µÄ¿é
+    do m=1,MP%Num_Block     ! æœ¬è¿›ç¨‹åŒ…å«çš„å—
       B=>MP%Block(m)
 	  nx=B%nx; ny=B%ny; nz=B%nz
    	  allocate(U(nx-1,ny-1,nz-1))
@@ -647,39 +647,39 @@
 
 
 !----Boundary message (bc3d.inc, OpenCFD-EC Build-in format)----------------------------------------------------------
-! OpenCFD-ECÄÚ½¨µÄ.inc±ß½çÁ¬½Ó¸ñÊ½ÊÇÔÚ Gridgen µÄ.inp¸ñÊ½»ù´¡ÉÏ·¢Õ¹À´µÄ¡£
-!  ±È.inp¸ñÊ½¶àÁËÒ»Ð©ÈßÓàÐÅÏ¢£¬ÀýÈç¶àÁË×ÓÃæºÅf_no,
-!  ÃæÀàÐÍface ÒÔ¼°Á¬½ÓµÄ×ÓÃæºÅf_no1,Á¬½ÓµÄÃæÀàÐÍface1
-!  ÒÔ¼°Á¬½Ó´ÎÐòL1, L2, L3  (ÀýÈçL1=1±íÊ¾¸ÃÎ¬ÓëÁ¬½Ó¿éµÄµÚ1Î¬ÕýÁ¬½Ó£¬ L1=-1±íÊ¾ÓëÁ¬½Ó¿éµÄµÚ1Îª·´ÏòÁ¬½Ó).
-!  ÕâÐ©ÈßÓàÐÅÏ¢Îª¿é-¿éÖ®¼äµÄÍ¨ÐÅ£¨ÓÈÆäÊÇMPI²¢ÐÐÍ¨ÐÅ£©Ìá¹©ÁË±ãÀû£¬ÓÐÀûÓÚ¼ò»¯Í¨ÐÅ´úÂë
+! OpenCFD-ECå†…å»ºçš„.incè¾¹ç•Œè¿žæŽ¥æ ¼å¼æ˜¯åœ¨ Gridgen çš„.inpæ ¼å¼åŸºç¡€ä¸Šå‘å±•æ¥çš„ã€‚
+!  æ¯”.inpæ ¼å¼å¤šäº†ä¸€äº›å†—ä½™ä¿¡æ¯ï¼Œä¾‹å¦‚å¤šäº†å­é¢å·f_no,
+!  é¢ç±»åž‹face ä»¥åŠè¿žæŽ¥çš„å­é¢å·f_no1,è¿žæŽ¥çš„é¢ç±»åž‹face1
+!  ä»¥åŠè¿žæŽ¥æ¬¡åºL1, L2, L3  (ä¾‹å¦‚L1=1è¡¨ç¤ºè¯¥ç»´ä¸Žè¿žæŽ¥å—çš„ç¬¬1ç»´æ­£è¿žæŽ¥ï¼Œ L1=-1è¡¨ç¤ºä¸Žè¿žæŽ¥å—çš„ç¬¬1ä¸ºåå‘è¿žæŽ¥).
+!  è¿™äº›å†—ä½™ä¿¡æ¯ä¸ºå—-å—ä¹‹é—´çš„é€šä¿¡ï¼ˆå°¤å…¶æ˜¯MPIå¹¶è¡Œé€šä¿¡ï¼‰æä¾›äº†ä¾¿åˆ©ï¼Œæœ‰åˆ©äºŽç®€åŒ–é€šä¿¡ä»£ç 
 !--------------------------------------------------------------------------------------------------------------------
   subroutine read_inc 
    use Global_Var
    implicit none
-   integer,parameter:: NC=21         ! .incÎÄ¼þÃ¿µ¥ÔªÓÐ21¸öÔªËØ
+   integer,parameter:: NC=21         ! .incæ–‡ä»¶æ¯å•å…ƒæœ‰21ä¸ªå…ƒç´ 
    integer:: nx,ny,nz,NB,Nsub,m,mt,k,j
    integer:: Send_to_ID,tag,ierr,Status(MPI_Status_SIZE)
    Type (Block_TYPE),pointer:: B
    TYPE (BC_MSG_TYPE),pointer:: Bc
    integer,pointer,dimension(:,:):: Bs 
 
- !  ½«Gridgen .inp ¸ñÊ½×ª»¯Îª .inc¸ñÊ½   
+ !  å°†Gridgen .inp æ ¼å¼è½¬åŒ–ä¸º .incæ ¼å¼   
 	if(my_id .eq. 0) then
 	  call  convert_inp_inc 
 	endif
 
 
-!  read bc3d.inc, ¸ù½ø³Ì¶ÁÈë£¬²¢·¢ËÍÖÁÆäËû½ø³Ì
+!  read bc3d.inc, æ ¹è¿›ç¨‹è¯»å…¥ï¼Œå¹¶å‘é€è‡³å…¶ä»–è¿›ç¨‹
    if(my_id .eq. 0) then
      print*, "read bc3d.inc (Link/boundary file)......"
      open(88,file="bc3d.inc")
      read(88,*)
      read(88,*) NB
- !   ¶ÁÈ¡.incÎÄ¼þÖÐµÄÔªËØ   
+ !   è¯»å–.incæ–‡ä»¶ä¸­çš„å…ƒç´    
     do m=1,NB
      read(88,*) nx,ny,nz
      read(88,*)
-     read(88,*) Nsub   ! m¿éµÄ×ÓÃæÊý
+     read(88,*) Nsub   ! må—çš„å­é¢æ•°
  	 allocate(Bs(NC,Nsub))
 	 do k=1,Nsub
 	  read(88,*) (Bs(j,k),j=1,9)
@@ -687,14 +687,14 @@
 !	 read(88,*) Bc%ib,Bc%ie,Bc%jb,Bc%je,Bc%kb,Bc%ke,Bc%bc,Bc%face,Bc%f_no
 !	 read(88,*) Bc%ib1,Bc%ie1,Bc%jb1,Bc%je1,Bc%kb1,Bc%ke1,Bc%nb1,Bc%face1,Bc%f_no1,Bc%L1,Bc%L2,Bc%L3
      enddo
-!     ½«¸Ã¿éÐÅÏ¢·¢ËÍ³öÈ¥
+!     å°†è¯¥å—ä¿¡æ¯å‘é€å‡ºåŽ»
       
      if(B_Proc(m) .eq. 0) then
-!          ¸Ã¿éÔÚ0½ø³Ì
-       	 mt=B_n(m)   ! ÔÚ0½ø³ÌÖÐµÄÄÚ²¿±àºÅ
+!          è¯¥å—åœ¨0è¿›ç¨‹
+       	 mt=B_n(m)   ! åœ¨0è¿›ç¨‹ä¸­çš„å†…éƒ¨ç¼–å·
 		 B=>Mesh(1)%Block(mt)
 		 B%subface=Nsub   
-	     allocate(B%bc_msg(B%subface))   ! ±ß½çÃèÊö
+	     allocate(B%bc_msg(B%subface))   ! è¾¹ç•Œæè¿°
          do k=1,Nsub
 		 Bc=>B%bc_msg(k)
           Bc%ib=Bs(1,k); Bc%ie=Bs(2,k); Bc%jb=Bs(3,k); Bc%je=Bs(4,k)
@@ -705,18 +705,18 @@
 		  Bc%f_no1=Bs(18,k); Bc%L1=Bs(19,k); Bc%L2=Bs(20,k); Bc%L3=Bs(21,k)
          enddo
       else
-!        ½«nsub ¼°Bs ·¢ËÍ³öÈ¥
-	     Send_to_ID=B_proc(m)              ! ·¢ËÍÄ¿±ê¿éËùÔÚµÄ½ø³ÌºÅ
-	     tag=B_n(m)                        ! ±ê¼Ç
-  	     call MPI_send(Nsub,1,MPI_INTEGER, Send_to_ID, tag, MPI_COMM_WORLD,ierr )        !×ÓÃæÊý
-  	     call MPI_send(Bs,Nsub*Nc,MPI_INTEGER, Send_to_ID, tag, MPI_COMM_WORLD,ierr )    !×ÓÃæÁ¬½ÓÐÅÏ¢
+!        å°†nsub åŠBs å‘é€å‡ºåŽ»
+	     Send_to_ID=B_proc(m)              ! å‘é€ç›®æ ‡å—æ‰€åœ¨çš„è¿›ç¨‹å·
+	     tag=B_n(m)                        ! æ ‡è®°
+  	     call MPI_send(Nsub,1,MPI_INTEGER, Send_to_ID, tag, MPI_COMM_WORLD,ierr )        !å­é¢æ•°
+  	     call MPI_send(Bs,Nsub*Nc,MPI_INTEGER, Send_to_ID, tag, MPI_COMM_WORLD,ierr )    !å­é¢è¿žæŽ¥ä¿¡æ¯
      endif
 	  deallocate(Bs)
     enddo
 	  close(88)
    endif
 
-! ·Ç¸ù½ø³Ì
+! éžæ ¹è¿›ç¨‹
    if(my_id .ne. 0) then
       do m=1,Mesh(1)%Num_Block
 	    B=>Mesh(1)%Block(m)
@@ -724,7 +724,7 @@
  	    allocate(Bs(Nc,Nsub))
  	    call MPI_Recv(Bs,Nsub*Nc,MPI_INTEGER,0,m,MPI_COMM_WORLD,status,ierr)
 	    B%subface=Nsub   
-      	allocate(B%bc_msg(B%subface))   ! ±ß½çÃèÊö
+      	allocate(B%bc_msg(B%subface))   ! è¾¹ç•Œæè¿°
  	     do k=1,Nsub
 		  Bc=>B%bc_msg(k)
           Bc%ib=Bs(1,k); Bc%ie=Bs(2,k); Bc%jb=Bs(3,k); Bc%je=Bs(4,k)

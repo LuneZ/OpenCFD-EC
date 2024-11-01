@@ -55,7 +55,7 @@ end module Const_Variables
     endif
       
     allocate(Block(Num_Block))             
-    allocate(NI(Num_Block),NJ(Num_Block),NK(Num_Block) )   ! ÿ��Ĵ�С
+    allocate(NI(Num_Block),NJ(Num_Block),NK(Num_Block) )   ! 每块的大小
   
   if(Mesh_File_Format .eq. 0) then
    read(99) (NI(k), NJ(k), NK(k), k=1,Num_Block)

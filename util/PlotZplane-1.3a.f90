@@ -101,7 +101,7 @@
                (((B%z(i,j,k),i=1,nx),j=1,ny),k=1,nz)
    endif
  
-!----------²åÖµ³öÍø¸ñÖÐÐÄµãµÄÊý¾Ý-----------------------------------
+!----------æ’å€¼å‡ºç½‘æ ¼ä¸­å¿ƒç‚¹çš„æ•°æ®-----------------------------------
    do k=1,B%nz-1
    do j=1,B%ny-1
    do i=1,B%nx-1
@@ -268,7 +268,7 @@
    do m=1, NUM_BLOCK
    B=> Block(m)
    nx=B%nx; ny=B%ny; nz=B%nz
-!  ½«¸ñÐÄ´¦µÄÎïÀíÁ¿²åÖµµ½¸ñµãÉÏ   
+!  å°†æ ¼å¿ƒå¤„çš„ç‰©ç†é‡æ’å€¼åˆ°æ ¼ç‚¹ä¸Š   
    do k=1,B%nz
    do j=1,B%ny
    do i=1,B%nx
@@ -343,7 +343,7 @@
    end
 
 
-! ¼ÆËãk-½ØÃæµÄÄ¦×è£¬¼ÙÉè±ÚÃæÎ»ÓÚy=0´¦
+! è®¡ç®—k-æˆªé¢çš„æ‘©é˜»ï¼Œå‡è®¾å£é¢ä½äºŽy=0å¤„
    subroutine   Plot_Cf	   	 
 
    use  Global_Variables

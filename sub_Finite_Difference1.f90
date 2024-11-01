@@ -1,5 +1,5 @@
 
-!----²î·Ö-ÓĞÏŞÌå»ı»ìºÏËã·¨----------------
+!----å·®åˆ†-æœ‰é™ä½“ç§¯æ··åˆç®—æ³•----------------
 ! Copyright by Li Xinliang (c) lixl@imech.ac.cn
 
  subroutine init_FDM
@@ -29,9 +29,9 @@
 	 open(99,file="FDM.in")
 	 read(99,*)
 	 read(99,*) 
-	 read(99,*)   FD_Flux, FD_scheme   ! ÄÚÇ¶²î·Ö·¨²ÉÓÃµÄÍ¨Á¿·½Ê½¡¢ÊıÖµ¸ñÊ½
+	 read(99,*)   FD_Flux, FD_scheme   ! å†…åµŒå·®åˆ†æ³•é‡‡ç”¨çš„é€šé‡æ–¹å¼ã€æ•°å€¼æ ¼å¼
      read(99,*)
-	 read(99,*)   nbk    ! ÄÚÇ¶²î·Ö·¨µÄ¿éÊı
+	 read(99,*)   nbk    ! å†…åµŒå·®åˆ†æ³•çš„å—æ•°
          allocate(BFDM(nbk))	 
 	 read(99,*)
 	 read(99,*)   (BFDM(k),k=1,nbk)
@@ -56,9 +56,9 @@
 	endif
   
 
-   MP=>Mesh(1)         ! ½ö×îÃÜµÄÍø¸ñÊ¹ÓÃFDM
+   MP=>Mesh(1)         ! ä»…æœ€å¯†çš„ç½‘æ ¼ä½¿ç”¨FDM
    do m=1,MP%Num_Block   
-    B=> MP%Block(m)       ! ±¾¿é
+    B=> MP%Block(m)       ! æœ¬å—
     B%IFLAG_FVM_FDM=Method_FVM
 Loop1:	do k=1,nbk
 	      if( BFDM(k) == B%block_no ) then
@@ -70,7 +70,7 @@ Loop1:	do k=1,nbk
   enddo	   
   end
 
-!-----¼ÆËã²î·Ö·¨Ïà¹ØµÄJacobianÏµÊı-------------------
+!-----è®¡ç®—å·®åˆ†æ³•ç›¸å…³çš„Jacobianç³»æ•°-------------------
 
   subroutine comput_Jacobian_FDM
   use Global_var
@@ -84,13 +84,13 @@ Loop1:	do k=1,nbk
   character(len=50):: filename
 
 !---------------------------------------------------------
-! ÒÀÀµµÄÈ«¾ÖÊı¾İ£º
-! Num_Mesh  £¨ÕûĞÍ±äÁ¿£© Íø¸ñµÄÌ×Êı  £¨ÀıÈç£¬²ÉÓÃ3ÖØÍø¸ñ£¬Ôò¸ÃÊıÎª3£©
-! Mesh(k)%Num_Block  Íø¸ñµÄ¿éÊı£»
-! Flag_FDM(:) £¨ÕûĞÍÊı×é£©, Èç¹ûFlag_FDM(k)=0, ÔòµÚk¿éÍø¸ñ²ÉÓÃÓĞÏŞÌå»ı·¨£¬ Èç¹ûÎª1£¬Ôò²ÉÓÃÓĞÏŞ²î·Ö·¨£»
+! ä¾èµ–çš„å…¨å±€æ•°æ®ï¼š
+! Num_Mesh  ï¼ˆæ•´å‹å˜é‡ï¼‰ ç½‘æ ¼çš„å¥—æ•°  ï¼ˆä¾‹å¦‚ï¼Œé‡‡ç”¨3é‡ç½‘æ ¼ï¼Œåˆ™è¯¥æ•°ä¸º3ï¼‰
+! Mesh(k)%Num_Block  ç½‘æ ¼çš„å—æ•°ï¼›
+! Flag_FDM(:) ï¼ˆæ•´å‹æ•°ç»„ï¼‰, å¦‚æœFlag_FDM(k)=0, åˆ™ç¬¬kå—ç½‘æ ¼é‡‡ç”¨æœ‰é™ä½“ç§¯æ³•ï¼Œ å¦‚æœä¸º1ï¼Œåˆ™é‡‡ç”¨æœ‰é™å·®åˆ†æ³•ï¼›
 !----------------------------------------------------------
 
-! ´´½¨Êı¾İ½á¹¹
+! åˆ›å»ºæ•°æ®ç»“æ„
    allocate(FDM_Mesh(Num_Mesh))
    do m=1,Num_Mesh
     Num_block=Mesh(m)%Num_Block
@@ -98,7 +98,7 @@ Loop1:	do k=1,nbk
     do nB=1,Num_block
     Bm=>FDM_Mesh(m)%Block(nB)
 	B=>Mesh(m)%Block(nB) 
- 	  if(B%IFLAG_FVM_FDM .eq. Method_FDM)   then  ! ¸Ã¿é²ÉÓÃ²î·Ö·¨¼ÆËã
+ 	  if(B%IFLAG_FVM_FDM .eq. Method_FDM)   then  ! è¯¥å—é‡‡ç”¨å·®åˆ†æ³•è®¡ç®—
        nx=B%nx-1; ny=B%ny-1; nz=B%nz-1   
 	  allocate(Bm%ix(nx,ny,nz), Bm%iy(nx,ny,nz), Bm%iz(nx,ny,nz), &
 	          Bm%jx(nx,ny,nz), Bm%jy(nx,ny,nz), Bm%jz(nx,ny,nz), &
@@ -120,15 +120,15 @@ Loop1:	do k=1,nbk
 	 if(B%IFLAG_FVM_FDM .ne. Method_FDM ) cycle    ! only for FDM (Finite difference method)
  !    print*, " Comput Jocabian Coefficient, Block No.", m
 
-     nx=B%nx-1  ! Íø¸ñµãÊı£¨ÈôÎïÀíÁ¿´¢´æÓÚÍø¸ñÖĞĞÄ£¬Ö¸µÄÊÇÍø¸ñÖĞĞÄµÄÊıÄ¿£©
+     nx=B%nx-1  ! ç½‘æ ¼ç‚¹æ•°ï¼ˆè‹¥ç‰©ç†é‡å‚¨å­˜äºç½‘æ ¼ä¸­å¿ƒï¼ŒæŒ‡çš„æ˜¯ç½‘æ ¼ä¸­å¿ƒçš„æ•°ç›®ï¼‰
 	 ny=B%ny-1 
 	 nz=B%nz-1     
 
 
-!   ÉêÇëÄÚ´æ  ´¢´æ×ø±ê 
+!   ç”³è¯·å†…å­˜  å‚¨å­˜åæ ‡ 
      allocate(x(nx,ny,nz),y(nx,ny,nz),z(nx,ny,nz))
 
-!  ÎïÀíÁ¿ËùÔÚµãµÄ×ø±ê £¨ÈôÎïÀíÁ¿´¢´æÔÚÍø¸ñÖĞĞÄ£¬ÔòÎªÍø¸ñÖĞĞÄµãµÄ×ø±ê£©
+!  ç‰©ç†é‡æ‰€åœ¨ç‚¹çš„åæ ‡ ï¼ˆè‹¥ç‰©ç†é‡å‚¨å­˜åœ¨ç½‘æ ¼ä¸­å¿ƒï¼Œåˆ™ä¸ºç½‘æ ¼ä¸­å¿ƒç‚¹çš„åæ ‡ï¼‰
      do k=1,nz
 	 do j=1,ny
 	 do i=1,nx
@@ -138,7 +138,7 @@ Loop1:	do k=1,nbk
 	 enddo
 	 enddo
      enddo
-!  ¼ÆËãJacobianÏµÊı
+!  è®¡ç®—Jacobianç³»æ•°
     call grid_Jacobian(nx,ny,nz,   x(1,1,1),y(1,1,1),z(1,1,1), &
 	                   Bm%ix(1,1,1),Bm%iy(1,1,1),Bm%iz(1,1,1), &
 	                   Bm%jx(1,1,1),Bm%jy(1,1,1),Bm%jz(1,1,1), &
@@ -218,7 +218,7 @@ Loop1:	do k=1,nbk
     end subroutine grid_Jacobian
 
 !c==========================================================================================
-! ²ÉÓÃ²î·Ö·½·¨¼ÆËãÈı¸ö·½ÏòµÄµ¼Êı £¨ÄÚ²¿6½×ÖĞĞÄ²î·Ö£¬±ß½ç´¦½µ½×£©, ÓÃÓÚ¼ÆËãJacobianÏµÊı 
+! é‡‡ç”¨å·®åˆ†æ–¹æ³•è®¡ç®—ä¸‰ä¸ªæ–¹å‘çš„å¯¼æ•° ï¼ˆå†…éƒ¨6é˜¶ä¸­å¿ƒå·®åˆ†ï¼Œè¾¹ç•Œå¤„é™é˜¶ï¼‰, ç”¨äºè®¡ç®—Jacobianç³»æ•° 
        subroutine dx0(nx,f,fx)
         use precision_EC
 		implicit none

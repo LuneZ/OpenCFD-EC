@@ -1,6 +1,6 @@
 !----------------------------------------------------------------------
-! ÔÚ¸ø¶¨µÄÍø¸ñÉÏÇó½âN-S·½³Ì £¨ÍÆ½ø1¸öÊ±¼ä²½£©
-! ¶ÔÓÚµ¥ÖØÍø¸ñ£¬nMesh=1;  ¶ÔÓÚ¶àÖØÍø¸ñ£¬nMesh=1,2,3, ... ·Ö±ğ¶ÔÓ¦ÓÃÏ¸Íø¸ñ¡¢´ÖÍø¸ñ¡¢¸ü´ÖÍø¸ñ ...
+! åœ¨ç»™å®šçš„ç½‘æ ¼ä¸Šæ±‚è§£N-Sæ–¹ç¨‹ ï¼ˆæ¨è¿›1ä¸ªæ—¶é—´æ­¥ï¼‰
+! å¯¹äºå•é‡ç½‘æ ¼ï¼ŒnMesh=1;  å¯¹äºå¤šé‡ç½‘æ ¼ï¼ŒnMesh=1,2,3, ... åˆ†åˆ«å¯¹åº”ç”¨ç»†ç½‘æ ¼ã€ç²—ç½‘æ ¼ã€æ›´ç²—ç½‘æ ¼ ...
 ! 2015-11-26: A bug in Line 299 is removed   (KRK should be a shared data)
  
   subroutine NS_Time_advance(nMesh)
@@ -8,22 +8,22 @@
    implicit none
    integer:: nMesh
    if(Time_Method .eq. Time_Euler1) then
-     call NS_Time_advance_1Euler(nMesh)                    ! 1½×Euler
+     call NS_Time_advance_1Euler(nMesh)                    ! 1é˜¶Euler
    else if (Time_Method .eq. Time_LU_SGS ) then            !  LU_SGS
      call NS_Time_advance_LU_SGS(nMesh)
    else if (Time_Method .eq. Time_Dual_LU_SGS) then        ! Dual_LU_SGS
      call  NS_Time_Dual_LU_SGS(nMesh)
    else if (Time_Method .eq. Time_RK3) then
-     call NS_Time_advance_RK3(nMesh)                       ! 3½×RK
+     call NS_Time_advance_RK3(nMesh)                       ! 3é˜¶RK
    else
      print*, "This time advance method is not supported!!!"
    endif
-    call force_vt_kw(nMesh)     ! Ç¿ÖÆ vt, k,w ·Ç¸º
+    call force_vt_kw(nMesh)     ! å¼ºåˆ¶ vt, k,w éè´Ÿ
 
   end subroutine NS_Time_advance
 
 !---------------------------------------------------------------------------------------------
-! Ç¿ÖÆvt, k,w·Ç¸º   
+! å¼ºåˆ¶vt, k,wéè´Ÿ   
    subroutine force_vt_kw(nMesh)
     use Global_var
     implicit none
@@ -71,7 +71,7 @@
 
 
 
-! ²ÉÓÃ LU_SGS·½·¨½øĞĞÊ±¼äÍÆ½øÒ»¸öÊ±¼ä²½ £¨µÚnMeshÖØÍø¸ñ µÄµ¥ÖØÍø¸ñ£©
+! é‡‡ç”¨ LU_SGSæ–¹æ³•è¿›è¡Œæ—¶é—´æ¨è¿›ä¸€ä¸ªæ—¶é—´æ­¥ ï¼ˆç¬¬nMeshé‡ç½‘æ ¼ çš„å•é‡ç½‘æ ¼ï¼‰
   subroutine NS_Time_advance_LU_SGS(nMesh)
    use Global_var
    implicit none
@@ -79,22 +79,22 @@
    Type (Block_TYPE),pointer:: B
    real(PRE_EC):: du
    call Set_Un(nMesh)
-   call Comput_Residual_one_mesh(nMesh)              ! µ¥ÖØÍø¸ñÉÏ¼ÆËã²Ğ²î (ÒÔ¼°Du)
-   if(nMesh .ne. 1) call Add_force_function(nMesh)   !  Ìí¼ÓÇ¿ÆÈº¯Êı£¨¶àÖØÍø¸ñµÄ´ÖÍø¸ñÊ¹ÓÃ£©
+   call Comput_Residual_one_mesh(nMesh)              ! å•é‡ç½‘æ ¼ä¸Šè®¡ç®—æ®‹å·® (ä»¥åŠDu)
+   if(nMesh .ne. 1) call Add_force_function(nMesh)   !  æ·»åŠ å¼ºè¿«å‡½æ•°ï¼ˆå¤šé‡ç½‘æ ¼çš„ç²—ç½‘æ ¼ä½¿ç”¨ï¼‰
   
    NVAR1=Mesh(nMesh)%NVAR
    do mBlock=1,Mesh(nMesh)%Num_Block
      B => Mesh(nMesh)%Block(mBlock)
      nx=B%nx; ny=B%ny; nz=B%nz
 !--------------------------------------------------------------------------------------
-!   Ê±¼äÍÆ½ø 
+!   æ—¶é—´æ¨è¿› 
 
 !$OMP PARALLEL DO DEFAULT(PRIVATE) SHARED(nx,ny,nz,NVAR1,B)
      do k=1,nz-1
        do j=1,ny-1
          do i=1,nx-1
            do m=1,NVAR1
-             B%U(m,i,j,k)=B%Un(m,i,j,k)+B%dU(m,i,j,k)           ! LU_SGS·½·¨
+             B%U(m,i,j,k)=B%Un(m,i,j,k)+B%dU(m,i,j,k)           ! LU_SGSæ–¹æ³•
             enddo
          enddo
        enddo
@@ -104,24 +104,24 @@
   enddo
 
 !----------------------------------------------------------------   
-    if( IFLAG_LIMIT_Flow == 1) then                      ! ¶ÔÑ¹Á¦¡¢ÃÜ¶È½øĞĞÏŞÖÆ
+    if( IFLAG_LIMIT_Flow == 1) then                      ! å¯¹å‹åŠ›ã€å¯†åº¦è¿›è¡Œé™åˆ¶
 	  call limit_flow(nMesh)
 	endif 
 
 !---------------------------------------------------------------------------------------  
-   call Boundary_condition_onemesh(nMesh)             ! ±ß½çÌõ¼ş £¨Éè¶¨Ghost CellµÄÖµ£©
-   call update_buffer_onemesh(nMesh)                  ! Í¬²½¸÷¿éµÄ½»½çÇø
+   call Boundary_condition_onemesh(nMesh)             ! è¾¹ç•Œæ¡ä»¶ ï¼ˆè®¾å®šGhost Cellçš„å€¼ï¼‰
+   call update_buffer_onemesh(nMesh)                  ! åŒæ­¥å„å—çš„äº¤ç•ŒåŒº
    
-   Mesh(nMesh)%tt=Mesh(nMesh)%tt+dt_global            ! Ê±¼ä £¨Ê¹ÓÃÈ«¾ÖÊ±¼ä²½³¤·¨Ê±ÓĞÒâÒå£©
-   Mesh(nMesh)%Kstep=Mesh(nMesh)%Kstep+1              ! ¼ÆËã²½Êı
+   Mesh(nMesh)%tt=Mesh(nMesh)%tt+dt_global            ! æ—¶é—´ ï¼ˆä½¿ç”¨å…¨å±€æ—¶é—´æ­¥é•¿æ³•æ—¶æœ‰æ„ä¹‰ï¼‰
+   Mesh(nMesh)%Kstep=Mesh(nMesh)%Kstep+1              ! è®¡ç®—æ­¥æ•°
 
   end subroutine NS_Time_advance_LU_SGS
 !--------------------------------------------------------------------------------------
 
 
 
-!  ²ÉÓÃË«Ê±¼ä²½³¤·¨ LU_SGS·½·¨½øĞĞÊ±¼äÍÆ½øÒ»¸öÊ±¼ä²½ 
-!  Ä¿Ç°Dual LU_SGS ·½·¨ÉĞ²»Ö§³Ö¶àÖØÍø¸ñ,Òò¶ønMeshÖ»ÄÜÎª1
+!  é‡‡ç”¨åŒæ—¶é—´æ­¥é•¿æ³• LU_SGSæ–¹æ³•è¿›è¡Œæ—¶é—´æ¨è¿›ä¸€ä¸ªæ—¶é—´æ­¥ 
+!  ç›®å‰Dual LU_SGS æ–¹æ³•å°šä¸æ”¯æŒå¤šé‡ç½‘æ ¼,å› è€ŒnMeshåªèƒ½ä¸º1
 
   subroutine NS_Time_Dual_LU_SGS(nMesh)
     use Global_var
@@ -133,9 +133,9 @@
     
 	MP=>Mesh(nMesh)
     NVAR1=MP%NVAR
- do kt_in=1, step_inner_Limit                      ! ÄÚÑ­»·µü´ú
+ do kt_in=1, step_inner_Limit                      ! å†…å¾ªç¯è¿­ä»£
 
-   call Comput_Residual_one_mesh(nMesh)              ! µ¥ÖØÍø¸ñÉÏ¼ÆËã²Ğ²î¼°Du
+   call Comput_Residual_one_mesh(nMesh)              ! å•é‡ç½‘æ ¼ä¸Šè®¡ç®—æ®‹å·®åŠDu
    do mBlock=1,Mesh(nMesh)%Num_Block
      B => Mesh(nMesh)%Block(mBlock)
      nx=B%nx; ny=B%ny; nz=B%nz
@@ -144,7 +144,7 @@
        do j=1,ny-1
          do i=1,nx-1
            do m=1,NVAR1
-             B%U(m,i,j,k)=B%U(m,i,j,k)+B%dU(m,i,j,k)           ! LU_SGS·½·¨
+             B%U(m,i,j,k)=B%U(m,i,j,k)+B%dU(m,i,j,k)           ! LU_SGSæ–¹æ³•
             enddo
          enddo
        enddo
@@ -153,20 +153,20 @@
    enddo
 
 !----------------------------------------------------------------   
-    if( IFLAG_LIMIT_FLOW == 1) then                      ! ¶ÔÑ¹Á¦¡¢ÃÜ¶È½øĞĞÏŞÖÆ
+    if( IFLAG_LIMIT_FLOW == 1) then                      ! å¯¹å‹åŠ›ã€å¯†åº¦è¿›è¡Œé™åˆ¶
 	  call limit_flow(nMesh)
 	endif 
 
 
-  call Boundary_condition_onemesh(nMesh)             ! ±ß½çÌõ¼ş £¨Éè¶¨Ghost CellµÄÖµ£©
-  call update_buffer_onemesh(nMesh)                  ! Í¬²½¸÷¿éµÄ½»½çÇø
-  call comput_max_Res_onemesh(nMesh)                 ! ¼ÆËã×î´ó²Ğ²î¼°¾ù·½¸ù²Ğ²î
+  call Boundary_condition_onemesh(nMesh)             ! è¾¹ç•Œæ¡ä»¶ ï¼ˆè®¾å®šGhost Cellçš„å€¼ï¼‰
+  call update_buffer_onemesh(nMesh)                  ! åŒæ­¥å„å—çš„äº¤ç•ŒåŒº
+  call comput_max_Res_onemesh(nMesh)                 ! è®¡ç®—æœ€å¤§æ®‹å·®åŠå‡æ–¹æ ¹æ®‹å·®
 
-     max_res=MP%Res_rms(1)       ! ×î´ó¾ù·½¸ù²Ğ²î (×÷ÎªÄÚµü´ú±ê×¼)
+     max_res=MP%Res_rms(1)       ! æœ€å¤§å‡æ–¹æ ¹æ®‹å·® (ä½œä¸ºå†…è¿­ä»£æ ‡å‡†)
      do m=1,NVAR1
  	  max_res=max(max_res,MP%Res_rms(m))
 	 enddo
-     if( max_res .le. Res_Inner_Limit) exit   ! ´ïµ½²Ğ²î±ê×¼£¬Ìø³öÄÚµü´ú
+     if( max_res .le. Res_Inner_Limit) exit   ! è¾¾åˆ°æ®‹å·®æ ‡å‡†ï¼Œè·³å‡ºå†…è¿­ä»£
  enddo
    
    if(my_id .eq. 0) then 	
@@ -196,8 +196,8 @@
   enddo
 
 
-   Mesh(nMesh)%tt=Mesh(nMesh)%tt+dt_global            ! Ê±¼ä £¨Ê¹ÓÃÈ«¾ÖÊ±¼ä²½³¤·¨Ê±ÓĞÒâÒå£©
-   Mesh(nMesh)%Kstep=Mesh(nMesh)%Kstep+1              ! ¼ÆËã²½Êı
+   Mesh(nMesh)%tt=Mesh(nMesh)%tt+dt_global            ! æ—¶é—´ ï¼ˆä½¿ç”¨å…¨å±€æ—¶é—´æ­¥é•¿æ³•æ—¶æœ‰æ„ä¹‰ï¼‰
+   Mesh(nMesh)%Kstep=Mesh(nMesh)%Kstep+1              ! è®¡ç®—æ­¥æ•°
 
   end subroutine NS_Time_Dual_LU_SGS
 !--------------------------------------------------------------------------------------
@@ -213,7 +213,7 @@
 
 
 
-! ²ÉÓÃ1½×Euler·¨½øĞĞÊ±¼äÍÆ½øÒ»¸öÊ±¼ä²½ £¨µÚnMeshÖØÍø¸ñ µÄµ¥ÖØÍø¸ñ£©
+! é‡‡ç”¨1é˜¶Euleræ³•è¿›è¡Œæ—¶é—´æ¨è¿›ä¸€ä¸ªæ—¶é—´æ­¥ ï¼ˆç¬¬nMeshé‡ç½‘æ ¼ çš„å•é‡ç½‘æ ¼ï¼‰
   subroutine NS_Time_advance_1Euler(nMesh)
    use Global_var
    implicit none
@@ -221,15 +221,15 @@
    Type (Block_TYPE),pointer:: B
    real(PRE_EC):: du
    call Set_Un(nMesh)
-   call Comput_Residual_one_mesh(nMesh)              ! µ¥ÖØÍø¸ñÉÏ¼ÆËã²Ğ²î
-   if(nMesh .ne. 1) call Add_force_function(nMesh)   !  Ìí¼ÓÇ¿ÆÈº¯Êı£¨¶àÖØÍø¸ñµÄ´ÖÍø¸ñÊ¹ÓÃ£©
+   call Comput_Residual_one_mesh(nMesh)              ! å•é‡ç½‘æ ¼ä¸Šè®¡ç®—æ®‹å·®
+   if(nMesh .ne. 1) call Add_force_function(nMesh)   !  æ·»åŠ å¼ºè¿«å‡½æ•°ï¼ˆå¤šé‡ç½‘æ ¼çš„ç²—ç½‘æ ¼ä½¿ç”¨ï¼‰
 
     NVAR1=Mesh(nMesh)%NVAR
    do mBlock=1,Mesh(nMesh)%Num_Block
      B => Mesh(nMesh)%Block(mBlock)
      nx=B%nx; ny=B%ny; nz=B%nz
 !--------------------------------------------------------------------------------------
-!   Ê±¼äÍÆ½ø 
+!   æ—¶é—´æ¨è¿› 
 !$OMP PARALLEL DO DEFAULT(PRIVATE) SHARED(nx,ny,nz,NVAR1,B)
      do k=1,nz-1
        do j=1,ny-1
@@ -247,21 +247,21 @@
 
 
 !----------------------------------------------------------------   
-    if( IFLAG_LIMIT_FLOW == 1) then                      ! ¶ÔÑ¹Á¦¡¢ÃÜ¶È½øĞĞÏŞÖÆ
+    if( IFLAG_LIMIT_FLOW == 1) then                      ! å¯¹å‹åŠ›ã€å¯†åº¦è¿›è¡Œé™åˆ¶
 	  call limit_flow(nMesh)
 	endif 
 
 !---------------------------------------------------------------------------------------  
-   call Boundary_condition_onemesh(nMesh)             ! ±ß½çÌõ¼ş £¨Éè¶¨Ghost CellµÄÖµ£©
-   call update_buffer_onemesh(nMesh)                  ! Í¬²½¸÷¿éµÄ½»½çÇø
-   Mesh(nMesh)%tt=Mesh(nMesh)%tt+dt_global            ! Ê±¼ä £¨Ê¹ÓÃÈ«¾ÖÊ±¼ä²½³¤·¨Ê±ÓĞÒâÒå£©
-   Mesh(nMesh)%Kstep=Mesh(nMesh)%Kstep+1              ! ¼ÆËã²½Êı
+   call Boundary_condition_onemesh(nMesh)             ! è¾¹ç•Œæ¡ä»¶ ï¼ˆè®¾å®šGhost Cellçš„å€¼ï¼‰
+   call update_buffer_onemesh(nMesh)                  ! åŒæ­¥å„å—çš„äº¤ç•ŒåŒº
+   Mesh(nMesh)%tt=Mesh(nMesh)%tt+dt_global            ! æ—¶é—´ ï¼ˆä½¿ç”¨å…¨å±€æ—¶é—´æ­¥é•¿æ³•æ—¶æœ‰æ„ä¹‰ï¼‰
+   Mesh(nMesh)%Kstep=Mesh(nMesh)%Kstep+1              ! è®¡ç®—æ­¥æ•°
 
   end subroutine NS_Time_advance_1Euler
 !----------------------------------------------------------------------------------------
 
 
-! ²ÉÓÃ3½×RK·½·¨ÍÆ½ø1¸öÊ±¼ä²½ £¨µÚnMeshÖØÍø¸ñ µÄµ¥ÖØÍø¸ñ£©
+! é‡‡ç”¨3é˜¶RKæ–¹æ³•æ¨è¿›1ä¸ªæ—¶é—´æ­¥ ï¼ˆç¬¬nMeshé‡ç½‘æ ¼ çš„å•é‡ç½‘æ ¼ï¼‰
   subroutine NS_Time_advance_RK3(nMesh)
    use Global_var
    implicit none
@@ -288,13 +288,13 @@
    enddo
 
    do KRK=1,3                                          ! 3-step Runge-Kutta Method
-	 call Comput_Residual_one_mesh(nMesh)              ! ¼ÆËã²Ğ²î
-     if(nMesh .ne. 1) call Add_force_function(nMesh)   ! Ìí¼ÓÇ¿ÆÈº¯Êı£¨¶àÖØÍø¸ñµÄ´ÖÍø¸ñÊ¹ÓÃ£©
+	 call Comput_Residual_one_mesh(nMesh)              ! è®¡ç®—æ®‹å·®
+     if(nMesh .ne. 1) call Add_force_function(nMesh)   ! æ·»åŠ å¼ºè¿«å‡½æ•°ï¼ˆå¤šé‡ç½‘æ ¼çš„ç²—ç½‘æ ¼ä½¿ç”¨ï¼‰
 	 do mBlock=1,Mesh(nMesh)%Num_Block
-       B => Mesh(nMesh)%Block(mBlock)                  ! µÚnMesh ÖØÍø¸ñµÄµÚmBlock¿é
+       B => Mesh(nMesh)%Block(mBlock)                  ! ç¬¬nMesh é‡ç½‘æ ¼çš„ç¬¬mBlockå—
        nx=B%nx; ny=B%ny; nz=B%nz
 !--------------------------------------------------------------------------------------
-!    Ê±¼äÍÆ½ø
+!    æ—¶é—´æ¨è¿›
 
 !$OMP PARALLEL DO PRIVATE(i,j,k,m,du) SHARED(NVAR1,nx,ny,nz,Ralfa,Rbeta,Rgamma,B,KRK)
        do k=1,nz-1 
@@ -302,7 +302,7 @@
            do i=1,nx-1
              do m=1,NVAR1
 		       du=B%Res(m,i,j,k)/B%Vol(i,j,k)  
-               B%U(m,i,j,k)=Ralfa(KRK)*B%Un(m,i,j,k)+Rgamma(KRK)*B%U(m,i,j,k)+B%dt(i,j,k)*Rbeta(KRK)*du        ! 3½×RK
+               B%U(m,i,j,k)=Ralfa(KRK)*B%Un(m,i,j,k)+Rgamma(KRK)*B%U(m,i,j,k)+B%dt(i,j,k)*Rbeta(KRK)*du        ! 3é˜¶RK
              enddo
            enddo
          enddo
@@ -312,21 +312,21 @@
 
 !---------------------------------------------------------------------------------------
 
-    if( IFLAG_LIMIT_FLOW == 1) then                      ! ¶ÔÑ¹Á¦¡¢ÃÜ¶È½øĞĞÏŞÖÆ
+    if( IFLAG_LIMIT_FLOW == 1) then                      ! å¯¹å‹åŠ›ã€å¯†åº¦è¿›è¡Œé™åˆ¶
 	  call limit_flow(nMesh)
 	endif 
 
  
-     call Boundary_condition_onemesh(nMesh)         ! ±ß½çÌõ¼ş £¨Éè¶¨Ghost CellµÄÖµ£©
-     call update_buffer_onemesh(nMesh)              ! Í¬²½¸÷¿éµÄ½»½çÇø
+     call Boundary_condition_onemesh(nMesh)         ! è¾¹ç•Œæ¡ä»¶ ï¼ˆè®¾å®šGhost Cellçš„å€¼ï¼‰
+     call update_buffer_onemesh(nMesh)              ! åŒæ­¥å„å—çš„äº¤ç•ŒåŒº
    enddo   
-   Mesh(nMesh)%tt=Mesh(nMesh)%tt+dt_global          ! Ê±¼ä £¨Ê¹ÓÃÈ«¾ÖÊ±¼ä²½³¤·¨Ê±ÓĞÒâÒå£©
-   Mesh(nMesh)%Kstep=Mesh(nMesh)%Kstep+1            ! ¼ÆËã²½Êı
+   Mesh(nMesh)%tt=Mesh(nMesh)%tt+dt_global          ! æ—¶é—´ ï¼ˆä½¿ç”¨å…¨å±€æ—¶é—´æ­¥é•¿æ³•æ—¶æœ‰æ„ä¹‰ï¼‰
+   Mesh(nMesh)%Kstep=Mesh(nMesh)%Kstep+1            ! è®¡ç®—æ­¥æ•°
 
   end subroutine NS_Time_advance_RK3
 
 
-! ¼ÆËã×î´ó²Ğ²îºÍ¾ù·½¸ù²Ğ²î£¨Õû¸öÍø¸ñ£©
+! è®¡ç®—æœ€å¤§æ®‹å·®å’Œå‡æ–¹æ ¹æ®‹å·®ï¼ˆæ•´ä¸ªç½‘æ ¼ï¼‰
   subroutine comput_max_Res_onemesh(nMesh)
    use Global_var
    implicit none
@@ -343,14 +343,14 @@
  
    do mBlock=1,MP%NUM_BLOCK 
 !     call comput_max_Res_oneblock(nMesh,mBlock)
-   	  B => MP%Block(mBlock)                 !µÚnMesh ÖØÍø¸ñµÄµÚmBlock¿é
+   	  B => MP%Block(mBlock)                 !ç¬¬nMesh é‡ç½‘æ ¼çš„ç¬¬mBlockå—
 
 !$OMP PARALLEL DO DEFAULT(FIRSTPRIVATE) SHARED(MP,B) REDUCTION(MAX: Res_max) REDUCTION(+: Res_rms)   
 	 do k=1,B%nz-1
        do j=1,B%ny-1
          do i=1,B%nx-1
 ! -------------------------------------------------------------------------------------------
-!    Ê±¼äÍÆ½ø
+!    æ—¶é—´æ¨è¿›
            do m=1,MP%NVAR
              Res=B%Res(m,i,j,k)
 !--------------------------------------------------------------------------------------------------
@@ -359,12 +359,12 @@
              if(F_NaN) then
  		       print*, "NaN in Residual is found !, In block",B%block_no
 			   print*, "location i,j,k,m=",i,j,k,m
-!               B%Res(m,i,j,k)=0.d0    ! Ç¿ÖÆÎª0
+!               B%Res(m,i,j,k)=0.d0    ! å¼ºåˆ¶ä¸º0
 			    print*, "Stop"
 			   stop
 		     endif  
-              Res_max(m)=max(Res_max(m),abs(Res))    ! ×î´ó²Ğ²î
-			  Res_rms(m)=Res_rms(m)+Res*Res           ! ¾ù·½¸ù²Ğ²î
+              Res_max(m)=max(Res_max(m),abs(Res))    ! æœ€å¤§æ®‹å·®
+			  Res_rms(m)=Res_rms(m)+Res*Res           ! å‡æ–¹æ ¹æ®‹å·®
 !--------------------------------------------------------------------------------------------------       
 	       enddo
          enddo
@@ -375,14 +375,14 @@
  
     call MPI_ALLREDUCE(Res_max(1),MP%Res_max(1),MP%NVAR,OCFD_DATA_TYPE,MPI_MAX,MPI_COMM_WORLD,ierr)
     call MPI_ALLREDUCE(Res_rms(1),MP%Res_rms(1),MP%NVAR,OCFD_DATA_TYPE,MPI_SUM,MPI_COMM_WORLD,ierr)
-    MP%Res_rms(:)=sqrt(MP%Res_rms(:)/(MP%Num_Cell))   !¾ù·½¸ù²Ğ²î
+    MP%Res_rms(:)=sqrt(MP%Res_rms(:)/(MP%Num_Cell))   !å‡æ–¹æ ¹æ®‹å·®
 
   end  subroutine comput_max_Res_onemesh
 
 !-------------------------------------------------------------
 
 !--------------------------------------------------------------
-! ´òÓ¡²Ğ²î£¨×î´ó²Ğ²îºÍ¾ù·½¸ù²Ğ²î£©
+! æ‰“å°æ®‹å·®ï¼ˆæœ€å¤§æ®‹å·®å’Œå‡æ–¹æ ¹æ®‹å·®ï¼‰
   subroutine output_Res(nMesh)
    use Global_var
    implicit none
@@ -406,7 +406,7 @@
 
 
 !----------------------------------------------------------
-! ¶ÔSA,SST·½³ÌµÄÎïÀíÁ¿½øĞĞÏŞÖÆ
+! å¯¹SA,SSTæ–¹ç¨‹çš„ç‰©ç†é‡è¿›è¡Œé™åˆ¶
   subroutine limit_vt(nMesh,mBlock)
    use Global_Var
    use Flow_Var 
@@ -414,7 +414,7 @@
    Type (Block_TYPE),pointer:: B
    integer nMesh,mBlock,NVAR1,nx,ny,nz,i,j,k
    
-   B => Mesh(nMesh)%Block(mBlock)                 !µÚnMesh ÖØÍø¸ñµÄµÚmBlock¿é
+   B => Mesh(nMesh)%Block(mBlock)                 !ç¬¬nMesh é‡ç½‘æ ¼çš„ç¬¬mBlockå—
    nx=B%nx; ny=B%ny; nz=B%nz
    NVAR1=Mesh(nMesh)%NVAR
    if(NVAR1 .eq. 6) then
@@ -449,116 +449,116 @@
 
 
 !----------------------------------------------------------------------
-! ¶àÖØÍø¸ñÇó½âN-S·½³Ì £¨ÍÆ½ø1¸öÊ±¼ä²½£©
-! nMesh=1,2,3 ·Ö±ğ¶ÔÓ¦ÓÃÏ¸Íø¸ñ¡¢´ÖÍø¸ñ¡¢¸ü´ÖÍø¸ñ
-! °üÀ¨2ÖØÍø¸ñºÍ3ÖØÍø¸ñÁ½¸ö×Ó³ÌĞò£»
+! å¤šé‡ç½‘æ ¼æ±‚è§£N-Sæ–¹ç¨‹ ï¼ˆæ¨è¿›1ä¸ªæ—¶é—´æ­¥ï¼‰
+! nMesh=1,2,3 åˆ†åˆ«å¯¹åº”ç”¨ç»†ç½‘æ ¼ã€ç²—ç½‘æ ¼ã€æ›´ç²—ç½‘æ ¼
+! åŒ…æ‹¬2é‡ç½‘æ ¼å’Œ3é‡ç½‘æ ¼ä¸¤ä¸ªå­ç¨‹åºï¼›
 ! Code by Li Xinliang & Leng Yan
 !---------------------------------------------------------------------------------------------
 !-----------------------------------------------------------------------------------------
-! Á½ÖØÍø¸ñÉÏÍÆ½ø1¸öÊ±¼ä²½ (3½×RK or 1th Euler)
+! ä¸¤é‡ç½‘æ ¼ä¸Šæ¨è¿›1ä¸ªæ—¶é—´æ­¥ (3é˜¶RK or 1th Euler)
   subroutine NS_2stge_multigrid
    use Global_var
    implicit none
    integer::nMesh,m
    Type (Block_TYPE),pointer:: B
-   integer,parameter:: Time_step_coarse_mesh=3       ! ´ÖÍø¸ñµü´ú²½Êı
+   integer,parameter:: Time_step_coarse_mesh=3       ! ç²—ç½‘æ ¼è¿­ä»£æ­¥æ•°
 !---------------------------------------------------
-! -------------------------  Íø¸ñ1 -----------------
+! -------------------------  ç½‘æ ¼1 -----------------
    if(Time_Method .eq. Time_Euler1) then
-	 call  NS_Time_advance_1Euler(1)                 ! Ï¸Íø¸ñ£¬1½×Euler·½·¨ÍÆ½ø1²½ -> U(n+1)
+	 call  NS_Time_advance_1Euler(1)                 ! ç»†ç½‘æ ¼ï¼Œ1é˜¶Euleræ–¹æ³•æ¨è¿›1æ­¥ -> U(n+1)
    else
-	 call  NS_Time_advance_RK3(1)                    ! Ï¸Íø¸ñ£¬RK·½·¨ÍÆ½ø1²½ -> U(n+1)
+	 call  NS_Time_advance_RK3(1)                    ! ç»†ç½‘æ ¼ï¼ŒRKæ–¹æ³•æ¨è¿›1æ­¥ -> U(n+1)
    endif 
-   call  Comput_Residual_one_mesh(1)                 ! ¼ÆËãÍø¸ñ1µÄ²Ğ²î R(n+1)  
-   call  interpolation2h(1,2,2)                      ! °Ñ²Ğ²î²åÖµµ½Íø¸ñ2 (´¢´æÔÚQFÀïÃæ)
-   call  interpolation2h(1,2,1)                      ! °ÑÊØºã±äÁ¿´ÓÍø¸ñ1²åÖµµ½Íø¸ñ2   £¨flag=1 ²åÖµÊØºã±äÁ¿£¬=2 ²åÖµ²Ğ²î£©
+   call  Comput_Residual_one_mesh(1)                 ! è®¡ç®—ç½‘æ ¼1çš„æ®‹å·® R(n+1)  
+   call  interpolation2h(1,2,2)                      ! æŠŠæ®‹å·®æ’å€¼åˆ°ç½‘æ ¼2 (å‚¨å­˜åœ¨QFé‡Œé¢)
+   call  interpolation2h(1,2,1)                      ! æŠŠå®ˆæ’å˜é‡ä»ç½‘æ ¼1æ’å€¼åˆ°ç½‘æ ¼2   ï¼ˆflag=1 æ’å€¼å®ˆæ’å˜é‡ï¼Œ=2 æ’å€¼æ®‹å·®ï¼‰
 !------------------------------
-   call  Boundary_condition_onemesh(2)               ! ÎïÀí±ß½çÌõ¼ş
-   call  update_buffer_onemesh(2)                    ! ÄÚ±ß½çÌõ¼ş
-   call  Comput_Residual_one_mesh(2)                 ! ¼ÆËãÍø¸ñ2µÄ²Ğ²î
-   call  comput_force_function(2)                    ! ¼ÆËãÇ¿ÆÈº¯ÊıQF
+   call  Boundary_condition_onemesh(2)               ! ç‰©ç†è¾¹ç•Œæ¡ä»¶
+   call  update_buffer_onemesh(2)                    ! å†…è¾¹ç•Œæ¡ä»¶
+   call  Comput_Residual_one_mesh(2)                 ! è®¡ç®—ç½‘æ ¼2çš„æ®‹å·®
+   call  comput_force_function(2)                    ! è®¡ç®—å¼ºè¿«å‡½æ•°QF
    if(Time_Method .eq. Time_Euler1) then
-	 call Set_Un(2)                                  ! ¼ÇÂ¼³õÊ¼Öµ  £¨RK·½·¨ÖĞÒÑ¾­°üº¬ÁË¸Ã²½£© 
+	 call Set_Un(2)                                  ! è®°å½•åˆå§‹å€¼  ï¼ˆRKæ–¹æ³•ä¸­å·²ç»åŒ…å«äº†è¯¥æ­¥ï¼‰ 
      do m=1, Time_step_coarse_mesh
-	   call  NS_Time_advance_1Euler(2)               ! 1½×Eulerµü´úÈô¸É²½
+	   call  NS_Time_advance_1Euler(2)               ! 1é˜¶Eulerè¿­ä»£è‹¥å¹²æ­¥
      enddo
    else 
-	 call  NS_Time_advance_RK3(2)                    ! RK·½·¨ÍÆ½ø1²½ £¨Íø¸ñ2£©
+	 call  NS_Time_advance_RK3(2)                    ! RKæ–¹æ³•æ¨è¿›1æ­¥ ï¼ˆç½‘æ ¼2ï¼‰
    endif
-   call  comput_delt_U(2)                            ! ¼ÆËãĞŞÕıÁ¿deltU £¨´¢´æÔÚUnÀïÃæ£©
-   call  prolong_U(2,1,2)                            ! °ÑĞŞÕıÁ¿²åÖµµ½Ï¸Íø¸ñ (´¢´æÔÚUnÀïÃæ); flag=2 ²åÖµdeltU (´¢´æÔÚUnÀï)
+   call  comput_delt_U(2)                            ! è®¡ç®—ä¿®æ­£é‡deltU ï¼ˆå‚¨å­˜åœ¨Uné‡Œé¢ï¼‰
+   call  prolong_U(2,1,2)                            ! æŠŠä¿®æ­£é‡æ’å€¼åˆ°ç»†ç½‘æ ¼ (å‚¨å­˜åœ¨Uné‡Œé¢); flag=2 æ’å€¼deltU (å‚¨å­˜åœ¨Uné‡Œ)
 !------------------------------------	 
-   call  comput_new_U(1)                             ! ¼ÆËãĞÂµÄU  (U=U+deltU)
-   call  Boundary_condition_onemesh(1)               ! ÎïÀí±ß½çÌõ¼ş
-   call  update_buffer_onemesh(1)                    ! ÄÚ±ß½çÌõ¼ş
+   call  comput_new_U(1)                             ! è®¡ç®—æ–°çš„U  (U=U+deltU)
+   call  Boundary_condition_onemesh(1)               ! ç‰©ç†è¾¹ç•Œæ¡ä»¶
+   call  update_buffer_onemesh(1)                    ! å†…è¾¹ç•Œæ¡ä»¶
 
   end subroutine NS_2stge_multigrid
 !------------------------------------------------------------------------------------------
 !-----------------------------------------------------------------------------------------
-! ÈıÖØÍø¸ñÉÏµü´ú1¸öÊ±¼ä²½ £¨V-ĞÍµü´ú£© 3½×RK or 1½×Euler
+! ä¸‰é‡ç½‘æ ¼ä¸Šè¿­ä»£1ä¸ªæ—¶é—´æ­¥ ï¼ˆV-å‹è¿­ä»£ï¼‰ 3é˜¶RK or 1é˜¶Euler
   subroutine NS_3stge_multigrid
    use Global_var
    implicit none
    integer::nMesh,m
-   integer,parameter:: Time_step_coarse_mesh=3       ! ´ÖÍø¸ñµü´ú²½Êı (¶Ô1½×EulerÓĞĞ§)
+   integer,parameter:: Time_step_coarse_mesh=3       ! ç²—ç½‘æ ¼è¿­ä»£æ­¥æ•° (å¯¹1é˜¶Euleræœ‰æ•ˆ)
 !---------------------------------------------------
-! ---- ---------------------------------- Íø¸ñ1 -----------------
+! ---- ---------------------------------- ç½‘æ ¼1 -----------------
    if(Time_Method .eq. Time_Euler1) then
-	 call  NS_Time_advance_1Euler(1)                 ! Ï¸Íø¸ñ£¬1½×Euler·½·¨ÍÆ½ø1²½ -> U(n+1)
+	 call  NS_Time_advance_1Euler(1)                 ! ç»†ç½‘æ ¼ï¼Œ1é˜¶Euleræ–¹æ³•æ¨è¿›1æ­¥ -> U(n+1)
    else
-	 call  NS_Time_advance_RK3(1)                    ! Ï¸Íø¸ñ£¬RK·½·¨ÍÆ½ø1²½ -> U(n+1)
+	 call  NS_Time_advance_RK3(1)                    ! ç»†ç½‘æ ¼ï¼ŒRKæ–¹æ³•æ¨è¿›1æ­¥ -> U(n+1)
    endif
-   call  Comput_Residual_one_mesh(1)                 ! ¼ÆËãÍø¸ñ1µÄ²Ğ²î R(n+1)   ! ????? ¸Ã²½ËÆºõ¿ÉÒÔÊ¡ÂÔ ?????  
+   call  Comput_Residual_one_mesh(1)                 ! è®¡ç®—ç½‘æ ¼1çš„æ®‹å·® R(n+1)   ! ????? è¯¥æ­¥ä¼¼ä¹å¯ä»¥çœç•¥ ?????  
 ! -----------------------------  
-   call  interpolation2h(1,2,2)                      ! °Ñ²Ğ²î²åÖµµ½Íø¸ñ2 (´¢´æÔÚÍø¸ñ2µÄQFÀïÃæ)
-   call  interpolation2h(1,2,1)                      ! °ÑÊØºã±äÁ¿´ÓÍø¸ñ1²åÖµµ½Íø¸ñ2 £¨´¢´æµ½UÀïÃæ£©  £¨flag=1 ²åÖµÊØºã±äÁ¿£¬=2 ²åÖµ²Ğ²î£©
-!-------Íø¸ñ2 --------------------
-   call  Boundary_condition_onemesh(2)               ! ÎïÀí±ß½çÌõ¼ş
-   call  update_buffer_onemesh(2)                    ! ÄÚ±ß½çÌõ¼ş
-   call  Comput_Residual_one_mesh(2)                 ! ¼ÆËãÍø¸ñ2µÄ²Ğ²î         Res_2h(0)
-   call  comput_force_function(2)                    ! ¼ÆËãÇ¿ÆÈº¯ÊıQF £¨Íø¸ñ2£©QF_2h=QF_2h-Res_2h(0) 
+   call  interpolation2h(1,2,2)                      ! æŠŠæ®‹å·®æ’å€¼åˆ°ç½‘æ ¼2 (å‚¨å­˜åœ¨ç½‘æ ¼2çš„QFé‡Œé¢)
+   call  interpolation2h(1,2,1)                      ! æŠŠå®ˆæ’å˜é‡ä»ç½‘æ ¼1æ’å€¼åˆ°ç½‘æ ¼2 ï¼ˆå‚¨å­˜åˆ°Ué‡Œé¢ï¼‰  ï¼ˆflag=1 æ’å€¼å®ˆæ’å˜é‡ï¼Œ=2 æ’å€¼æ®‹å·®ï¼‰
+!-------ç½‘æ ¼2 --------------------
+   call  Boundary_condition_onemesh(2)               ! ç‰©ç†è¾¹ç•Œæ¡ä»¶
+   call  update_buffer_onemesh(2)                    ! å†…è¾¹ç•Œæ¡ä»¶
+   call  Comput_Residual_one_mesh(2)                 ! è®¡ç®—ç½‘æ ¼2çš„æ®‹å·®         Res_2h(0)
+   call  comput_force_function(2)                    ! è®¡ç®—å¼ºè¿«å‡½æ•°QF ï¼ˆç½‘æ ¼2ï¼‰QF_2h=QF_2h-Res_2h(0) 
    if(Time_Method .eq. Time_Euler1) then
-	 call Set_Un(2)                                  ! ¼ÇÂ¼³õÊ¼Öµ  £¨RK·½·¨ÖĞÒÑ¾­°üº¬ÁË¸Ã²½£© 
+	 call Set_Un(2)                                  ! è®°å½•åˆå§‹å€¼  ï¼ˆRKæ–¹æ³•ä¸­å·²ç»åŒ…å«äº†è¯¥æ­¥ï¼‰ 
      do m=1, Time_step_coarse_mesh
-	   call  NS_Time_advance_1Euler(2)               ! 1½×Eulerµü´úÈô¸É²½
+	   call  NS_Time_advance_1Euler(2)               ! 1é˜¶Eulerè¿­ä»£è‹¥å¹²æ­¥
      enddo
    else 
-	 call  NS_Time_advance_RK3(2)                    ! RK·½·¨ÍÆ½ø1²½ £¨Íø¸ñ2£©
+	 call  NS_Time_advance_RK3(2)                    ! RKæ–¹æ³•æ¨è¿›1æ­¥ ï¼ˆç½‘æ ¼2ï¼‰
    endif
-   call  Comput_Residual_one_mesh(2)                 ! ¼ÆËãÍø¸ñ2µÄ²Ğ²î R_2h(n+1) 
-   call  Add_force_function(2)                       ! Ìí¼ÓÉÏÇ¿ÆÈ²Ğ²î(´¢´æÔÚResÀïÃæ)  RF_2h(n+1)=R_2h(n+1)+QF_2h  ;  Ä¿µÄ£º²åÖµµ½Íø¸ñ3ÉÏ
-   call  interpolation2h(2,3,2)                      ! °Ñ²Ğ²î²åÖµµ½Íø¸ñ3 (´¢´æÔÚÍø¸ñ3µÄQFÀïÃæ)
-   call  interpolation2h(2,3,1)                      ! °ÑÊØºã±äÁ¿´ÓÍø¸ñ2²åÖµµ½Íø¸ñ3 £¨´¢´æµ½UÀïÃæ£©  £¨flag=1 ²åÖµÊØºã±äÁ¿£¬=2 ²åÖµ²Ğ²î£©
-!------Íø¸ñ3----------------------	  
-   call  Boundary_condition_onemesh(3)               ! ±ß½çÌõ¼ş: ÎïÀí±ß½ç 
-   call  update_buffer_onemesh(3)                    ! ÄÚ±ß½ç
-   call  Comput_Residual_one_mesh(3)                 ! ¼ÆËãÍø¸ñ3µÄ²Ğ²î
-   call  comput_force_function(3)                    ! ¼ÆËãÇ¿ÆÈº¯ÊıQF £¨Íø¸ñ3£©
+   call  Comput_Residual_one_mesh(2)                 ! è®¡ç®—ç½‘æ ¼2çš„æ®‹å·® R_2h(n+1) 
+   call  Add_force_function(2)                       ! æ·»åŠ ä¸Šå¼ºè¿«æ®‹å·®(å‚¨å­˜åœ¨Resé‡Œé¢)  RF_2h(n+1)=R_2h(n+1)+QF_2h  ;  ç›®çš„ï¼šæ’å€¼åˆ°ç½‘æ ¼3ä¸Š
+   call  interpolation2h(2,3,2)                      ! æŠŠæ®‹å·®æ’å€¼åˆ°ç½‘æ ¼3 (å‚¨å­˜åœ¨ç½‘æ ¼3çš„QFé‡Œé¢)
+   call  interpolation2h(2,3,1)                      ! æŠŠå®ˆæ’å˜é‡ä»ç½‘æ ¼2æ’å€¼åˆ°ç½‘æ ¼3 ï¼ˆå‚¨å­˜åˆ°Ué‡Œé¢ï¼‰  ï¼ˆflag=1 æ’å€¼å®ˆæ’å˜é‡ï¼Œ=2 æ’å€¼æ®‹å·®ï¼‰
+!------ç½‘æ ¼3----------------------	  
+   call  Boundary_condition_onemesh(3)               ! è¾¹ç•Œæ¡ä»¶: ç‰©ç†è¾¹ç•Œ 
+   call  update_buffer_onemesh(3)                    ! å†…è¾¹ç•Œ
+   call  Comput_Residual_one_mesh(3)                 ! è®¡ç®—ç½‘æ ¼3çš„æ®‹å·®
+   call  comput_force_function(3)                    ! è®¡ç®—å¼ºè¿«å‡½æ•°QF ï¼ˆç½‘æ ¼3ï¼‰
    if(Time_Method .eq. Time_Euler1) then
 	 call Set_Un(3)
      do m=1, Time_step_coarse_mesh
-	   call  NS_Time_advance_1Euler(3)               ! 1½×Eulerµü´úÈô¸É²½
+	   call  NS_Time_advance_1Euler(3)               ! 1é˜¶Eulerè¿­ä»£è‹¥å¹²æ­¥
      enddo
    else 
-	 call  NS_Time_advance_RK3(3)                    ! RK·½·¨ÍÆ½ø1²½ £¨Íø¸ñ3£©
+	 call  NS_Time_advance_RK3(3)                    ! RKæ–¹æ³•æ¨è¿›1æ­¥ ï¼ˆç½‘æ ¼3ï¼‰
    endif
-   call  comput_delt_U(3)                            ! ¼ÆËãĞŞÕıÁ¿deltU (=U-Un)
-   call  prolong_U(3,2,2)                            ! °ÑĞŞÕıÁ¿²åÖµµ½Íø¸ñ2 (´¢´æÔÚdeltUÀïÃæ); flag=2 ²åÖµdeltU 
-!------Íø¸ñ2------------------------      
-   call  comput_new_U(2)                             ! Íø¸ñ2¼ÆËãĞÂµÄU  (U=U+deltU)
-   call  comput_delt_U(2)                            ! ¼ÆËãĞŞÕıÁ¿deltU =U-Un
-   call  prolong_U(2,1,2)                            ! °ÑĞŞÕıÁ¿²åÖµµ½Ï¸Íø¸ñ (´¢´æÔÚdeltUÀïÃæ); flag=2 ²åÖµdeltU 
-!------Íø¸ñ1------------------------------
-   call  comput_new_U(1)                             ! ¼ÆËãĞÂµÄU  (U=U+deltU)
-   call Boundary_condition_onemesh(1)                ! ÎïÀí±ß½çÌõ¼ş
-   call update_buffer_onemesh(1)                     ! ÄÚ±ß½çÌõ¼ş
+   call  comput_delt_U(3)                            ! è®¡ç®—ä¿®æ­£é‡deltU (=U-Un)
+   call  prolong_U(3,2,2)                            ! æŠŠä¿®æ­£é‡æ’å€¼åˆ°ç½‘æ ¼2 (å‚¨å­˜åœ¨deltUé‡Œé¢); flag=2 æ’å€¼deltU 
+!------ç½‘æ ¼2------------------------      
+   call  comput_new_U(2)                             ! ç½‘æ ¼2è®¡ç®—æ–°çš„U  (U=U+deltU)
+   call  comput_delt_U(2)                            ! è®¡ç®—ä¿®æ­£é‡deltU =U-Un
+   call  prolong_U(2,1,2)                            ! æŠŠä¿®æ­£é‡æ’å€¼åˆ°ç»†ç½‘æ ¼ (å‚¨å­˜åœ¨deltUé‡Œé¢); flag=2 æ’å€¼deltU 
+!------ç½‘æ ¼1------------------------------
+   call  comput_new_U(1)                             ! è®¡ç®—æ–°çš„U  (U=U+deltU)
+   call Boundary_condition_onemesh(1)                ! ç‰©ç†è¾¹ç•Œæ¡ä»¶
+   call update_buffer_onemesh(1)                     ! å†…è¾¹ç•Œæ¡ä»¶
 
   end subroutine NS_3stge_multigrid
 
 !------------------------------------------------------------------------------------------
 !------------------------------------------------------------------------------------------
   
-!  ¼ÆËãÇ¿ÆÈº¯Êı QF=Ih_to_2h Res(n-1) - Res(n)        ! QFÖĞ´¢´æ×ÅÏ¸Íø¸ñ²åÖµ¹ıÀ´µÄ²Ğ²î
+!  è®¡ç®—å¼ºè¿«å‡½æ•° QF=Ih_to_2h Res(n-1) - Res(n)        ! QFä¸­å‚¨å­˜ç€ç»†ç½‘æ ¼æ’å€¼è¿‡æ¥çš„æ®‹å·®
   subroutine comput_force_function(nMesh)
    use Global_var
    implicit none
@@ -573,7 +573,7 @@
        do j=-1,B%ny+1
 	     do i=-1,B%nx+1
 	       do m=1,NVAR1
-	         B%QF(m,i,j,k)=B%QF(m,i,j,k)-B%Res(m,i,j,k)            ! QFÔ­ÏÈ´¢´æ×Å´ÓÏ¸Íø¸ñ²åÖµ¹ıÀ´µÄ²Ğ²î
+	         B%QF(m,i,j,k)=B%QF(m,i,j,k)-B%Res(m,i,j,k)            ! QFåŸå…ˆå‚¨å­˜ç€ä»ç»†ç½‘æ ¼æ’å€¼è¿‡æ¥çš„æ®‹å·®
            enddo
 	     enddo
        enddo
@@ -584,7 +584,7 @@
   end  subroutine comput_force_function
 
 !------------------------------------------------------------
-!  °ÑÇ¿ÆÈº¯ÊıÌí¼Óµ½²Ğ²îÖĞ RF=R+QF        
+!  æŠŠå¼ºè¿«å‡½æ•°æ·»åŠ åˆ°æ®‹å·®ä¸­ RF=R+QF        
   subroutine Add_force_function(nMesh)
    use Global_var
    implicit none
@@ -598,7 +598,7 @@
        do j=-1,B%ny+1
 	     do i=-1,B%nx+1
 	       do m=1,NVAR1
-	         B%Res(m,i,j,k)=B%Res(m,i,j,k)+B%QF(m,i,j,k)            ! Ìí¼ÓÇ¿ÆÈº¯ÊıºóµÄ²Ğ²îÈÔ´¢´æÔÚB%ResÀïÃæ £¨½ÚÊ¡ÄÚ´æ£©
+	         B%Res(m,i,j,k)=B%Res(m,i,j,k)+B%QF(m,i,j,k)            ! æ·»åŠ å¼ºè¿«å‡½æ•°åçš„æ®‹å·®ä»å‚¨å­˜åœ¨B%Resé‡Œé¢ ï¼ˆèŠ‚çœå†…å­˜ï¼‰
            enddo
 	     enddo
        enddo
@@ -609,7 +609,7 @@
   end  subroutine Add_force_function
 
 !----------------------------------------------------------------------  
-!  ¼ÆËãĞŞÕıÁ¿ deltU=U-Un
+!  è®¡ç®—ä¿®æ­£é‡ deltU=U-Un
   subroutine comput_delt_U(nMesh)
    use Global_var
    implicit none
@@ -631,7 +631,7 @@
   enddo
   end  subroutine comput_delt_U
 !-----------------------------------------------------------------------
-! Éè¶¨Un=U
+! è®¾å®šUn=U
   subroutine Set_Un(nMesh)
    use Global_var
    implicit none
@@ -654,7 +654,7 @@
    enddo
   
   end  subroutine Set_Un
-!-------------------------------ĞŞÕıU --------------------------------------
+!-------------------------------ä¿®æ­£U --------------------------------------
   subroutine comput_new_U(nMesh)
    use Global_var
    implicit none
@@ -666,8 +666,8 @@
 	 do k=-1,B%nz+1
        do j=-1,B%ny+1
 	     do i=-1,B%nx+1
-	       do m=1,5                                             ! µÚ6¸öÁ¿ÊÇÍÄÁ÷Õ³ĞÔÏµÊıvt (SAÄ£ĞÍÊ¹ÓÃ),²»ĞèÒªĞŞÕı
-	         B%U(m,i,j,k)=B%U(m,i,j,k)+B%deltU(m,i,j,k)         ! UnÀïÃæ´¢´æµÄÊÇUµÄĞŞÕıÁ¿ £¨´Ó´ÖÍø¸ñ²åÖµ¶øÀ´£©
+	       do m=1,5                                             ! ç¬¬6ä¸ªé‡æ˜¯æ¹æµç²˜æ€§ç³»æ•°vt (SAæ¨¡å‹ä½¿ç”¨),ä¸éœ€è¦ä¿®æ­£
+	         B%U(m,i,j,k)=B%U(m,i,j,k)+B%deltU(m,i,j,k)         ! Uné‡Œé¢å‚¨å­˜çš„æ˜¯Uçš„ä¿®æ­£é‡ ï¼ˆä»ç²—ç½‘æ ¼æ’å€¼è€Œæ¥ï¼‰
            enddo
 	     enddo
        enddo
@@ -677,11 +677,11 @@
 
   end  subroutine comput_new_U
 !---------------------------------------------------------------------------
-! ´ÖÍø¸ñÏòÏ¸Íø¸ñµÄ²åÖµ(Prolong) ¼° Ï¸Íø¸ñÏò´ÖÍø¸ñÉÏ²åÖµ (interpolation)
+! ç²—ç½‘æ ¼å‘ç»†ç½‘æ ¼çš„æ’å€¼(Prolong) åŠ ç»†ç½‘æ ¼å‘ç²—ç½‘æ ¼ä¸Šæ’å€¼ (interpolation)
 !----------------------------------------------------------------------
-! ½«Íø¸ñm1µÄÊØºã±äÁ¿(U) »òUµÄ²î²åÖµµ½Íø¸ñm2 (ÉÏÒ»¼¶Ï¸Íø¸ñ)
-! flag=1Ê±£¬½«U²åÖµµ½ÉÏÒ»¼¶Íø¸ñ£»  (×¼±¸³õÖµÊ±Ê¹ÓÃ)
-! flag=2Ê±£¬½«deltU²åÖµµ½ÉÏÒ»¼¶Íø¸ñ £¨deltU´¢´æ×Å±¾Ê±¼ä²½ÓëÉÏ¸öÊ±¼ä²½UµÄ²î£© 
+! å°†ç½‘æ ¼m1çš„å®ˆæ’å˜é‡(U) æˆ–Uçš„å·®æ’å€¼åˆ°ç½‘æ ¼m2 (ä¸Šä¸€çº§ç»†ç½‘æ ¼)
+! flag=1æ—¶ï¼Œå°†Uæ’å€¼åˆ°ä¸Šä¸€çº§ç½‘æ ¼ï¼›  (å‡†å¤‡åˆå€¼æ—¶ä½¿ç”¨)
+! flag=2æ—¶ï¼Œå°†deltUæ’å€¼åˆ°ä¸Šä¸€çº§ç½‘æ ¼ ï¼ˆdeltUå‚¨å­˜ç€æœ¬æ—¶é—´æ­¥ä¸ä¸Šä¸ªæ—¶é—´æ­¥Uçš„å·®ï¼‰ 
 
   Subroutine prolong_U(m1,m2,flag)
    use Global_Var
@@ -697,7 +697,7 @@
        B1=>MP1%Block(mb)
 	   B2=>Mp2%Block(mb)
 	   if(flag .eq. 1) then
-!	   call prolongation(B1%nx,B1%ny,B1%nz,B2%nx,B2%ny,B2%nz,B1%U(1,-1,-1,-1),B2%U(1,-1,-1,-1))   ! ¾ÉµÄ³ÌĞò½Ó¿Ú£¬ÓëĞÂ°æFortran²»¼æÈİ
+!	   call prolongation(B1%nx,B1%ny,B1%nz,B2%nx,B2%ny,B2%nz,B1%U(1,-1,-1,-1),B2%U(1,-1,-1,-1))   ! æ—§çš„ç¨‹åºæ¥å£ï¼Œä¸æ–°ç‰ˆFortranä¸å…¼å®¹
 	    call prolongation(B1%nx,B1%ny,B1%nz,B2%nx,B2%ny,B2%nz,B1%U,B2%U)
   	   else
 !	    call prolongation(B1%nx,B1%ny,B1%nz,B2%nx,B2%ny,B2%nz,B1%deltU(1,-1,-1,-1),B2%deltU(1,-1,-1,-1))
@@ -707,8 +707,8 @@
 
   end Subroutine prolong_U
 !-------------------------------------------------------------
-!   ´ÖÍø¸ñÏòÏ¸Íø¸ñÉÏµÄ²åÖµ     
-!   U1ÊÇ´ÖÍø¸ñÉÏµÄÖµ£» U2ÊÇÏ¸Íø¸ñÉÏµÄÖµ
+!   ç²—ç½‘æ ¼å‘ç»†ç½‘æ ¼ä¸Šçš„æ’å€¼     
+!   U1æ˜¯ç²—ç½‘æ ¼ä¸Šçš„å€¼ï¼› U2æ˜¯ç»†ç½‘æ ¼ä¸Šçš„å€¼
   subroutine prolongation(nx1,ny1,nz1,nx2,ny2,nz2,U1,U2)
    use precision_EC
    implicit none
@@ -717,20 +717,20 @@
  !   real(PRE_EC):: U1(NVAR,-1:nx1+1,-1:ny1+1,-1:nz1+1),U2(NVAR,-1:nx2+1,-1:ny2+1,-1:nz2+1)
     integer:: ia(2,0:nx2),ja(2,0:ny2),ka(2,0:nz2),U_bound(4)
  !   integer,parameter::NVAR=6
-    real(PRE_EC),parameter:: a1=27.d0/64.d0,a2=9.d0/64.d0,a3=3.d0/64.d0,a4=1.d0/64.d0   ! ²åÖµÏµÊı
+    real(PRE_EC),parameter:: a1=27.d0/64.d0,a2=9.d0/64.d0,a3=3.d0/64.d0,a4=1.d0/64.d0   ! æ’å€¼ç³»æ•°
     
-!  Ñ°ÕÒ²åÖµ»ù¼ÜµãµÄÏÂ±ê 
-!  ia(1,i) ÊÇ¾àÀëiµã×î½üµÄ´ÖÍø¸ñµãµÄÏÂ±ê£»ia(2,i)ÊÇ´Î½üµãµÄÏÂ±ê	 
-    U_bound=UBOUND(U1)   ! µÚ1Î¬µÄÉÏ½ç £¨NVAR)
+!  å¯»æ‰¾æ’å€¼åŸºæ¶ç‚¹çš„ä¸‹æ ‡ 
+!  ia(1,i) æ˜¯è·ç¦»iç‚¹æœ€è¿‘çš„ç²—ç½‘æ ¼ç‚¹çš„ä¸‹æ ‡ï¼›ia(2,i)æ˜¯æ¬¡è¿‘ç‚¹çš„ä¸‹æ ‡	 
+    U_bound=UBOUND(U1)   ! ç¬¬1ç»´çš„ä¸Šç•Œ ï¼ˆNVAR)
     NV=U_bound(1)   ! NVAR= 5, 6 or 7 
     
    do i=0,nx2
 	 if(mod(i,2).eq.0) then
-	   ia(1,i)=i/2                    !×î½üµã
-	   ia(2,i)=i/2+1                  !´Î½üµã
+	   ia(1,i)=i/2                    !æœ€è¿‘ç‚¹
+	   ia(2,i)=i/2+1                  !æ¬¡è¿‘ç‚¹
 	 else  
-	   ia(1,i)=i/2+1                  !×î½üµã
-	   ia(2,i)=i/2                    !´Î½üµã
+	   ia(1,i)=i/2+1                  !æœ€è¿‘ç‚¹
+	   ia(2,i)=i/2                    !æ¬¡è¿‘ç‚¹
 	 endif
    enddo
    do j=0,ny2
@@ -744,11 +744,11 @@
    enddo
    do k=0,nz2
 	 if(mod(k,2).eq.0) then
-	   ka(1,k)=k/2                    !×î½üµã
-	   ka(2,k)=k/2+1                  !´Î½üµã
+	   ka(1,k)=k/2                    !æœ€è¿‘ç‚¹
+	   ka(2,k)=k/2+1                  !æ¬¡è¿‘ç‚¹
 	 else  
-	   ka(1,k)=k/2+1                  !×î½üµã
-	   ka(2,k)=k/2                    !´Î½üµã
+	   ka(1,k)=k/2+1                  !æœ€è¿‘ç‚¹
+	   ka(2,k)=k/2                    !æ¬¡è¿‘ç‚¹
 	 endif
    enddo
 !$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i,j,k,m)
@@ -757,7 +757,7 @@
 	 do j=0,ny2
 	   do i=0,nx2
 	     do m=1,NV
-!               ²åÖµ£¬×î½üµãµÄÈ¨ÖØa1, ´Î½üµãµÄÈ¨ÖØa2, ×îÔ¶µãµÄÈ¨ÖØa3	 
+!               æ’å€¼ï¼Œæœ€è¿‘ç‚¹çš„æƒé‡a1, æ¬¡è¿‘ç‚¹çš„æƒé‡a2, æœ€è¿œç‚¹çš„æƒé‡a3	 
 	       U2(m,i,j,k)=a1*U1(m,ia(1,i),ja(1,j),ka(1,k))+a2*(U1(m,ia(2,i),ja(1,j),ka(1,k))+U1(m,ia(1,i),ja(2,j),ka(1,k)) &
 	                   +U1(m,ia(1,i),ja(1,j),ka(2,k)))+a3*(U1(m,ia(2,i),ja(1,j),ka(2,k))+U1(m,ia(1,i),ja(2,j),ka(2,k)) &
 	                   +U1(m,ia(2,i),ja(2,j),ka(1,k)))+a4*U1(m,ia(2,i),ja(2,j),ka(2,k))
@@ -768,7 +768,7 @@
 !$OMP END PARALLEL DO 
   end subroutine prolongation
 !---------------------------------------------------------------------------------
-! ½«Íø¸ñm1µÄÊØºã±äÁ¿U²åÖµµ½Íø¸ñm2 (Ï¸Íø¸ñ->´ÖÍø¸ñ) 
+! å°†ç½‘æ ¼m1çš„å®ˆæ’å˜é‡Uæ’å€¼åˆ°ç½‘æ ¼m2 (ç»†ç½‘æ ¼->ç²—ç½‘æ ¼) 
   Subroutine interpolation2h(m1,m2,flag)
    use Global_Var
    implicit none
@@ -776,15 +776,15 @@
    Type (Block_TYPE),pointer:: B1,B2
    real(PRE_EC),dimension(:,:,:,:),pointer:: P1,P2
    integer:: NVAR1,flag,m1,m2,mb,i,j,k,m,i1,i2,j1,j2,k1,k2
-!  flag==1 ²åÖµÊØºã±äÁ¿£» flag==2 ²åÖµ²Ğ²î
+!  flag==1 æ’å€¼å®ˆæ’å˜é‡ï¼› flag==2 æ’å€¼æ®‹å·®
    if( m2-m1 .ne. 1) print*, "Error !!!!"
      MP1=>Mesh(m1)
      MP2=>Mesh(m2) 
-	 NVAR1=5              ! Ö»²åÖµ5¸öÊØºã±äÁ¿  
+	 NVAR1=5              ! åªæ’å€¼5ä¸ªå®ˆæ’å˜é‡  
      do mb=1,MP1%Num_Block
        B1=>MP1%Block(mb)
   	   B2=>Mp2%Block(mb)
-       if(flag .eq. 1) then  ! ²åÖµÊØºã±äÁ¿
+       if(flag .eq. 1) then  ! æ’å€¼å®ˆæ’å˜é‡
 	     P1=>B1%U
 	     P2=>B2%U
 !$OMP PARALLEL DO DEFAULT(PRIVATE) SHARED(B1,B2,NVAR1,P1,P2)
@@ -795,7 +795,7 @@
 	           j1=2*j-1 ; j2=2*j
 	           k1=2*k-1 ; k2=2*k
                do m=1,NVAR1
-!     ÒÔ¿ØÖÆÌåÌå»ıÎªÈ¨ÖØµÄ¼ÓÈ¨Æ½¾ù 	 
+!     ä»¥æ§åˆ¶ä½“ä½“ç§¯ä¸ºæƒé‡çš„åŠ æƒå¹³å‡ 	 
 	             P2(m,i,j,k)=(P1(m,i1,j1,k1)*B1%Vol(i1,j1,k1)+P1(m,i1,j2,k1)*B1%Vol(i1,j2,k1)   &
 		                      +P1(m,i1,j2,k2)*B1%Vol(i1,j2,k2)+P1(m,i2,j1,k1)*B1%Vol(i2,j1,k1)   &
 	                          +P1(m,i2,j1,k2)*B1%Vol(i2,j1,k2)+P1(m,i2,j2,k1)*B1%Vol(i2,j2,k1)   &
@@ -806,7 +806,7 @@
 	     enddo
 !$OMP END PARALLEL DO 
 
-       else     ! ²åÖµ²Ğ²î  £¨°Ñm1Íø¸ñÉÏµÄ²Ğ²îB%Res ²åÖµµ½m2Íø¸ñÉÏB%QF (È»ºó¼õÈ¥±¾m2Íø¸ñÉÏµÄ²Ğ²î£¬ĞÎ³ÉÇ¿ÆÈº¯Êı)£©
+       else     ! æ’å€¼æ®‹å·®  ï¼ˆæŠŠm1ç½‘æ ¼ä¸Šçš„æ®‹å·®B%Res æ’å€¼åˆ°m2ç½‘æ ¼ä¸ŠB%QF (ç„¶åå‡å»æœ¬m2ç½‘æ ¼ä¸Šçš„æ®‹å·®ï¼Œå½¢æˆå¼ºè¿«å‡½æ•°)ï¼‰
    	     P1=>B1%Res
 	     P2=>B2%QF
 
@@ -818,7 +818,7 @@
 	           j1=2*j-1 ; j2=2*j
 	           k1=2*k-1 ; k2=2*k
                do m=1,NVAR1
-	             P2(m,i,j,k)=P1(m,i1,j1,k1)+P1(m,i1,j2,k1)+P1(m,i1,j2,k2)+P1(m,i2,j1,k1)   &    ! ²Ğ²îµÄ²åÖµ£º ¼òµ¥Ïà¼Ó
+	             P2(m,i,j,k)=P1(m,i1,j1,k1)+P1(m,i1,j2,k1)+P1(m,i1,j2,k2)+P1(m,i2,j1,k1)   &    ! æ®‹å·®çš„æ’å€¼ï¼š ç®€å•ç›¸åŠ 
 		                     +P1(m,i2,j1,k2)+P1(m,i2,j2,k1)+P1(m,i2,j2,k2)+P1(m,i1,j1,k2)
   	           enddo
 	         enddo

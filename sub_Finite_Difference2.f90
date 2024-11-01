@@ -1,7 +1,7 @@
 
 
 
-! ÓÃ²î·Ö·¨¼ÆËãÍ¨Á¿ £¨Ïàµ±ÓÚ²¹¶¡³ÌĞò£©
+! ç”¨å·®åˆ†æ³•è®¡ç®—é€šé‡ ï¼ˆç›¸å½“äºè¡¥ä¸ç¨‹åºï¼‰
 
    subroutine Residual_FDM(nMesh,mBlock)
    Use Global_Var
@@ -16,10 +16,10 @@
      MP=> Mesh(nMesh)
      B => MP%Block(mBlock)
 	 Bm=>FDM_Mesh(nMesh)%Block(mBlock)
-     nx=B%nx-1 ; ny=B%ny-1 ; nz=B%nz-1   ! Íø¸ñÖĞĞÄµãµÄÊıÄ¿   
+     nx=B%nx-1 ; ny=B%ny-1 ; nz=B%nz-1   ! ç½‘æ ¼ä¸­å¿ƒç‚¹çš„æ•°ç›®   
      NVAR1=MP%NVAR
 !	print*, "------------------------------------------------"
-!   Ö÷¸É³ÌĞòÓë²î·Ö·¨×Ó³ÌĞò£¨²¹¶¡³ÌĞò£©Ö®¼äµÄ½Ó¿Ú
+!   ä¸»å¹²ç¨‹åºä¸å·®åˆ†æ³•å­ç¨‹åºï¼ˆè¡¥ä¸ç¨‹åºï¼‰ä¹‹é—´çš„æ¥å£
    call Residual_FDM_local(NVAR1,nx,ny,nz,B%Res(1,-1,-1,-1),    &
        d(1-LAP,1-LAP,1-LAP), uu(1-LAP,1-LAP,1-LAP), v(1-LAP,1-LAP,1-LAP),   & 
 	   w(1-LAP,1-LAP,1-LAP),p(1-LAP,1-LAP,1-LAP), T(1-LAP,1-LAP,1-LAP),  &
@@ -44,21 +44,21 @@
 !----- i- direction --------------------------------------------------------------------------
 
 
-! ÀûÓÃ²î·Ö·½·¨¼ÆËãÍ¨Á¿
-! ½Ó¿Ú¼òµ¥£¬½öĞè´«Èë¼¸ºÎÁ¿£¨×ø±êÓëJocabian±ä»»ÏµÊı£©¼°ÎïÀíÁ¿(°üÀ¨²ãÁ÷¼°ÍÄÁ÷Õ³ĞÔÏµÊı)£¬·µ»ØÁ÷Í¨Á¿
+! åˆ©ç”¨å·®åˆ†æ–¹æ³•è®¡ç®—é€šé‡
+! æ¥å£ç®€å•ï¼Œä»…éœ€ä¼ å…¥å‡ ä½•é‡ï¼ˆåæ ‡ä¸Jocabianå˜æ¢ç³»æ•°ï¼‰åŠç‰©ç†é‡(åŒ…æ‹¬å±‚æµåŠæ¹æµç²˜æ€§ç³»æ•°)ï¼Œè¿”å›æµé€šé‡
 
 
 
    subroutine Residual_FDM_local(NVAR,nx,ny,nz,Res,d,u,v,w,p,T,mu,mut,ix,iy,iz,jx,jy,jz,kx,ky,kz,Jac,Cp,Pr,Prt,FD_Flux,FD_scheme)
    use   const_var
    implicit none
-   integer:: NVAR,nx,ny,nz   ! ´¢´æ±äÁ¿µãµÄÊıÄ¿£¨Èç±äÁ¿´¢´æÔÚÍø¸ñÖĞĞÄ£¬ÔòÎªÍø¸ñÖĞĞÄµãµÄÊıÄ¿£©
-!                           ×¢£¬ÕâÀïµÄnx,ny,nzÓëÖ÷¸É³ÌĞòÖĞµÄB%nx, B%ny, B%nz ²»Í¬¡£ Ö÷¸É³ÌĞòÎªÍø¸ñ½ÚµãµÄÊıÄ¿£¬±¾×Ó³ÌĞònx,ny,nzÎªÍø¸ñÖĞĞÄµãµÄÊıÄ¿
+   integer:: NVAR,nx,ny,nz   ! å‚¨å­˜å˜é‡ç‚¹çš„æ•°ç›®ï¼ˆå¦‚å˜é‡å‚¨å­˜åœ¨ç½‘æ ¼ä¸­å¿ƒï¼Œåˆ™ä¸ºç½‘æ ¼ä¸­å¿ƒç‚¹çš„æ•°ç›®ï¼‰
+!                           æ³¨ï¼Œè¿™é‡Œçš„nx,ny,nzä¸ä¸»å¹²ç¨‹åºä¸­çš„B%nx, B%ny, B%nz ä¸åŒã€‚ ä¸»å¹²ç¨‹åºä¸ºç½‘æ ¼èŠ‚ç‚¹çš„æ•°ç›®ï¼Œæœ¬å­ç¨‹åºnx,ny,nzä¸ºç½‘æ ¼ä¸­å¿ƒç‚¹çš„æ•°ç›®
    
- !  real(PRE_EC),dimension(-1:nx+2,-1:ny+2,-1:nz+2):: d,u,v,w,p,T  ! ÓëÖ÷¸É³ÌĞò (OpenCFD-EC) ½á¹¹Ò»ÖÂ£¬ ÈçÓëÆäËûÖ÷¸É³ÌĞòÏÎ½Ó£¬¿ÉĞŞ¸Ä
-   real(PRE_EC),dimension(1-LAP:nx+LAP,1-LAP:ny+LAP,1-LAP:nz+LAP):: d,u,v,w,p,T  ! ÓëÖ÷¸É³ÌĞò (OpenCFD-EC) ½á¹¹Ò»ÖÂ£¬ ÈçÓëÆäËûÖ÷¸É³ÌĞòÏÎ½Ó£¬¿ÉĞŞ¸Ä
-   real(PRE_EC),dimension(-1:nx+2,-1:ny+2,-1:nz+2):: mu,mut         ! ²ãÁ÷¼°ÍÄÁ÷Õ³ĞÔÏµÊı, 
-   real(PRE_EC),dimension(NVAR,-1:nx+2,-1:ny+2,-1:nz+2 ):: Res     ! ²Ğ²î£¨ÓÒ¶ËÏî£©, Êı¾İ½á¹¹ÓëÖ÷¸É³ÌĞò(opencfd-ec)Ò»ÖÂ
+ !  real(PRE_EC),dimension(-1:nx+2,-1:ny+2,-1:nz+2):: d,u,v,w,p,T  ! ä¸ä¸»å¹²ç¨‹åº (OpenCFD-EC) ç»“æ„ä¸€è‡´ï¼Œ å¦‚ä¸å…¶ä»–ä¸»å¹²ç¨‹åºè¡”æ¥ï¼Œå¯ä¿®æ”¹
+   real(PRE_EC),dimension(1-LAP:nx+LAP,1-LAP:ny+LAP,1-LAP:nz+LAP):: d,u,v,w,p,T  ! ä¸ä¸»å¹²ç¨‹åº (OpenCFD-EC) ç»“æ„ä¸€è‡´ï¼Œ å¦‚ä¸å…¶ä»–ä¸»å¹²ç¨‹åºè¡”æ¥ï¼Œå¯ä¿®æ”¹
+   real(PRE_EC),dimension(-1:nx+2,-1:ny+2,-1:nz+2):: mu,mut         ! å±‚æµåŠæ¹æµç²˜æ€§ç³»æ•°, 
+   real(PRE_EC),dimension(NVAR,-1:nx+2,-1:ny+2,-1:nz+2 ):: Res     ! æ®‹å·®ï¼ˆå³ç«¯é¡¹ï¼‰, æ•°æ®ç»“æ„ä¸ä¸»å¹²ç¨‹åº(opencfd-ec)ä¸€è‡´
 
    real(PRE_EC):: fluxi(nx,5),fluxj(ny,5),fluxk(nz,5)
    real(PRE_EC),dimension(nx,ny,nz):: ix,iy,iz,jx,jy,jz,kx,ky,kz,Jac
@@ -72,7 +72,7 @@
    real(PRE_EC):: ui,vi,wi,Ti,uj,vj,wj,Tj,uk,vk,wk,Tk,ux,vx,wx,Tx,uy,vy,wy,Ty,uz,vz,wz,Tz,t11,t12,t13,t22,t23,t33,E1,E2,E3
    real(PRE_EC):: A1,A2,A3
 
-! ÎŞÕ³Í¨Á¿µÄ¼ÆËã
+! æ— ç²˜é€šé‡çš„è®¡ç®—
 !--------i- -----------------------------------
       
        do k=4,nz-3
@@ -168,10 +168,10 @@
  
 !--------------------------------------------------------------------------
 !--------------------------------------------------------------------------
-!   Õ³ĞÔÍ¨Á¿µÄ¼ÆËã
+!   ç²˜æ€§é€šé‡çš„è®¡ç®—
     allocate(EV1(nx,ny,nz,4),Ev2(nx,ny,nz,4),EV3(nx,ny,nz,4))
 
-!  ¼ÆËãÓ¦Á¦ÕÅÁ¿ÓëÈÈÁ÷Ïî  (2½×ÖĞĞÄ²î·Ö)
+!  è®¡ç®—åº”åŠ›å¼ é‡ä¸çƒ­æµé¡¹  (2é˜¶ä¸­å¿ƒå·®åˆ†)
    do k=2,nz-1
    do j=2,ny-1
    do i=2,nx-1
@@ -206,8 +206,8 @@
      wz=wi*iz(i,j,k)+wj*jz(i,j,k)+wk*kz(i,j,k)
      Tz=Ti*iz(i,j,k)+Tj*jz(i,j,k)+Tk*kz(i,j,k)
 
-     Amu=mu(i,j,k)+mut(i,j,k)                      ! ²ãÁ÷+ÍÄÁ÷Õ³ĞÔÏµÊı
-	 Amk=Cp*(mu(i,j,k)/Pr + mut(i,j,k)/Prt)        ! ²ãÁ÷+ÍÄÁ÷ÈÈ´«µ¼ÏµÊı
+     Amu=mu(i,j,k)+mut(i,j,k)                      ! å±‚æµ+æ¹æµç²˜æ€§ç³»æ•°
+	 Amk=Cp*(mu(i,j,k)/Pr + mut(i,j,k)/Prt)        ! å±‚æµ+æ¹æµçƒ­ä¼ å¯¼ç³»æ•°
 
      t11=(4.d0/3.d0*ux-2.d0/3.d0*(vy+wz))*Amu
      t22=(4.d0/3.d0*vy-2.d0/3.d0*(ux+wz))*Amu
@@ -240,13 +240,13 @@
    enddo
    enddo
 
-!  ¼ÆËãÕ³ĞÔÍ¨Á¿
+!  è®¡ç®—ç²˜æ€§é€šé‡
    do k=4,nz-3
    do j=4,ny-3
    do i=4,nx-3
    do m=2,5
     Res(m,i,j,k)=Res(m,i,j,k) +  0.5*(Ev1(i+1,j,k,m-1)-Ev1(i-1,j,k,m-1)   &
-	    +Ev2(i,j+1,k,m-1)-Ev2(i,j-1,k,m-1)+Ev3(i,j,k+1,m-1)-Ev3(i,j,k-1,m-1)  )                     ! 2½×ÖĞĞÄ²î·Ö   
+	    +Ev2(i,j+1,k,m-1)-Ev2(i,j-1,k,m-1)+Ev3(i,j,k+1,m-1)-Ev3(i,j,k-1,m-1)  )                     ! 2é˜¶ä¸­å¿ƒå·®åˆ†   
    enddo
    enddo
    enddo
@@ -271,7 +271,7 @@
           vs,uc1,uc2,vc1,vc2,wc1,wc2,vvc1,vvc2,vv,W2,P2 
     real(PRE_EC),parameter:: epsl=1.d-10      ! 
        
-!c El ÎªÌØÕ÷Öµ,ÆäÖĞEl(:,1)Îªx·½ÏòµÄÌØÕ÷Öµ£¨5¸ö£¬ u, u, u, u+c, u-c)
+!c El ä¸ºç‰¹å¾å€¼,å…¶ä¸­El(:,1)ä¸ºxæ–¹å‘çš„ç‰¹å¾å€¼ï¼ˆ5ä¸ªï¼Œ u, u, u, u+c, u-c)
         
       tmp1=2.d0*(gamma-1.d0)
       tmp2=1.d0/(2.d0*gamma)
@@ -384,7 +384,7 @@
 !		  W2=vvc2*(0.5d0*((1.d0-gamma)*vs*vs-2.d0*(gamma-1.d0)*vs*cc+2.d0*cc*cc)/(gamma*gamma-1.d0)+0.5d0*(u*u+v*v+w*w))
 		  W1=vvc1*(((1.d0-gamma)*vs*vs+2.d0*(gamma-1.d0)*vs*cc+2.d0*cc*cc)/(gamma*gamma-1.d0)+0.5d0*(u*u+v*v+w*w))
 		  W2=vvc2*(((1.d0-gamma)*vs*vs-2.d0*(gamma-1.d0)*vs*cc+2.d0*cc*cc)/(gamma*gamma-1.d0)+0.5d0*(u*u+v*v+w*w))
-!		  W1=vvc1*(cc*cc/(gamma-1.d0)+0.5d0*(u*u+v*v+w*w))  !¿ÉÊ¹¶¨³£Á÷ÖĞ×ÜìÊÊØºã
+!		  W1=vvc1*(cc*cc/(gamma-1.d0)+0.5d0*(u*u+v*v+w*w))  !å¯ä½¿å®šå¸¸æµä¸­æ€»ç„“å®ˆæ’
 !		  W2=vvc2*(cc*cc/(gamma-1.d0)+0.5d0*(u*u+v*v+w*w))
 		  fp(1)=tmp0*vvc1
           fp(2)=tmp0*vvc1*(u+ak1*(-vs+2.d0*cc)/gamma)
@@ -410,16 +410,16 @@
        integer:: nx,FD_scheme
 	   real(PRE_EC):: v(nx),hj(nx)
      if(FD_scheme .eq. FD_WENO5) then
-       call fp_weno5(nx,v,hj)           ! ²ÉÓÃ5½×WENO
+       call fp_weno5(nx,v,hj)           ! é‡‡ç”¨5é˜¶WENO
 	 else if(FD_scheme .eq. FD_WENO7) then
-	   call fp_weno7(nx,v,hj)           ! ÄÚµã²ÉÓÃWENO 7
-       call fp_weno5_onepoint(nx,v,hj,3)  ! ½ü×ó±ß½çµã(k=3)ÈÔ²ÉÓÃWENO 5
-       call fp_weno5_onepoint(nx,v,hj,nx-2)  ! ½üÓÒ±ß½çµã(k=nx-2)ÈË²ÉÓÃWENO 5
-     else if (FD_scheme .eq. FD_OMP6) then   ! ÄÚµã²ÉÓÃOMP6
+	   call fp_weno7(nx,v,hj)           ! å†…ç‚¹é‡‡ç”¨WENO 7
+       call fp_weno5_onepoint(nx,v,hj,3)  ! è¿‘å·¦è¾¹ç•Œç‚¹(k=3)ä»é‡‡ç”¨WENO 5
+       call fp_weno5_onepoint(nx,v,hj,nx-2)  ! è¿‘å³è¾¹ç•Œç‚¹(k=nx-2)äººé‡‡ç”¨WENO 5
+     else if (FD_scheme .eq. FD_OMP6) then   ! å†…ç‚¹é‡‡ç”¨OMP6
 	   call fp_OMP6(nx,v,hj)
-       call fp_weno5_onepoint(nx,v,hj,3)  ! ½ü×ó±ß½çµã(k=3)ÈÔ²ÉÓÃWENO 5
-       call fp_weno5_onepoint(nx,v,hj,nx-2)  ! ½üÓÒ±ß½çµã(k=nx-2)ÈË²ÉÓÃWENO 5
-       call fp_weno5_onepoint(nx,v,hj,nx-3)  ! ½üÓÒ±ß½çµã(k=nx-3)ÈË²ÉÓÃWENO 5
+       call fp_weno5_onepoint(nx,v,hj,3)  ! è¿‘å·¦è¾¹ç•Œç‚¹(k=3)ä»é‡‡ç”¨WENO 5
+       call fp_weno5_onepoint(nx,v,hj,nx-2)  ! è¿‘å³è¾¹ç•Œç‚¹(k=nx-2)äººé‡‡ç”¨WENO 5
+       call fp_weno5_onepoint(nx,v,hj,nx-3)  ! è¿‘å³è¾¹ç•Œç‚¹(k=nx-3)äººé‡‡ç”¨WENO 5
      endif
 	 end
 
@@ -431,16 +431,16 @@
        integer:: nx,FD_scheme
 	   real(PRE_EC):: v(nx),hj(nx)
      if(FD_scheme .eq. FD_WENO5) then
-       call fm_weno5(nx,v,hj)           ! ²ÉÓÃ5½×WENO
+       call fm_weno5(nx,v,hj)           ! é‡‡ç”¨5é˜¶WENO
 	 else if(FD_scheme .eq. FD_WENO7) then
-	   call fm_weno7(nx,v,hj)           ! ÄÚµã²ÉÓÃWENO 7
-       call fm_weno5_onepoint(nx,v,hj,3)  ! ½ü×ó±ß½çµã(k=3)ÈÔ²ÉÓÃWENO 5
-       call fm_weno5_onepoint(nx,v,hj,nx-2)  ! ½üÓÒ±ß½çµã(k=nx-2)ÈË²ÉÓÃWENO 5
-     else if (FD_scheme .eq. FD_OMP6) then   ! ÄÚµã²ÉÓÃOMP6
+	   call fm_weno7(nx,v,hj)           ! å†…ç‚¹é‡‡ç”¨WENO 7
+       call fm_weno5_onepoint(nx,v,hj,3)  ! è¿‘å·¦è¾¹ç•Œç‚¹(k=3)ä»é‡‡ç”¨WENO 5
+       call fm_weno5_onepoint(nx,v,hj,nx-2)  ! è¿‘å³è¾¹ç•Œç‚¹(k=nx-2)äººé‡‡ç”¨WENO 5
+     else if (FD_scheme .eq. FD_OMP6) then   ! å†…ç‚¹é‡‡ç”¨OMP6
 	   call fm_OMP6(nx,v,hj)
-       call fm_weno5_onepoint(nx,v,hj,3)  ! ½ü×ó±ß½çµã(k=3)ÈÔ²ÉÓÃWENO 5
-       call fm_weno5_onepoint(nx,v,hj,4)  ! ½ü×ó±ß½çµã(k=4)ÈÔ²ÉÓÃWENO 5
-       call fm_weno5_onepoint(nx,v,hj,nx-2)  ! ½üÓÒ±ß½çµã(k=nx-2)ÈË²ÉÓÃWENO 5
+       call fm_weno5_onepoint(nx,v,hj,3)  ! è¿‘å·¦è¾¹ç•Œç‚¹(k=3)ä»é‡‡ç”¨WENO 5
+       call fm_weno5_onepoint(nx,v,hj,4)  ! è¿‘å·¦è¾¹ç•Œç‚¹(k=4)ä»é‡‡ç”¨WENO 5
+       call fm_weno5_onepoint(nx,v,hj,nx-2)  ! è¿‘å³è¾¹ç•Œç‚¹(k=nx-2)äººé‡‡ç”¨WENO 5
      endif
 	 end
 
@@ -448,7 +448,7 @@
 
 !----------------------------------------------------------------
 
- ! 5½×WENO¸ñÊ½¼ÆËãÕıÍ¨Á¿  
+ ! 5é˜¶WENOæ ¼å¼è®¡ç®—æ­£é€šé‡  
        subroutine fp_weno5(nx,v,hj)
        use precision_EC
 	   implicit none
@@ -462,7 +462,7 @@
 	 return
 	 end
 !-------------------------------------------------
- ! 5½×WENO¸ñÊ½¼ÆËã¸ºÍ¨Á¿  
+ ! 5é˜¶WENOæ ¼å¼è®¡ç®—è´Ÿé€šé‡  
        subroutine fm_weno5(nx,v,hj)
        use precision_EC
 	   implicit none
@@ -479,7 +479,7 @@
 !---------------------------------------------------------------
  
  
- ! 5½×WENO¸ñÊ½¼ÆËãÕıÍ¨Á¿ (µ¥¸öµã) 
+ ! 5é˜¶WENOæ ¼å¼è®¡ç®—æ­£é€šé‡ (å•ä¸ªç‚¹) 
 
        subroutine fp_weno5_onepoint(nx,v,hj,k)
        use precision_EC
@@ -509,7 +509,7 @@
 	 return
 	 end
 !-------------------------------------------------
- ! 5½×WENO¸ñÊ½¼ÆËã¸ºÍ¨Á¿ (µ¥¸öµã) 
+ ! 5é˜¶WENOæ ¼å¼è®¡ç®—è´Ÿé€šé‡ (å•ä¸ªç‚¹) 
        subroutine fm_weno5_onepoint(nx,v,hj,k)
        use precision_EC
 	   implicit none
@@ -541,7 +541,7 @@
 	 end	  
     
 !c---------------------------------------------------------------
-! 7½×WENO¸ñÊ½ WENO-Z (ÕıÍ¨Á¿)
+! 7é˜¶WENOæ ¼å¼ WENO-Z (æ­£é€šé‡)
        subroutine fp_weno7(nx,v,hj)
        use precision_EC
 	   implicit none
@@ -568,17 +568,17 @@
 
        do i=4,nx-3
 ! 7th order WENO scheme
-! 1  ½×µ¼Êı  
+! 1  é˜¶å¯¼æ•°  
          S10=a11*v(i-3)+a12*v(i-2)+a13*v(i-1) +a14*v(i)
          S11=a21*v(i-2) -   v(i-1)+a23*v(i)   +a24*v(i+1)
          S12=a31*v(i-1)+a32*v(i)  +    v(i+1) +a34*v(i+2)
          S13=a41*v(i)  +a42*v(i+1)+a43*v(i+2) +a44*v(i+3)
- ! 2 ½×µ¼Êı
+ ! 2 é˜¶å¯¼æ•°
          S20=-v(i-3)+b12*v(i-2)+b13*v(i-1)+b14*v(i)             
          S21=             v(i-1)+b22*v(i)  +v(i+1)         
          S22=             v(i)  +b22*v(i+1)+v(i+2)         
          S23=b41*v(i)+b42*v(i+1)+b43*v(i+2)-v(i+3)         
-! 3 ½×µ¼Êı
+! 3 é˜¶å¯¼æ•°
          S30=-v(i-3)+c12*(v(i-2)-v(i-1)) +v(i)                                   
          S31=-v(i-2)+c12*(v(i-1)-v(i))   +v(i+1)                 
          S32=-v(i-1)+c12*(v(i)-v(i+1))   +v(i+2)                 
@@ -599,19 +599,19 @@
 !-----------------------------------------------
      am=a0+a1+a2+a3
 
-!  4½×²î·Ö¸ñÊ½µÄÍ¨Á¿
+!  4é˜¶å·®åˆ†æ ¼å¼çš„é€šé‡
      q0=e11*v(i-3)+e12*v(i-2)+e13*v(i-1) +e14*v(i)
      q1=e21*v(i-2)+e22*v(i-1)+e23*v(i)   +e24*v(i+1)
      q2=e31*v(i-1)+e32*v(i)  +e33*v(i+1) +e34*v(i+2)
      q3=e41*v(i)  +e42*v(i+1)+e43*v(i+2) +e44*v(i+3)
 
-!  ÓÉ4¸ö4½×²î·Ö¸ñÊ½×éºÏ³É1¸ö7½×²î·Ö¸ñÊ½
+!  ç”±4ä¸ª4é˜¶å·®åˆ†æ ¼å¼ç»„åˆæˆ1ä¸ª7é˜¶å·®åˆ†æ ¼å¼
      hj(i)=(a0*q0+a1*q1+a2*q2+a3*q3)/am
     enddo
    end
 
 !=========================================================================
-! 7½×WENO (WENO-Z)     
+! 7é˜¶WENO (WENO-Z)     
       subroutine fm_weno7(nx,v,hj)
        use precision_EC
 	   implicit none
@@ -639,17 +639,17 @@
        do i=4,nx-3
 
 !     7th order WENO scheme
-! 1  ½×µ¼Êı
+! 1  é˜¶å¯¼æ•°
          S10=a11*v(i+3)+a12*v(i+2)+a13*v(i+1)  +a14*v(i)
          S11=a21*v(i+2)-    v(i+1) +a23*v(i)    +a24*v(i-1)
          S12=a31*v(i+1)+a32*v(i)   +    v(i-1)  +a34*v(i-2)
          S13=a41*v(i)  +a42*v(i-1)+a43*v(i-2)  +a44*v(i-3)
-! 2 ½×µ¼Êı
+! 2 é˜¶å¯¼æ•°
          S20=-v(i+3)+b12*v(i+2)+b13*v(i+1)+b14*v(i)              
          S21=             v(i+1) +b22*v(i)  +v(i-1)         
          S22=             v(i)   +b22*v(i-1)+v(i-2)         
          S23=b41*v(i)+b42*v(i-1)+b43*v(i-2)-v(i-3)         
-! 3 ½×µ¼Êı 
+! 3 é˜¶å¯¼æ•° 
          S30=-v(i+3)+c12*(v(i+2)-v(i+1))+v(i)                                  
          S31=-v(i+2)+c12*(v(i+1)-v(i))+  v(i-1)                 
          S32=-v(i+1)+c12*(v(i)  -v(i-1))+v(i-2)                 
@@ -670,13 +670,13 @@
 
      am=a0+a1+a2+a3
 
-!  4½×²î·Ö¸ñÊ½µÄÍ¨Á¿
+!  4é˜¶å·®åˆ†æ ¼å¼çš„é€šé‡
      q0=e11*v(i+3)+e12*v(i+2)+e13*v(i+1)+e14*v(i)
      q1=e21*v(i+2)+e22*v(i+1)+e23*v(i)  +e24*v(i-1)
      q2=e31*v(i+1)+e32*v(i)  +e33*v(i-1)+e34*v(i-2)
      q3=e41*v(i)+  e42*v(i-1)+e43*v(i-2)+e44*v(i-3)
 
-!  ÓÉ4¸ö4½×²î·Ö¸ñÊ½×éºÏ³É1¸ö7½×²î·Ö¸ñÊ½
+!  ç”±4ä¸ª4é˜¶å·®åˆ†æ ¼å¼ç»„åˆæˆ1ä¸ª7é˜¶å·®åˆ†æ ¼å¼
      hj(i-1)=(a0*q0+a1*q1+a2*q2+a3*q3)/am
     enddo
 
@@ -684,7 +684,7 @@
 !--------------------------------------------
 
 ! Optimized 6th order Monotonicity-Preserving Schemes (Li XL et al.)
-! Íø¸ñ»ùÊôÓÚÖĞĞÄ¸ñÊ½
+! ç½‘æ ¼åŸºå±äºä¸­å¿ƒæ ¼å¼
 
 !================================================================================
        subroutine fp_OMP6(nx,v,hj)
@@ -724,7 +724,7 @@
 !------------------------------------------------------------------------------------
 !------------------------------------------------------------------------------------
 ! Optimized 6th order Monotonicity-Preserving Schemes (Li XL et al.)
-! Íø¸ñ»ùÊôÓÚÖĞĞÄ¸ñÊ½
+! ç½‘æ ¼åŸºå±äºä¸­å¿ƒæ ¼å¼
 
        subroutine fm_OMP6(nx,v,hj)
        use precision_EC

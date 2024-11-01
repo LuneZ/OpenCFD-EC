@@ -1,28 +1,28 @@
 ! In2inp, Transform BXCFD .in file to Gridgen .inp file  
-! £¨Íø¸ñÁ¬½ÓĞÅÏ¢£©´ÓBXCFDµÄ .in¸ñÊ½ ×ª»¯ÎªGridgen .inp¸ñÊ½
+! ï¼ˆç½‘æ ¼è¿æ¥ä¿¡æ¯ï¼‰ä»BXCFDçš„ .inæ ¼å¼ è½¬åŒ–ä¸ºGridgen .inpæ ¼å¼
 ! Copyright by Li Xinliang, lixl@imech.ac.cn
 ! Ver 1.0, 2012-7-11
 ! Ver 1.1, 2013-5-4
-!------Types ¶¨Òå×ÓÃæºÍ¿éÁ½ÖÖÊı¾İ½á¹¹ ----------------------------------------------------------------------
-! Ãæ£º ÊôĞÔÓĞ ÃæºÅ¡¢Î¬Êı¡¢Á¬½ÓĞÅÏ¢
-! ¿é£º ÊôĞÔÓĞ ¿éºÅ¡¢Î¬Êı¡¢Ãæ
+!------Types å®šä¹‰å­é¢å’Œå—ä¸¤ç§æ•°æ®ç»“æ„ ----------------------------------------------------------------------
+! é¢ï¼š å±æ€§æœ‰ é¢å·ã€ç»´æ•°ã€è¿æ¥ä¿¡æ¯
+! å—ï¼š å±æ€§æœ‰ å—å·ã€ç»´æ•°ã€é¢
 !-----------------------------------------------------------------------------------------------------------
 !---------------------------------------------------------------------
   module Def_block
   implicit none
-  Integer:: NB    ! Íø¸ñ¿éÊı
+  Integer:: NB    ! ç½‘æ ¼å—æ•°
 
-! ±ß½çĞÅÏ¢, Gridgen .inp¸ñÊ½
-   TYPE BC_MSG_TYPE             ! ±ß½çÁ´½ÓĞÅÏ¢ 
+! è¾¹ç•Œä¿¡æ¯, Gridgen .inpæ ¼å¼
+   TYPE BC_MSG_TYPE             ! è¾¹ç•Œé“¾æ¥ä¿¡æ¯ 
      integer:: ist, iend, jst, jend, kst, kend, neighb, subface, orient   ! BXCFD .in format
-     integer:: ib,ie,jb,je,kb,ke,bc,face,f_no                      ! ±ß½çÇøÓò£¨×ÓÃæ£©µÄ¶¨Òå£¬ .inp format
-     integer:: ib1,ie1,jb1,je1,kb1,ke1,nb1,face1,f_no1             ! Á¬½ÓÇøÓò
+     integer:: ib,ie,jb,je,kb,ke,bc,face,f_no                      ! è¾¹ç•ŒåŒºåŸŸï¼ˆå­é¢ï¼‰çš„å®šä¹‰ï¼Œ .inp format
+     integer:: ib1,ie1,jb1,je1,kb1,ke1,nb1,face1,f_no1             ! è¿æ¥åŒºåŸŸ
    END TYPE BC_MSG_TYPE
   
-   TYPE Block_TYPE           !  ¿é
+   TYPE Block_TYPE           !  å—
      integer:: nx,ny,nz
-	 integer::  subface  !  ×ÓÃæÊıÄ¿
-     TYPE (BC_MSG_TYPE),dimension(:),pointer:: bc_msg   ! ×ÓÃæ £¨´ÓÊôÓÚ¿é£©
+	 integer::  subface  !  å­é¢æ•°ç›®
+     TYPE (BC_MSG_TYPE),dimension(:),pointer:: bc_msg   ! å­é¢ ï¼ˆä»å±äºå—ï¼‰
    End TYPE Block_TYPE  
   
    TYPE (Block_TYPE), save,dimension(:),allocatable,target:: Block
@@ -105,12 +105,12 @@
   end  subroutine read_bcin
 !-------------------------------------------------------------------------------------------------------------
 !------------------------------------------------------------------------------------------------------------- 
-! ½« .inÎÄ¼ş×ª»¯Îª .inpÎÄ¼ş  
+! å°† .inæ–‡ä»¶è½¬åŒ–ä¸º .inpæ–‡ä»¶  
   subroutine trans_in_inp
    use Def_block
    implicit none
-   integer,parameter:: BC_Wall_in=-10, BC_Farfield_in=-20, BC_Periodic_in=-30,BC_Symmetry_in=-50,BC_Outlet_in=-22   ! .in ¹ØÓÚ±ß½çÌõ¼şµÄ¶¨Òå
-   integer,parameter:: BC_Wall=2, BC_Symmetry=3, BC_Farfield=4,BC_Outlet=6, BC_Periodic=501     ! ÓëGriggen .inpÎÄ¼şµÄ¶¨Òå¿ÉÄÜÓĞËùÇø±ğ£¬Çë×¢Òâ
+   integer,parameter:: BC_Wall_in=-10, BC_Farfield_in=-20, BC_Periodic_in=-30,BC_Symmetry_in=-50,BC_Outlet_in=-22   ! .in å…³äºè¾¹ç•Œæ¡ä»¶çš„å®šä¹‰
+   integer,parameter:: BC_Wall=2, BC_Symmetry=3, BC_Farfield=4,BC_Outlet=6, BC_Periodic=501     ! ä¸Griggen .inpæ–‡ä»¶çš„å®šä¹‰å¯èƒ½æœ‰æ‰€åŒºåˆ«ï¼Œè¯·æ³¨æ„
    integer:: m,ksub
    integer:: Lp(3),Ls(3),tmp  
    Type (Block_TYPE),pointer:: B,B1
@@ -119,7 +119,7 @@
      B => Block(m)
       do ksub=1, B%subface
        Bc => B%bc_msg(ksub)
-        if(Bc%neighb .lt. 0) then    ! ÎïÀí±ß½ç
+        if(Bc%neighb .lt. 0) then    ! ç‰©ç†è¾¹ç•Œ
           Bc%ib=Bc%ist ; Bc%ie=Bc%iend ;  Bc%jb=Bc%jst ; Bc%je=Bc%jend ;  Bc%kb=Bc%kst ; Bc%ke=Bc%kend
 		
 		   if(Bc%neighb .eq. BC_Wall_in ) then 
@@ -150,7 +150,7 @@
 		  else
 		    Bc%kb=-Bc%kst ; Bc%ke=-Bc%kend
           endif
-          call get_orient(Bc%face,Bc1%face,Bc%orient,Lp,Ls)  ! Lp(k)==-1 ½»»»´ÎĞò, Ls(k)==-1 ¸Ä±ä·ûºÅ 
+          call get_orient(Bc%face,Bc1%face,Bc%orient,Lp,Ls)  ! Lp(k)==-1 äº¤æ¢æ¬¡åº, Ls(k)==-1 æ”¹å˜ç¬¦å· 
 		   
 		   Bc%ib1= Ls(1)*Bc1%ist ;  Bc%ie1=Ls(1)*Bc1%iend
 		   if(Lp(1) .eq. -1) then
@@ -198,21 +198,21 @@
   
 
 
-!  ¸ù¾İorientµÄÖµ£¬È·¶¨.inpÎÄ¼şµÄÁ¬½Ó´ÎĞò 
-!  ¼û OpenCFD-ECÀíÂÛÊÖ²á  
+!  æ ¹æ®orientçš„å€¼ï¼Œç¡®å®š.inpæ–‡ä»¶çš„è¿æ¥æ¬¡åº 
+!  è§ OpenCFD-ECç†è®ºæ‰‹å†Œ  
 !      subroutine get_ijk_orient(i2,j2,i1,j1,ibegin,iend,jbegin,jend,orient,face1,face2)  ! bug bug but !!! (face1, face2)
       subroutine get_orient(face1,face2,orient,Lp,Ls)
       implicit none 
       integer:: l1,m1,l2,m2,tmp,face1,face2,orient,Lp(3),Ls(3),k0,k1,k2
  
  !           
-          if(mod(face1,2) .eq. 1) then    ! i-, j- or k- Ãæ
-            l1=2 ; m1= 1                  ! lÊÇµÚ2¸öÏÂ±ê£¬ mÊÇµÚ1¸öÏÂ±ê
-          else                            ! i+, j+ or k+ Ãæ
-            l1=1 ; m1= 2                  ! lÊÇµÚ1¸öÏÂ±ê£¬ mÊÇµÚ2¸öÏÂ±ê
+          if(mod(face1,2) .eq. 1) then    ! i-, j- or k- é¢
+            l1=2 ; m1= 1                  ! læ˜¯ç¬¬2ä¸ªä¸‹æ ‡ï¼Œ mæ˜¯ç¬¬1ä¸ªä¸‹æ ‡
+          else                            ! i+, j+ or k+ é¢
+            l1=1 ; m1= 2                  ! læ˜¯ç¬¬1ä¸ªä¸‹æ ‡ï¼Œ mæ˜¯ç¬¬2ä¸ªä¸‹æ ‡
           endif
          
-          if(orient .eq. 1) then           ! ¸ù¾İorientÀ´ Ğı×ªÁ¬½Ó·½Ïò £¨¼û¡¶ÀíÂÛÊÖ²á¡·£©
+          if(orient .eq. 1) then           ! æ ¹æ®orientæ¥ æ—‹è½¬è¿æ¥æ–¹å‘ ï¼ˆè§ã€Šç†è®ºæ‰‹å†Œã€‹ï¼‰
             l2=l1 ; m2=-m1
           else if (orient .eq. 2) then
             l2=m1 ; m2=l1
@@ -222,23 +222,23 @@
             l2=-m1; m2=-l1
           endif
           
-          if(mod(face2,2) .eq. 1) then            ! ¶ÔÓÚ i-, j- or k- Ãæ 
+          if(mod(face2,2) .eq. 1) then            ! å¯¹äº i-, j- or k- é¢ 
             tmp=l2; l2=m2; m2=tmp                  ! swap l2 and m2
           endif
 
-! .inpÎÄ¼şµÄÁ¬½ÓÃèÊö Îª£ºÕı<-->Õı£¬ ¸º<-->¸º£» 
-! Lp(k)==-1 ½»»»´ÎĞò (ib,ie)--> (ie,ib)
-! Ls(k)==-1 ¸Ä±ä·ûºÅ (ib,ie) ---> (-ib, -ie)
+! .inpæ–‡ä»¶çš„è¿æ¥æè¿° ä¸ºï¼šæ­£<-->æ­£ï¼Œ è´Ÿ<-->è´Ÿï¼› 
+! Lp(k)==-1 äº¤æ¢æ¬¡åº (ib,ie)--> (ie,ib)
+! Ls(k)==-1 æ”¹å˜ç¬¦å· (ib,ie) ---> (-ib, -ie)
           
 		  if(face2 .eq. 1 .or. face2 .eq. 4) then  ! i- or i+
-		    k0=1; k1=2 ; k2=3                  ! k0 µ¥Ãæ£» k1 -- l;  k2--m
+		    k0=1; k1=2 ; k2=3                  ! k0 å•é¢ï¼› k1 -- l;  k2--m
 		  else  if(face2 .eq. 2 .or. face2 .eq. 5) then  ! j- or j+
             k0=2; k1=1; k2=3
           else
 		    k0=3; k1=1; k2=2
 		  endif
 		   
-		   Lp(k0)=1 ; Ls(k0)=1            ! ÎŞĞè½»»»´ÎĞò£¬¸Ä±ä·ûºÅ 
+		   Lp(k0)=1 ; Ls(k0)=1            ! æ— éœ€äº¤æ¢æ¬¡åºï¼Œæ”¹å˜ç¬¦å· 
 		   Lp(k1)=sign(1,l2)
            if(abs(l2) .eq. 1) then
 		     Ls(k1)=1

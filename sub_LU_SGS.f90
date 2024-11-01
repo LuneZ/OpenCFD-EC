@@ -1,50 +1,50 @@
-!  ²ÉÓÃLU-SGS·½·¨£¬¼ÆËãDU=U(n+1)-U(n)
+!  é‡‡ç”¨LU-SGSæ–¹æ³•ï¼Œè®¡ç®—DU=U(n+1)-U(n)
 !  Code by Li Xinliang, 2011-12-29
 !-----------------------------------------------------------------------------------------
-    subroutine  du_LU_SGS(nMesh,mBlock,Sfac1)                          ! ²ÉÓÃLU_SGS·½·¨¼ÆËãDU=U(n+1)-U(n)
+    subroutine  du_LU_SGS(nMesh,mBlock,Sfac1)                          ! é‡‡ç”¨LU_SGSæ–¹æ³•è®¡ç®—DU=U(n+1)-U(n)
     use Global_Var
     use Flow_Var 
     implicit none
 	integer:: nMesh,mBlock,NV,nx,ny,nz,plane,i,j,k,m
     real(PRE_EC),dimension(7)::alfa,dui,duj,duk,DF
     Type (Block_TYPE),pointer:: B
-    real(PRE_EC):: Sfac1    ! Ë«Ê±¼ä²½Ê±Ê¹ÓÃ
+    real(PRE_EC):: Sfac1    ! åŒæ—¶é—´æ­¥æ—¶ä½¿ç”¨
 
      NV=Mesh(nMesh)%NVAR
-	 B => Mesh(nMesh)%Block(mBlock)                 !µÚnMesh ÖØÍø¸ñµÄµÚmBlock¿é
+	 B => Mesh(nMesh)%Block(mBlock)                 !ç¬¬nMesh é‡ç½‘æ ¼çš„ç¬¬mBlockå—
      nx=B%nx; ny=B%ny; nz=B%nz
 
-! LU-SGSµÄÁ½´ÎÉ¨Ãè
+! LU-SGSçš„ä¸¤æ¬¡æ‰«æ
 !----------------------------------
-!   ´Ói=1,j=1,k=1 µ½i=nx-1,j=ny-1,k=nz-1µÄÉ¨Ãè¹ı³Ì  (ÏòÉÏÉ¨Ãè¹ı³Ì)
-!   É¨Ãè i+j+k=plane µÄÆ½Ãæ
-!   w_LUÊÇËÉ³ÚÒò×Ó£¨1µ½2Ö®¼ä£©£¬Ôö´ów_LU»áÌá¸ßÎÈ¶¨ĞÔ£¬µ«»á½µµÍÊÕÁ²ËÙ¶È
+!   ä»i=1,j=1,k=1 åˆ°i=nx-1,j=ny-1,k=nz-1çš„æ‰«æè¿‡ç¨‹  (å‘ä¸Šæ‰«æè¿‡ç¨‹)
+!   æ‰«æ i+j+k=plane çš„å¹³é¢
+!   w_LUæ˜¯æ¾å¼›å› å­ï¼ˆ1åˆ°2ä¹‹é—´ï¼‰ï¼Œå¢å¤§w_LUä¼šæé«˜ç¨³å®šæ€§ï¼Œä½†ä¼šé™ä½æ”¶æ•›é€Ÿåº¦
    do plane=3,nx+ny+nz-3            
 
 !$OMP PARALLEL DO DEFAULT(FIRSTPRIVATE) SHARED(plane,nx,ny,nz,NV,B,Lci,Lcj,Lck,Lvi,Lvj,Lvk,gamma,w_LU,If_viscous)
      do k=1,nz-1
 	 do j=1,ny-1
 	 i=plane-k-j
-	 if( i .lt. 1 .or. i .gt. nx-1) cycle    ! ³¬³öÁËÕâ¸öÆ½Ãæ
-       alfa(1:NV)=B%vol(i,j,k)/B%dt(i,j,k)+w_LU*(Lci(i,j,k)+Lcj(i,j,k)+Lck(i,j,k))     ! ¶Ô½ÇÏßÏî
+	 if( i .lt. 1 .or. i .gt. nx-1) cycle    ! è¶…å‡ºäº†è¿™ä¸ªå¹³é¢
+       alfa(1:NV)=B%vol(i,j,k)/B%dt(i,j,k)+w_LU*(Lci(i,j,k)+Lcj(i,j,k)+Lck(i,j,k))     ! å¯¹è§’çº¿é¡¹
      if(If_viscous .eq. 1)  then
 	   alfa(1:NV)=alfa(1:NV)+2.d0*(Lvi(i,j,k)+Lvj(i,j,k)+Lvk(i,j,k))          
        if(NV .eq. 6) then
-	     alfa(6)=alfa(6)+(Lvi(i,j,k)+Lvj(i,j,k)+Lvk(i,j,k))      ! ÔÙÔö´óĞ©¶Ô½ÇÏß £¨¿¼ÂÇµ½sigma_SA=2.d0/3.d0£©
+	     alfa(6)=alfa(6)+(Lvi(i,j,k)+Lvj(i,j,k)+Lvk(i,j,k))      ! å†å¢å¤§äº›å¯¹è§’çº¿ ï¼ˆè€ƒè™‘åˆ°sigma_SA=2.d0/3.d0ï¼‰
 !	   else if(NV .eq. 7) then
-!	      alfa(6)=alfa(6)+0.09*B%U(6,i,j,k)/B%U(1,i,j,k)*Re*B%vol(i,j,k)                          !´¦ÀíÔ´Ïî¸ÕĞÔ
+!	      alfa(6)=alfa(6)+0.09*B%U(6,i,j,k)/B%U(1,i,j,k)*Re*B%vol(i,j,k)                          !å¤„ç†æºé¡¹åˆšæ€§
 !         alfa(7)=alfa(7)+2.d0*0.0828*B%U(6,i,j,k)/B%U(1,i,j,k)*Re*B%vol(i,j,k)
 	   endif
      endif
-	 	 alfa(1:NV)=alfa(1:NV)+Sfac1*B%vol(i,j,k)         ! µ¥Ê±¼ä²½³¤Sfac1=0
+	 	 alfa(1:NV)=alfa(1:NV)+Sfac1*B%vol(i,j,k)         ! å•æ—¶é—´æ­¥é•¿Sfac1=0
 		  		   
 	 if(i.ne. 1) then
-!                                              Í¨Á¿µÄ²îÁ¿£¬ÓÃÀ´½üËÆ¼ÆËãA*W (See Blazek's book, page 208)
+!                                              é€šé‡çš„å·®é‡ï¼Œç”¨æ¥è¿‘ä¼¼è®¡ç®—A*W (See Blazek's book, page 208)
        call comput_DFn(NV,DF(1:NV),B%U(1:NV,i-1,j,k),B%DU(1:NV,i-1,j,k),B%ni1(i,j,k),B%ni2(i,j,k),B%ni3(i,j,k),gamma)  
        dui(1:NV)=0.5d0*(DF(1:NV)*B%si(i,j,k)+w_LU*Lci(i-1,j,k)*B%DU(1:NV,i-1,j,k))
        if(If_viscous .eq. 1)    dui(1:NV)=dui(1:NV)+Lvi(i-1,j,k)*B%DU(1:NV,i-1,j,k)         
       else
-	   dui(1:NV)=0.d0                             ! ×ó²àÃ»ÓĞµã
+	   dui(1:NV)=0.d0                             ! å·¦ä¾§æ²¡æœ‰ç‚¹
       endif
 	 
 	 if(j.ne.1) then
@@ -70,7 +70,7 @@
 !$OMP END PARALLEL DO 
    enddo
 !----------------------------------------------------------
-!  ´Ó (nx-1,ny-1,nz-1)µ½(1,1,1)µÄÉ¨Ãè¹ı³Ì £¨ÏòÏÂÉ¨Ãè¹ı³Ì£©
+!  ä» (nx-1,ny-1,nz-1)åˆ°(1,1,1)çš„æ‰«æè¿‡ç¨‹ ï¼ˆå‘ä¸‹æ‰«æè¿‡ç¨‹ï¼‰
 !  plane=i+j+k
    do plane=nx+ny+nz-3,3,-1   
 
@@ -78,7 +78,7 @@
      do k=nz-1,1,-1
 	 do j=ny-1,1,-1
 	 i=plane-k-j
-	 if( i .lt. 1 .or. i .gt. nx-1) cycle            ! ³¬³öÁËÕâ¸öÆ½Ãæ
+	 if( i .lt. 1 .or. i .gt. nx-1) cycle            ! è¶…å‡ºäº†è¿™ä¸ªå¹³é¢
       alfa(1:NV)=B%vol(i,j,k)/B%dt(i,j,k)+w_LU*(Lci(i,j,k)+Lcj(i,j,k)+Lck(i,j,k))
       if(If_viscous .eq. 1) then
 	    alfa(1:NV)=alfa(1:NV)+2.d0*(Lvi(i,j,k)+Lvj(i,j,k)+Lvk(i,j,k) )         
@@ -89,10 +89,10 @@
 !         alfa(7)=alfa(7)+2.d0*0.0828*B%U(6,i,j,k)/B%U(1,i,j,k)*Re*B%vol(i,j,k)
 	   endif
       endif
-	 	 alfa(1:NV)=alfa(1:NV)+Sfac1*B%vol(i,j,k)         ! µ¥Ê±¼ä²½³¤Sfac1=0
+	 	 alfa(1:NV)=alfa(1:NV)+Sfac1*B%vol(i,j,k)         ! å•æ—¶é—´æ­¥é•¿Sfac1=0
 
 	 if(i.ne. nx-1) then
-!                                              Í¨Á¿µÄ²îÁ¿£¬ÓÃÀ´½üËÆ¼ÆËãA*W (See Blazek's book, page 208)
+!                                              é€šé‡çš„å·®é‡ï¼Œç”¨æ¥è¿‘ä¼¼è®¡ç®—A*W (See Blazek's book, page 208)
        call comput_DFn(NV,DF(1:NV),B%U(1:NV,i+1,j,k),B%DU(1:NV,i+1,j,k),B%ni1(i,j,k),B%ni2(i,j,k),B%ni3(i,j,k),gamma)  
          dui(1:NV)=-0.5d0*(DF(1:NV)*B%si(i+1,j,k)-w_LU*Lci(i+1,j,k)*B%DU(1:NV,i+1,j,k))
          if(If_viscous .eq. 1)    dui(1:NV)=dui(1:NV)+Lvi(i+1,j,k)*B%DU(1:NV,i+1,j,k)
@@ -131,7 +131,7 @@
 !-----------------------------------------------------------------------
 
 
-!  ¼ÆËãÍ¨Á¿µÄ²îÁ¿ DF=F(Unew)-F(Uold),  LU-SGS·½·¨ÖĞÊ¹ÓÃ£¬ÓÃÀ´½üËÆA*DU  
+!  è®¡ç®—é€šé‡çš„å·®é‡ DF=F(Unew)-F(Uold),  LU-SGSæ–¹æ³•ä¸­ä½¿ç”¨ï¼Œç”¨æ¥è¿‘ä¼¼A*DU  
     subroutine comput_DFn(NVAR1,DF,U,DU,n1,n2,n3,gamma)
     use precision_EC
 	implicit none
@@ -152,7 +152,7 @@
 	if(NVAR1 .eq. 6) then
 	  DF(6)=U2(6)*un2-U(6)*un1
 	else if(NVAR1 .eq. 7) then
-      DF(6)=U2(6)*un2-U(6)*un1   ! k·½³ÌµÄ¶ÔÁ÷Í¨Á¿
-	  DF(7)=U2(7)*un2-U(7)*un1   ! w·½³ÌµÄ¶ÔÁ÷Í¨Á¿
+      DF(6)=U2(6)*un2-U(6)*un1   ! kæ–¹ç¨‹çš„å¯¹æµé€šé‡
+	  DF(7)=U2(7)*un2-U(7)*un1   ! wæ–¹ç¨‹çš„å¯¹æµé€šé‡
     endif
 	end subroutine comput_dFn

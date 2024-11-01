@@ -1,8 +1,8 @@
 !---------------------------------------------------------
-!  ·ÖÇø£º È·¶¨ ¡°½ø³Ì¡±Óë¡°¿é¡±Ö®¼äµÄÁªÏµ
-!  B_proc(m), ¸ø³öm¿éËùÊôµÄ½ø³ÌºÅ 
-!  B_n(m), ¸ø³öm¿éÔÚ¸Ã½ø³ÌÖĞµÄÄÚ²¿±àºÅ
-!  my_blocks(:), ¸ø³ö±¾½ø³ÌËù°üº¬µÄ¿éºÅ
+!  åˆ†åŒºï¼š ç¡®å®š â€œè¿›ç¨‹â€ä¸â€œå—â€ä¹‹é—´çš„è”ç³»
+!  B_proc(m), ç»™å‡ºmå—æ‰€å±çš„è¿›ç¨‹å· 
+!  B_n(m), ç»™å‡ºmå—åœ¨è¯¥è¿›ç¨‹ä¸­çš„å†…éƒ¨ç¼–å·
+!  my_blocks(:), ç»™å‡ºæœ¬è¿›ç¨‹æ‰€åŒ…å«çš„å—å·
 !    
    subroutine partation
    use Global_var
@@ -25,7 +25,7 @@
 	   print*, "Find partation.dat, read it"
 	   open(100,file="partation.dat")
 	   read(100,*)
-       read(100,*)  Total_block, TP          ! ×Ü¿éÊı
+       read(100,*)  Total_block, TP          ! æ€»å—æ•°
 	   read(100,*) 
        if(TP .ne. Total_proc) then
         print*, "Error ! Total_proc is not the same as that in  'partation.dat' "
@@ -40,7 +40,7 @@
 
 	 call MPI_bcast(Total_block,1,MPI_Integer,0,  MPI_COMM_WORLD,ierr)
      allocate (B_proc(Total_block),B_n(Total_block))   
-!   ¶ÁÈëB_proc(:)  , ¿é-->½ø³Ì ¶ÔÓ¦¹ØÏµ     
+!   è¯»å…¥B_proc(:)  , å—-->è¿›ç¨‹ å¯¹åº”å…³ç³»     
 	 
 	 if(my_id .eq. 0) then
      if(EXT) then
@@ -58,22 +58,22 @@
 
      call MPI_bcast(B_proc(1),Total_block,MPI_Integer,0,  MPI_COMM_WORLD,ierr)
 
-!  ¼ÆËãB_n(m), µÚm¿éÔÚ¸Ã½ø³ÌµÄÄÚ²¿±àºÅ
+!  è®¡ç®—B_n(m), ç¬¬må—åœ¨è¯¥è¿›ç¨‹çš„å†…éƒ¨ç¼–å·
     do m=1, Total_block
 	 B_n(m)=0
-	 do k=1,m                 ! m¿éÇ°ÃæÓĞ¶àÊı¸ö¿éÔÚB_proc(m)½ø³Ì
+	 do k=1,m                 ! må—å‰é¢æœ‰å¤šæ•°ä¸ªå—åœ¨B_proc(m)è¿›ç¨‹
 	  if(B_proc(k) .eq. B_proc(m))  B_n(m)=B_n(m)+1
 	 enddo
 	enddo 
 
 
-!  Í³¼ÆÃ¿¸ö½ø³Ì°üº¬µÄ¿éÊı
+!  ç»Ÿè®¡æ¯ä¸ªè¿›ç¨‹åŒ…å«çš„å—æ•°
      Num_block=0
 	 do m=1, Total_block
-	 if(B_proc(m) .eq. my_id )   Num_block=Num_block+1    ! my_id½ø³Ì°üº¬µÄ¿éÊı
+	 if(B_proc(m) .eq. my_id )   Num_block=Num_block+1    ! my_idè¿›ç¨‹åŒ…å«çš„å—æ•°
      enddo
      
-	 allocate (my_blocks(Num_block))       ! ±¾½ø³Ì°üº¬µÄ¿éºÅ£¨Êı×é£©
+	 allocate (my_blocks(Num_block))       ! æœ¬è¿›ç¨‹åŒ…å«çš„å—å·ï¼ˆæ•°ç»„ï¼‰
 	 k=1
 	 do m=1, Total_block
   	  if(B_proc(m) .eq. my_id )  then
@@ -107,7 +107,7 @@
      endif
      close(99)
 
- !    ¶ÁÈëÃ¿¿éÍø¸ñÊı£¬°´´Ó¶àµ½ÉÙ´ÎĞòÅÅÁĞ
+ !    è¯»å…¥æ¯å—ç½‘æ ¼æ•°ï¼ŒæŒ‰ä»å¤šåˆ°å°‘æ¬¡åºæ’åˆ—
      allocate(B_grid(Num_Block,2))
 	 allocate(Pgrid(Num_proc),Bproc(Num_Block))
 
@@ -122,17 +122,17 @@
 	  print*, "Total Cell number=", Total_Cell
 	  print*, "Total Grid number=", Total_grid
  
-!    °´Íø¸ñµã´Ó¶àµ½ÉÙµÄ´ÎĞòÅÅĞò
+!    æŒ‰ç½‘æ ¼ç‚¹ä»å¤šåˆ°å°‘çš„æ¬¡åºæ’åº
      do m=1,Num_block
-	   G0=B_grid(m,1)     ! µãÊı
+	   G0=B_grid(m,1)     ! ç‚¹æ•°
 	    mg=m
-	    do n=m+1,Num_block   ! ÕÒ³öÊıÄ¿×î´óµÄ
+	    do n=m+1,Num_block   ! æ‰¾å‡ºæ•°ç›®æœ€å¤§çš„
          if(B_grid(n,1) .gt. G0 ) then
 		    G0=B_grid(n,1)
 			mg=n
          endif
        enddo
-!        mg¿éÓëm¿é½»»»
+!        mgå—ä¸må—äº¤æ¢
          t1=B_grid(mg,1)
 		 t2=B_grid(mg,2)
 		 B_grid(mg,1)=B_grid(m,1)
@@ -144,7 +144,7 @@
       Pgrid(:)=0
 	 do m=1,Num_Block
         mb=B_grid(m,2) 
-  !     Ñ°ÕÒÍø¸ñÊıÄ¿×îĞ¡µÄ½ø³Ì
+  !     å¯»æ‰¾ç½‘æ ¼æ•°ç›®æœ€å°çš„è¿›ç¨‹
         mg=Pgrid(1)
 		m0=1
 		do mp=1,Num_Proc
@@ -156,7 +156,7 @@
        Pgrid(m0)=Pgrid(m0)+B_grid(m,1)
 	   Bproc(mb)=m0-1
      enddo
-!-------------Êä³ö--------------------------------------------------
+!-------------è¾“å‡º--------------------------------------------------
      open(99,file="partation-auto.dat")
 	 write(99,*) " Total_block_number    Total_Proc_number "
 	 write(99,*)  Num_block, Num_proc

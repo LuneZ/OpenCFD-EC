@@ -1,9 +1,9 @@
- !  ¼ÓËÙÊÕÁ²¼¼Êõ
- !   1) ¾Ö²¿Ê±¼ä²½³¤
- !   2) ²Ğ²î¹âË³
+ !  åŠ é€Ÿæ”¶æ•›æŠ€æœ¯
+ !   1) å±€éƒ¨æ—¶é—´æ­¥é•¿
+ !   2) æ®‹å·®å…‰é¡º
 
  !--------------------------------------------------------------------------------------------------
- ! ¼ÆËãÆ×°ë¾¶ see: Blazek's book, p189-190    
+ ! è®¡ç®—è°±åŠå¾„ see: Blazek's book, p189-190    
      subroutine comput_Lijk(nMesh,mBlock) 
      use Global_Var
 	 use Flow_Var
@@ -12,7 +12,7 @@
      real(PRE_EC) D0,un,S0,vol1
      Type (Block_TYPE),pointer:: B
 
-     B => Mesh(nMesh)%Block(mBlock)                 !µÚnMesh ÖØÍø¸ñµÄµÚmBlock¿é
+     B => Mesh(nMesh)%Block(mBlock)                 !ç¬¬nMesh é‡ç½‘æ ¼çš„ç¬¬mBlockå—
      nx=B%nx; ny=B%ny; nz=B%nz
 
 ! $OMP PARALLEL DO DEFAULT(PRIVATE) SHARED(nx,ny,nz,gamma,PrL,Prt,uu,v,w,cc,B,Lci,Lvi,Lcj,Lvj,Lck,Lvk)
@@ -57,7 +57,7 @@
 
 
 !---------------------------------------------------------------------------------
-! ¼ÆËã£¨µ±µØ£©Ê±¼ä²½³¤  ! J. Blazek, P.190
+! è®¡ç®—ï¼ˆå½“åœ°ï¼‰æ—¶é—´æ­¥é•¿  ! J. Blazek, P.190
   subroutine comput_dt(nMesh,mBlock)
    use Global_Var
    use Flow_Var 
@@ -68,13 +68,13 @@
 
    Type (Block_TYPE),pointer:: B   
    C=1.d0
-   B => Mesh(nMesh)%Block(mBlock)                 !µÚnMesh ÖØÍø¸ñµÄµÚmBlock¿é
+   B => Mesh(nMesh)%Block(mBlock)                 !ç¬¬nMesh é‡ç½‘æ ¼çš„ç¬¬mBlockå—
    nx=B%nx; ny=B%ny; nz=B%nz
 
-   if( B%IF_OverLimit .eq. 0) then                ! ÎïÀíÁ¿³¬ÏŞ
+   if( B%IF_OverLimit .eq. 0) then                ! ç‰©ç†é‡è¶…é™
      dt_fac=1.0
    else
-     dt_fac= 0.1d0              ! Ê±¼ä²½³¤½µµÍ10±¶
+     dt_fac= 0.1d0              ! æ—¶é—´æ­¥é•¿é™ä½10å€
 	 print*, " ------- In Block No. ", B%Block_no,  "flow OverLimit, time step 1/10 ----"
    endif
  
@@ -87,7 +87,7 @@
          B%dt(i,j,k)=dt_fac*CFL*B%Vol(i,j,k)  &
 		           /(Lci(i,j,k)+Lcj(i,j,k)+Lck(i,j,k)+C*(Lvi(i,j,k)+Lvj(i,j,k)+Lvk(i,j,k)))
 
-         if(If_dtime_mesh .eq. 1) B%dt(i,j,k)=B%dt(i,j,k)*B%dtime_mesh(i,j,k)           ! ¸ù¾İÍø¸ñÖÊÁ¿£¬ĞŞÕıÊ±¼ä²½³¤
+         if(If_dtime_mesh .eq. 1) B%dt(i,j,k)=B%dt(i,j,k)*B%dtime_mesh(i,j,k)           ! æ ¹æ®ç½‘æ ¼è´¨é‡ï¼Œä¿®æ­£æ—¶é—´æ­¥é•¿
 
 		 if(B%dt(i,j,k) .gt. dtmax) B%dt(i,j,k)=dtmax
          if(B%dt(i,j,k) .lt. dtmin) B%dt(i,j,k)=dtmin
@@ -101,7 +101,7 @@
       do k=1,nz-1
       do j=1,ny-1
       do i=1,nx-1
-          B%dt(i,j,k)=dt_global ! È«¾ÖÊ±¼ä²½³¤·¨
+          B%dt(i,j,k)=dt_global ! å…¨å±€æ—¶é—´æ­¥é•¿æ³•
       enddo
 	  enddo
       enddo
@@ -113,9 +113,9 @@
 
  
  
-! Ó­·çÒşÊ½²Ğ²î¹âË³
+! è¿é£éšå¼æ®‹å·®å…‰é¡º
 ! Ver 0.76  Upwind Implicit Residual smoothing
-! ¼ûJ. Blazek's Book "Computational Fluid Dynamic: Principle and Application" 
+! è§J. Blazek's Book "Computational Fluid Dynamic: Principle and Application" 
    Subroutine Residual_smoothing(nMesh,mBlock)
    use Global_Var
    use Flow_Var 
@@ -125,7 +125,7 @@
    real(PRE_EC):: as(Nmax),bs(Nmax),cs(Nmax),R(Nmax),Rs(Nmax),ei,Mn
    real(PRE_EC),parameter:: epsl=1.d0
    Type (Block_TYPE),pointer:: B
-   B => Mesh(nMesh)%Block(mBlock)                                         ! Ö¸ÏòÆäÒ»¿é
+   B => Mesh(nMesh)%Block(mBlock)                                         ! æŒ‡å‘å…¶ä¸€å—
    nx=B%nx;  ny= B%ny;  nz=B%nz
 
 !--i-direction---------------------------
@@ -133,7 +133,7 @@
     do j=1,ny-1
     do i=1,nx-1
       ei=epsl*min(1.0,Lci(i,j,k)/Lcj(i,j,k),Lci(i,j,k)/Lck(i,j,k))
- !     ·¨ÏòMachÊı     
+ !     æ³•å‘Machæ•°     
 	  Mn=0.5d0*( uu(i,j,k)*(B%ni1(i,j,k)+B%ni1(i+1,j,k))+ &
                  v(i,j,k)*(B%ni2(i,j,k)+B%ni2(i+1,j,k))+ &
                  w(i,j,k)*(B%ni3(i,j,k)+B%ni3(i+1,j,k)) )/cc(i,j,k)    
@@ -149,7 +149,7 @@
        do i=1,nx-1
         R(i)=B%Res(m,i,j,k)
        enddo
-       call tridiagonal(nx-1,as,bs,cs,R,Rs)    ! R²Ğ²î£» Rs¹â»¬ºóµÄ²Ğ²î
+       call tridiagonal(nx-1,as,bs,cs,R,Rs)    ! Ræ®‹å·®ï¼› Rså…‰æ»‘åçš„æ®‹å·®
        do i=1,nx-1
         B%Res(m,i,j,k)=Rs(i)
        enddo
@@ -163,7 +163,7 @@
    do j=1,ny-1
     ei=epsl*min(1.0,Lcj(i,j,k)/Lci(i,j,k),Lcj(i,j,k)/Lck(i,j,k))
 
-!     ·¨ÏòMachÊı     
+!     æ³•å‘Machæ•°     
      Mn=0.5d0*( uu(i,j,k)*(B%nj1(i,j,k)+B%nj1(i,j+1,k))+ &
                 v(i,j,k)*(B%nj2(i,j,k)+B%nj2(i,j+1,k))+ &
                 w(i,j,k)*(B%nj3(i,j,k)+B%nj3(i,j+1,k)) )/cc(i,j,k)
@@ -217,8 +217,8 @@
    end subroutine Residual_smoothing
  
 
-! Èı¶Ô½Ç·½³Ì×éÇó½â
-! Çó½â a(i)*Rs(i-1)+b(i)*Rs(i)+c(i)*Rs(i+1)=R(i)
+! ä¸‰å¯¹è§’æ–¹ç¨‹ç»„æ±‚è§£
+! æ±‚è§£ a(i)*Rs(i-1)+b(i)*Rs(i)+c(i)*Rs(i+1)=R(i)
    subroutine tridiagonal(n,a,b,c,R,Rs)
    use precision_EC
    implicit none

@@ -2,10 +2,10 @@
 ! Revised by Li Xinliang, 2013-10-4
   module filting_Var
    use precision_EC
-   real(PRE_EC), save,pointer,dimension(:,:,:,:)::  f,f0 ! ±äÁ¿
+   real(PRE_EC), save,pointer,dimension(:,:,:,:)::  f,f0 ! å˜é‡
   end module Filting_Var
    
-! ¸ß¾«¶ÈÂË²¨£¨4½×¾«¶È£©
+! é«˜ç²¾åº¦æ»¤æ³¢ï¼ˆ4é˜¶ç²¾åº¦ï¼‰
   subroutine Filtering_oneMesh(nMesh)     
    use Global_Var
    use filting_Var
@@ -76,7 +76,7 @@
    integer:: nMesh,mBlock
    integer:: i,j,k,m,nx,ny,nz,NVAR1,i1,i2
    Type (Block_TYPE),pointer:: B
-   integer,parameter:: KLP=4   ! ÂË²¨µÄÍø¸ñ°ë¿í¶È
+   integer,parameter:: KLP=4   ! æ»¤æ³¢çš„ç½‘æ ¼åŠå®½åº¦
    real(PRE_EC),parameter:: eps0=1.d-8,  a1= 1.d0/2.d0,  a2= 9.d0/32.d0,    a3=-1.d0/32.d0
    real(PRE_EC):: p1,p2,alpha
  
@@ -131,7 +131,7 @@
    integer:: nMesh,mBlock
    integer:: i,j,k,m,nx,ny,nz,NVAR1,i1,i2
    Type (Block_TYPE),pointer:: B
-   integer,parameter:: KLP=4   ! ÂË²¨µÄÍø¸ñ°ë¿í¶È
+   integer,parameter:: KLP=4   ! æ»¤æ³¢çš„ç½‘æ ¼åŠå®½åº¦
    real(PRE_EC),parameter:: eps0=1.d-8,  a1= 1.d0/2.d0,  a2= 9.d0/32.d0,    a3=-1.d0/32.d0
    real(PRE_EC):: p1,p2,alpha
  
@@ -185,7 +185,7 @@
    integer:: nMesh,mBlock
    integer:: i,j,k,m,nx,ny,nz,NVAR1,i1,i2
    Type (Block_TYPE),pointer:: B
-   integer,parameter:: KLP=4   ! ÂË²¨µÄÍø¸ñ°ë¿í¶È
+   integer,parameter:: KLP=4   ! æ»¤æ³¢çš„ç½‘æ ¼åŠå®½åº¦
    real(PRE_EC),parameter:: eps0=1.d-8,  a1= 1.d0/2.d0,  a2= 9.d0/32.d0,    a3=-1.d0/32.d0
    real(PRE_EC):: p1,p2,alpha
  
