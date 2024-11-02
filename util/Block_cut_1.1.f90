@@ -717,9 +717,9 @@
 	endif
 
     if(mesh_form==0) then
-     read(100) ((NI(k),NJ(k),Nk(k)),k=1,NB)
+     read(100) (NI(k),NJ(k),Nk(k),k=1,NB)
     else
-     read(100,*) ((NI(k),NJ(k),Nk(k)),k=1,NB)
+     read(100,*) (NI(k),NJ(k),Nk(k),k=1,NB)
 	endif
 
 !================================================	 

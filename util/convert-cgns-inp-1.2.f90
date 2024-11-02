@@ -229,7 +229,7 @@
 
   open(99,file="Mesh3d.dat",form="unformatted")                                     ! 按照PLOT3D格式写入Mesh3d.dat
   write(99) Num_Block
-  write(99) ((Block(m)%nx,Block(m)%ny,Block(m)%nz),m=1,Num_Block)
+  write(99) (Block(m)%nx,Block(m)%ny,Block(m)%nz,m=1,Num_Block)
   do m=1,Num_Block
   B=>Block(m)
   write(99) (((B%x(i,j,k),i=1,B%nx),j=1,B%ny),k=1,B%nz),  &
