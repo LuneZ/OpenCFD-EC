@@ -45,12 +45,12 @@ set(SRCS
 )
 
 # 创建可执行文件
-add_executable(opencfd-ec1.16a.out ${SRCS})
+add_executable(opencfd-ec1.16a ${SRCS})
 
 # 链接 MPI
-target_link_libraries(opencfd-ec1.16a.out PRIVATE MPI::MPI_Fortran)
+target_link_libraries(opencfd-ec1.16a PRIVATE MPI::MPI_Fortran)
 
 # 设置可执行文件的输出目录
-set_target_properties(opencfd-ec1.16a.out PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+set_target_properties(opencfd-ec1.16a PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 add_subdirectory(./util)
